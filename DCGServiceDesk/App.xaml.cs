@@ -1,5 +1,12 @@
 ﻿using DCGServiceDesk.Data.Models;
+using DCGServiceDesk.Data.Services;
 using DCGServiceDesk.EF.Context;
+using DCGServiceDesk.EF.Factory;
+using DCGServiceDesk.EF.Services;
+using DCGServiceDesk.Session.Navigation;
+using DCGServiceDesk.ViewModels;
+using DCGServiceDesk.ViewModels.Factory;
+using Microsoft.AspNet.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
@@ -34,15 +41,43 @@ namespace DCGServiceDesk
             })
             .ConfigureServices((context, services) =>
             {
-                services.AddDbContext<AppIdentityDbContext>(options =>
-                    options.UseSqlServer(context.Configuration["Data:DCTEServiceDesk:ConnectionString"]));
+                //DbContextFactory
+                services.AddSingleton<DCGServiceDeskContextFactory>(s =>
+                new DCGServiceDeskContextFactory(context.Configuration));
+                services.AddSingleton<IDatabaseContextFactory, DCGServiceDeskContextFactory>();
 
-                services.AddDbContext<AppServiceDeskDbContext>(options =>
-                    options.UseSqlServer(context.Configuration["Data:DCTEServiceDesk:ConnectionString"]));
 
-                services.AddDbContext<AppCustomersDbContext>(options =>
-                    options.UseSqlServer(context.Configuration["Data:DCTECustomers:ConnectionString"]));
+                //ViewModels Factory
+                //Not at this moment
+
+                services.AddSingleton<IServiceDeskViewModelFactory, ServiceDeskViewModelFactory>();
+                services.AddSingleton<IViewForwarding, ViewForwarding>();
+                services.AddSingleton<ICrud<User>, IdentityDataServices>();
+                services.AddSingleton<IUserService, IdentityDataServices>();
+                services.AddSingleton<IAuthorization, Authorization>();
+                services.AddSingleton<IPasswordHasher, PasswordHasher>();
+
+                services.AddSingleton<CreateViewModel<LoginViewModel>>(service =>
+                {
+                    return () => new LoginViewModel(
+                        service.GetRequiredService<IAuthorization>());
+                });
+
+                //MainWindow initializer
+                services.AddScoped<MainWindowViewModel>();
+                services.AddScoped<MainWindow>(s => new MainWindow(s.GetRequiredService<MainWindowViewModel>()));
+
             });
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            _host.Start();
+
+            Window window = _host.Services.GetRequiredService<MainWindow>();
+            window.Show();
+
+            base.OnStartup(e);
+        }
 
     }
 }

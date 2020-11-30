@@ -1,11 +1,6 @@
-﻿using DCGServiceDesk.EF.Context;
-using DCGServiceDesk.EF.Factory;
-using DCGServiceDesk.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,18 +11,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DCGServiceDesk
+namespace DCGServiceDesk.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for LoginView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class LoginView : Page
     {
-        public MainWindow(MainWindowViewModel viewModel)
+        public LoginView()
         {
-            //contextFactory1 = contextFactory;
             InitializeComponent();
         }
-        public MainWindow() { }
     }
 }
