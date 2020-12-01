@@ -1,4 +1,5 @@
-﻿using DCGServiceDesk.Data.Services;
+﻿using DCGServiceDesk.Commands;
+using DCGServiceDesk.Data.Services;
 using DCGServiceDesk.EF.Context;
 using DCGServiceDesk.EF.Factory;
 using DCGServiceDesk.Session.Navigation;
@@ -10,24 +11,28 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 using Unity;
 
 namespace DCGServiceDesk.ViewModels
 {
     public class MainWindowViewModel:ViewModelBase
     {
-        private readonly IDatabaseContextFactory _databaseContextFactor;
         private readonly IViewForwarding _forwarding;
         private readonly IServiceDeskViewModelFactory _viewModelFactory;
         private readonly IAuthorization _authorization;
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        
+        //public bool IsLogged => _authorization.
+        //public event PropertyChangedEventHandler PropertyChanged;
 
         public ViewModelBase ActiveViewModel => _forwarding.ActiveViewModel;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+
+        public ICommand UpdateViewModelCommand { get; }
+
+        //protected void OnPropertyChanged(string propertyName)
+        //{
+        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //}
         public MainWindowViewModel(IViewForwarding forwarding, IServiceDeskViewModelFactory viewModelFactory, IAuthorization authorization) 
         {
             _forwarding = forwarding;
@@ -35,8 +40,9 @@ namespace DCGServiceDesk.ViewModels
             _authorization = authorization;
 
             _forwarding.StateChanged += Forwarding;
-            
-            //UpdateViewModelCommand = new ToDo
+
+            UpdateViewModelCommand = new UpdateViewModelCommand(forwarding, _viewModelFactory);
+            UpdateViewModelCommand.Execute(ViewName.Login);
         }
 
         private void Forwarding()

@@ -7,6 +7,7 @@ using DCGServiceDesk.Session.Navigation;
 using DCGServiceDesk.ViewModels;
 using DCGServiceDesk.ViewModels.Factory;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
@@ -55,7 +56,7 @@ namespace DCGServiceDesk
                 services.AddSingleton<ICrud<User>, IdentityDataServices>();
                 services.AddSingleton<IUserService, IdentityDataServices>();
                 services.AddSingleton<IAuthorization, Authorization>();
-                services.AddSingleton<IPasswordHasher, PasswordHasher>();
+                services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 
                 services.AddSingleton<CreateViewModel<LoginViewModel>>(service =>
                 {

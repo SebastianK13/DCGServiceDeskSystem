@@ -9,7 +9,7 @@
         Title="MainWindow" Height="450" Width="800">
     <StackPanel>
         <Button Content="Test"/>
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,30,0,-30">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,30,0,-30" Height="476">
             <ContentControl Content="{Binding ActiveViewModel}"/>
         </ScrollViewer>
     </StackPanel>

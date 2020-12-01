@@ -27,7 +27,7 @@ namespace DCGServiceDesk.Commands
             {
                 await _authorization.Login(_loginViewModel.Username, _loginViewModel.Password);
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
             }

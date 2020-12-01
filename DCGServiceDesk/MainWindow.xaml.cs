@@ -23,11 +23,12 @@ namespace DCGServiceDesk
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow(MainWindowViewModel viewModel)
+        public MainWindow(object dataContext)
         {
             //contextFactory1 = contextFactory;
             InitializeComponent();
+
+            DataContext = dataContext;
         }
-        public MainWindow() { }
     }
 }

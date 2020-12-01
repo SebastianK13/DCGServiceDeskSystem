@@ -38,7 +38,6 @@ namespace DCGServiceDesk.ViewModels
         }
 
         public ICommand LoginCommand { get; }
-        public ICommand ViewRegisterCommand { get; }
 
         public LoginViewModel(IAuthorization authenticator)
         {

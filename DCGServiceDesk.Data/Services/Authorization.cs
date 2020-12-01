@@ -1,5 +1,5 @@
 ﻿using DCGServiceDesk.Data.Models;
-using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,9 +10,9 @@ namespace DCGServiceDesk.Data.Services
     public class Authorization : IAuthorization
     {
         private readonly IUserService _userService;
-        private readonly IPasswordHasher _passwordHasher;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public Authorization(IUserService userService, IPasswordHasher passwordHasher)
+        public Authorization(IUserService userService, IPasswordHasher<User> passwordHasher)
         {
             _userService = userService;
             _passwordHasher = passwordHasher;
@@ -26,7 +26,7 @@ namespace DCGServiceDesk.Data.Services
 
             }
 
-            PasswordVerificationResult verificationResult = _passwordHasher.VerifyHashedPassword(currentUser.Password, password);
+            var result = _passwordHasher.VerifyHashedPassword(currentUser, currentUser.Password, password);
 
             return currentUser;
         }

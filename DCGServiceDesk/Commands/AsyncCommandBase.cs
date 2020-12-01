@@ -25,7 +25,7 @@ namespace DCGServiceDesk.Commands
 
         public bool CanExecute(object parameter)
         {
-            throw new NotImplementedException();
+            return !IsExecuting;
         }
 
         public async void Execute(object parameter)

@@ -31,10 +31,16 @@ namespace DCGServiceDesk.EF.Services
             throw new NotImplementedException();
         }
 
-        public async Task<User> GetByName(string username) =>
-            new User(Convert.ChangeType(await _dbContext.AspNetUsers
-                 .Select(u => new { u.UserName, u.PasswordHash })
-                 .FirstOrDefaultAsync(u => u.UserName == username), typeof(User)));
+        public async Task<User> GetByName(string username)
+        {
+            
+            var user = await _dbContext.AspNetUsers
+             .Select(u => new User{ Username = u.UserName, Password = u.PasswordHash })
+             .FirstOrDefaultAsync(u => u.Username == username);
+
+            return user;
+        }
+
 
 
         public Task<bool> Remove(int id)
