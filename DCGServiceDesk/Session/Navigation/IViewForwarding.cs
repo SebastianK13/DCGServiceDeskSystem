@@ -7,7 +7,8 @@ namespace DCGServiceDesk.Session.Navigation
 {
     public enum ViewName
     {
-        Login
+        Login,
+        MainView
     }
     public interface IViewForwarding
     {

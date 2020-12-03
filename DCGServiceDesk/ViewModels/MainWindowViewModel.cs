@@ -2,6 +2,7 @@
 using DCGServiceDesk.Data.Services;
 using DCGServiceDesk.EF.Context;
 using DCGServiceDesk.EF.Factory;
+using DCGServiceDesk.Services;
 using DCGServiceDesk.Session.Navigation;
 using DCGServiceDesk.ViewModels.Factory;
 using Microsoft.AspNet.Identity;
@@ -21,18 +22,13 @@ namespace DCGServiceDesk.ViewModels
         private readonly IViewForwarding _forwarding;
         private readonly IServiceDeskViewModelFactory _viewModelFactory;
         private readonly IAuthorization _authorization;
-        
-        //public bool IsLogged => _authorization.
-        //public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool IsLogged => _authorization.IsLogged;
 
         public ViewModelBase ActiveViewModel => _forwarding.ActiveViewModel;
 
         public ICommand UpdateViewModelCommand { get; }
 
-        //protected void OnPropertyChanged(string propertyName)
-        //{
-        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //}
         public MainWindowViewModel(IViewForwarding forwarding, IServiceDeskViewModelFactory viewModelFactory, IAuthorization authorization) 
         {
             _forwarding = forwarding;
@@ -49,13 +45,6 @@ namespace DCGServiceDesk.ViewModels
         {
             OnPropertyChanged(nameof(ActiveViewModel));
         }
-
-        //public MainWindowViewModel(IDatabaseContextFactory databaseContextFactory)
-        //{
-        //    _databaseContextFactor = databaseContextFactory;
-        //}
-
-
     }
 }
 

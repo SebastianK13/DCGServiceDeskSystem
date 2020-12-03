@@ -56,13 +56,14 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0" Text="Password" />
-                <TextBox Grid.Column="1" Margin="20,0,0,0" Width="300"
-                        Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" />
+                <PasswordBox Grid.Column="1" Margin="20,0,0,0" Width="300"
+                       Name="Password" />
             </Grid>
 
             <Button Grid.Row="2" Margin="0,10"
                     HorizontalAlignment="Center"
                     Command="{Binding LoginCommand}"
+                    CommandParameter="{Binding ElementName=Password}"
                     Content="Login"
                     IsDefault="True" />
 

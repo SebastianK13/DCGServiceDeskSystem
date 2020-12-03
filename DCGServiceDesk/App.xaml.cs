@@ -3,6 +3,8 @@ using DCGServiceDesk.Data.Services;
 using DCGServiceDesk.EF.Context;
 using DCGServiceDesk.EF.Factory;
 using DCGServiceDesk.EF.Services;
+using DCGServiceDesk.Services;
+using DCGServiceDesk.Session.CurrentUser;
 using DCGServiceDesk.Session.Navigation;
 using DCGServiceDesk.ViewModels;
 using DCGServiceDesk.ViewModels.Factory;
@@ -57,6 +59,7 @@ namespace DCGServiceDesk
                 services.AddSingleton<IUserService, IdentityDataServices>();
                 services.AddSingleton<IAuthorization, Authorization>();
                 services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
+                services.AddSingleton<ILoggedUser, LoggedUser>();
 
                 services.AddSingleton<CreateViewModel<LoginViewModel>>(service =>
                 {

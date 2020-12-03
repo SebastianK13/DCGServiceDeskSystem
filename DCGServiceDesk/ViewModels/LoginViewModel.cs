@@ -1,5 +1,7 @@
 ﻿using DCGServiceDesk.Commands;
 using DCGServiceDesk.Data.Services;
+using DCGServiceDesk.Services;
+using DCGServiceDesk.Session.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,26 +25,14 @@ namespace DCGServiceDesk.ViewModels
             }
         }
 
-        private string _password;
-        public string Password
-        {
-            get
-            {
-                return _password;
-            }
-            set
-            {
-                _password = value;
-                OnPropertyChanged(nameof(Password));
-            }
-        }
-
         public ICommand LoginCommand { get; }
+        public ICommand UpdateViewModelCommand { get; }
 
         public LoginViewModel(IAuthorization authenticator)
         {
 
             LoginCommand = new LoginCommand(this, authenticator);
+            UpdateViewModelCommand.Execute(ViewName.MainView);
         }
     }
 }

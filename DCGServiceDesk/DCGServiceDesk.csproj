@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DCGServiceDesk.Data\DCGServiceDesk.Data.csproj" />
     <ProjectReference Include="..\DCGServiceDesk.EF\DCGServiceDesk.EF.csproj" />
   </ItemGroup>
 

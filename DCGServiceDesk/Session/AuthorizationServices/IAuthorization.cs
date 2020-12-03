@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DCGServiceDesk.Data.Services
+namespace DCGServiceDesk.Services
 {
     public interface IAuthorization
     {
+        bool IsLogged { get;}
+
         Task<User> Login(string username, string password);
     }
 }
