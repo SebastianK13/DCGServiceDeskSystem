@@ -64,7 +64,15 @@ namespace DCGServiceDesk
                 services.AddSingleton<CreateViewModel<LoginViewModel>>(service =>
                 {
                     return () => new LoginViewModel(
+                        service.GetRequiredService<IViewForwarding>(),
+                        service.GetRequiredService<IServiceDeskViewModelFactory>(),
                         service.GetRequiredService<IAuthorization>());
+                });
+
+                services.AddSingleton<CreateViewModel<HomeViewModel>>(service => 
+                {
+                    return () => new HomeViewModel(
+                        service.GetRequiredService<ILoggedUser>());
                 });
 
                 //MainWindow initializer

@@ -1,24 +1,34 @@
 ﻿using DCGServiceDesk.Data.Services;
 using DCGServiceDesk.Services;
+using DCGServiceDesk.Session.Navigation;
 using DCGServiceDesk.ViewModels;
+using DCGServiceDesk.ViewModels.Factory;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace DCGServiceDesk.Commands
 {
 
     public class LoginCommand : AsyncCommandBase
     {
+        public ICommand UpdateViewModelCommand { get; }
         private readonly LoginViewModel _loginViewModel;
         private readonly IAuthorization _authorization;
+        private readonly IViewForwarding _forwarding;
+        private readonly IServiceDeskViewModelFactory _viewModelFactory;
 
-        public LoginCommand(LoginViewModel loginViewModel, IAuthorization authorization)
+        public LoginCommand(LoginViewModel loginViewModel, IAuthorization authorization, IViewForwarding forwarding,
+            IServiceDeskViewModelFactory viewModelFactory)
         {
             _loginViewModel = loginViewModel;
             _authorization = authorization;
+            _forwarding = forwarding;
+            _viewModelFactory = viewModelFactory;
+            UpdateViewModelCommand = new UpdateViewModelCommand(_forwarding, _viewModelFactory);
         }
 
         public override async Task ExecuteAsync(object parameter)
@@ -28,6 +38,8 @@ namespace DCGServiceDesk.Commands
             {
                 PasswordBox pswBox = parameter as PasswordBox;
                 await _authorization.Login(_loginViewModel.Username, pswBox.Password);
+                
+                UpdateViewModelCommand.Execute(ViewName.MainView);
             }
             catch (Exception e)
             {

@@ -2,6 +2,7 @@
 using DCGServiceDesk.Data.Services;
 using DCGServiceDesk.Services;
 using DCGServiceDesk.Session.Navigation;
+using DCGServiceDesk.ViewModels.Factory;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,9 @@ namespace DCGServiceDesk.ViewModels
     public class LoginViewModel : ViewModelBase
     {
         private string _username = "Noname";
+        private readonly IViewForwarding _forwarding;
+        private readonly IServiceDeskViewModelFactory _viewModelFactory;
+        private readonly IAuthorization _authorization;
         public string Username
         {
             get
@@ -28,11 +32,14 @@ namespace DCGServiceDesk.ViewModels
         public ICommand LoginCommand { get; }
         public ICommand UpdateViewModelCommand { get; }
 
-        public LoginViewModel(IAuthorization authenticator)
+        public LoginViewModel(IViewForwarding forwarding, IServiceDeskViewModelFactory viewModelFactory, IAuthorization authenticator)
         {
+            _forwarding = forwarding;
+            _viewModelFactory = viewModelFactory;
+            _authorization = authenticator;
 
-            LoginCommand = new LoginCommand(this, authenticator);
-            UpdateViewModelCommand.Execute(ViewName.MainView);
+            LoginCommand = new LoginCommand(this, _authorization, forwarding, viewModelFactory);
         }
+
     }
 }

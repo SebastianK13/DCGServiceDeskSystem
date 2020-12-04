@@ -27,7 +27,7 @@ namespace DCGServiceDesk.Services
                 StateChanged?.Invoke();
             }
         }
-        public bool IsLogged => CurrentUsername != "";
+        public bool IsLogged => CurrentUsername != null;
 
         public event Action StateChanged;
 

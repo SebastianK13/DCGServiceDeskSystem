@@ -7,10 +7,24 @@
         xmlns:mw="clr-namespace:DCGServiceDesk.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <StackPanel>
-        <Button Content="Test"/>
+    <Grid>
+        
+        <Grid>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsLogged}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <Button Content="Test" Height="50"></Button>
+        </Grid>
+        
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,30,0,-30" Height="476">
             <ContentControl Content="{Binding ActiveViewModel}"/>
         </ScrollViewer>
-    </StackPanel>
+    </Grid>
 </Window>
