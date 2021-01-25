@@ -6,10 +6,11 @@
         xmlns:local="clr-namespace:DCGServiceDesk"
         xmlns:mw="clr-namespace:DCGServiceDesk.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Dark Cluster Group Service Desk System" Height="450" Width="800" 
+        BorderBrush="#D5D2CD" >
+
     <Grid>
-        
-        <Grid>
+        <Grid Grid.Row="0" Margin="0,0,0,0">
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Style.Triggers>
@@ -19,12 +20,9 @@
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
-
-            <Button Content="Test" Height="50"></Button>
         </Grid>
-        
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,30,0,-30" Height="476">
+        <Grid Grid.Row="1" Margin="0,0,0,0">
             <ContentControl Content="{Binding ActiveViewModel}"/>
-        </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>
