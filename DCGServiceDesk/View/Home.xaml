@@ -30,25 +30,112 @@
             </DockPanel>
         </Grid>
         <Border Grid.Row="1" BorderBrush="#D6D6CE" BorderThickness="20,0,10,8">
-            <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="2">
-                    <Grid Grid.Column="0" Height="auto">
-                        <StackPanel HorizontalAlignment="Stretch"></StackPanel>
+            <Grid Background="#D6D6CE" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" BorderBrush="Gray" BorderThickness="1,1,1,0" CornerRadius="2,0,0,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="155"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel  Grid.Column="0" >
+                                <StackPanel.Background>
+                                    <LinearGradientBrush EndPoint="0.504,1.6" StartPoint="0.504,0.3">
+                                        <GradientStop Color="#DFDDE0" Offset="0"/>
+                                        <GradientStop Color="#DFDDE0" Offset="0.6"/>
+                                    </LinearGradientBrush>
+                                </StackPanel.Background>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="../Images/connectionWhiteImg.png" Height="25" Width="auto" HorizontalAlignment="Left"/>
+                                    <TextBlock Margin="10,0, 0,0" LineStackingStrategy="BlockLineHeight" LineHeight="20" VerticalAlignment="Center" HorizontalAlignment="Center" Width="98" Height="25" Text="System navigation" FontSize="12"/>
+                                    <Image MouseEnter="GridSplitter_MouseEnter" MouseLeave="GridSplitter_MouseLeave" Source="../Images/closeBlackIcon.png" Height="6" Width="auto" HorizontalAlignment="Right" Margin="13,0,0,10"/>
+                                </StackPanel>
+                               
+                            </StackPanel>
+                            <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1,0,0,1">
+                                <StackPanel  Grid.Column="1" Background="#D8D5D0" VerticalAlignment="Center" Margin="0,0,5,0">
+                                    <Image MouseEnter="GridSplitter_MouseEnter" MouseLeave="GridSplitter_MouseLeave" Source="../Images/openSysNavIcon.png" Height="15" Width="auto" HorizontalAlignment="Right"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                        <StackPanel Grid.Row="1" Grid.Column="0" Background="#D8D5D0" VerticalAlignment="Center">
+                            <Image MouseEnter="GridSplitter_MouseEnter" MouseLeave="GridSplitter_MouseLeave" Source="../Images/refreshIcon.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="0" BorderBrush="Gray" BorderThickness="1">
+                    <ScrollViewer HorizontalScrollBarVisibility="Hidden" Margin="0, 0, 0 , 0">
+                        <Grid Background="#F8FFF7" Grid.Column="0" Height="auto" Margin="4,2,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" VerticalAlignment="Center" Orientation="Horizontal">
+                                <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Request Queue" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" VerticalAlignment="Center" Orientation="Horizontal">
+                                <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Incident Managment" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" VerticalAlignment="Center" Orientation="Horizontal">
+                                <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Change Managment" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="3" VerticalAlignment="Center" Orientation="Horizontal">
+                                <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Task Managment" />
+                            </StackPanel>
+                            <!--<StackPanel Grid.Row="4" VerticalAlignment="Center" Orientation="Horizontal">
+                                <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Request queue" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="5" VerticalAlignment="Center" Orientation="Horizontal">
+                                <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Request queue" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="6" VerticalAlignment="Center" Orientation="Horizontal">
+                                <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Request queue" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="7" VerticalAlignment="Center" Orientation="Horizontal">
+                                <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Request queue" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="8" VerticalAlignment="Center" Orientation="Horizontal">
+                                <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Request queue" />
+                            </StackPanel>-->
+                        </Grid>
+                    </ScrollViewer>
+                </Border>
+
+                <Border Grid.Row="1" Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Margin="2, 0,0,0">
+                    <Grid Background="#F8FFF7">
                         <ScrollViewer HorizontalScrollBarVisibility="Hidden" Margin="0, 0, 0 , 0"></ScrollViewer>
                     </Grid>
                 </Border>
 
-                <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="2, 2, 2, 2" Margin="2, 0,0,0">
-                    <Grid Grid.Column="1">
-                        <ScrollViewer HorizontalScrollBarVisibility="Hidden" Margin="0, 0, 0 , 0"></ScrollViewer>
-                    </Grid>
-                </Border>
-
-        </Grid>
+            </Grid>
         </Border>
     </Grid>
 

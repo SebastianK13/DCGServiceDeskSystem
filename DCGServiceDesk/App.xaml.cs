@@ -90,6 +90,12 @@ namespace DCGServiceDesk
 
             base.OnStartup(e);
         }
+        protected override async void OnExit(ExitEventArgs e)
+        {
+            await _host.StopAsync();
+            _host.Dispose();
 
+            base.OnExit(e);
+        }
     }
 }

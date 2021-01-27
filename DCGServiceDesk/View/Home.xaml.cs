@@ -22,5 +22,16 @@ namespace DCGServiceDesk.View
         {
             InitializeComponent();
         }
+        private void GridSplitter_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (this.Cursor != Cursors.Wait)
+                Mouse.OverrideCursor = Cursors.Hand;
+        }
+
+        private void GridSplitter_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (this.Cursor != Cursors.Wait)
+                Mouse.OverrideCursor = Cursors.Arrow;
+        }
     }
 }
