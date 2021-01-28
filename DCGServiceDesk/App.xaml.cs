@@ -5,6 +5,7 @@ using DCGServiceDesk.EF.Factory;
 using DCGServiceDesk.EF.Services;
 using DCGServiceDesk.Services;
 using DCGServiceDesk.Session.CurrentUser;
+using DCGServiceDesk.Session.DataGetter;
 using DCGServiceDesk.Session.Navigation;
 using DCGServiceDesk.ViewModels;
 using DCGServiceDesk.ViewModels.Factory;
@@ -60,6 +61,9 @@ namespace DCGServiceDesk
                 services.AddSingleton<IAuthorization, Authorization>();
                 services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
                 services.AddSingleton<ILoggedUser, LoggedUser>();
+                services.AddSingleton<ICrud<ServiceRequest>, RequestsDataService>();
+                services.AddSingleton<IRequestService, RequestsDataService>();
+                services.AddSingleton<IRequestQueue, RequestQueue>();
 
                 services.AddSingleton<CreateViewModel<LoginViewModel>>(service =>
                 {
@@ -72,7 +76,8 @@ namespace DCGServiceDesk
                 services.AddSingleton<CreateViewModel<HomeViewModel>>(service => 
                 {
                     return () => new HomeViewModel(
-                        service.GetRequiredService<ILoggedUser>());
+                        service.GetRequiredService<ILoggedUser>(),
+                        service.GetRequiredService<IRequestQueue>());
                 });
 
                 //MainWindow initializer

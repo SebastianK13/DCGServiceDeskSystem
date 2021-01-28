@@ -9,6 +9,7 @@ namespace DCGServiceDesk.EF.Context
 {
     public class AppServiceDeskDbContext : DbContext
     {
+        public AppServiceDeskDbContext() { }
         public AppServiceDeskDbContext(DbContextOptions<AppServiceDeskDbContext>
             options) : base(options) { }
         public DbSet<ServiceRequest> Applications { get; set; }

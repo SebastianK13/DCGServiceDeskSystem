@@ -8,5 +8,6 @@ namespace DCGServiceDesk.EF.Factory
     public interface IDatabaseContextFactory
     {
         AppIdentityDbContext CreateIdentityDbContext();
+        AppServiceDeskDbContext CreateServiceDeskDbContext();
     }
 }

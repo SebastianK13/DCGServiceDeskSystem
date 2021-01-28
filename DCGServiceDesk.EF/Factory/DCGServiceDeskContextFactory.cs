@@ -25,5 +25,13 @@ namespace DCGServiceDesk.EF.Factory
             return new AppIdentityDbContext(options.Options);
         }
 
+        public AppServiceDeskDbContext CreateServiceDeskDbContext()
+        {
+            AppServiceDeskDbContext dbContext = new AppServiceDeskDbContext();
+            DbContextOptionsBuilder<AppServiceDeskDbContext> options = new DbContextOptionsBuilder<AppServiceDeskDbContext>();
+            options.UseSqlServer(_configuration["Data:DCTEServiceDesk:ConnectionString"]);
+
+            return new AppServiceDeskDbContext(options.Options);
+        }
     }
 }

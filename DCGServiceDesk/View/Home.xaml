@@ -4,7 +4,9 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:DCGServiceDesk.View"
-      mc:Ignorable="d" 
+             xmlns:interactivity="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:core="http://schemas.microsoft.com/expression/2010/interactivity"
+             mc:Ignorable="d" 
       d:DesignHeight="650" d:DesignWidth="1000">
 
     <UserControl.Resources>
@@ -89,22 +91,30 @@
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" VerticalAlignment="Center" Orientation="Horizontal">
-                                <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
-                                <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Request Queue" />
-                            </StackPanel>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Center" Orientation="Horizontal">
-                                <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
-                                <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Incident Managment" />
-                            </StackPanel>
-                            <StackPanel Grid.Row="2" VerticalAlignment="Center" Orientation="Horizontal">
-                                <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
-                                <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Change Managment" />
-                            </StackPanel>
-                            <StackPanel Grid.Row="3" VerticalAlignment="Center" Orientation="Horizontal">
-                                <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
-                                <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Task Managment" />
-                            </StackPanel>
+                            <Button BorderThickness="0" Grid.Row="0" HorizontalContentAlignment="Left" Background="White" Command="{Binding RequestCommand}">
+                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal" >
+                                    <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                    <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Request Queue" />
+                                </StackPanel>
+                            </Button>
+                            <Button BorderThickness="0" Grid.Row="1" HorizontalContentAlignment="Left" Background="White">
+                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                    <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                    <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Incident Managment" />
+                                </StackPanel>
+                            </Button>
+                            <Button BorderThickness="0" Grid.Row="2" HorizontalContentAlignment="Left" Background="White">
+                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                    <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                    <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Change Managment" />
+                                </StackPanel>
+                            </Button>
+                            <Button BorderThickness="0" Grid.Row="3" HorizontalContentAlignment="Left" Background="White">
+                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                    <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                    <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Task Managment" />
+                                </StackPanel>
+                            </Button>
                             <!--<StackPanel Grid.Row="4" VerticalAlignment="Center" Orientation="Horizontal">
                                 <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
                                 <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Request queue" />
@@ -131,7 +141,19 @@
 
                 <Border Grid.Row="1" Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Margin="2, 0,0,0">
                     <Grid Background="#F8FFF7">
-                        <ScrollViewer HorizontalScrollBarVisibility="Hidden" Margin="0, 0, 0 , 0"></ScrollViewer>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Background="#D6D6CE" Orientation="Horizontal">
+                            <Image MouseEnter="GridSplitter_MouseEnter" MouseLeave="GridSplitter_MouseLeave" Source="../Images/refreshIcon.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="0,0,5,0" />
+                        </StackPanel>
+                        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Hidden" Margin="0, 0, 0 , 0">
+                            <Grid>
+                                <Frame Source="/DCGServiceDesk;component/View/Request.xaml"/>
+                            </Grid>
+                        </ScrollViewer>
+
                     </Grid>
                 </Border>
 
