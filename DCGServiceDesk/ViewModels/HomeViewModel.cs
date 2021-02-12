@@ -1,6 +1,7 @@
 ﻿using DCGServiceDesk.Commands;
 using DCGServiceDesk.Session.CurrentUser;
 using DCGServiceDesk.Session.DataGetter;
+using DCGServiceDesk.Session.Queue;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,12 +14,14 @@ namespace DCGServiceDesk.ViewModels
         public ILoggedUser loggedUser;
         public ICommand RequestCommand { get; }
         private readonly IRequestQueue _requestQueue;
-        public HomeViewModel(ILoggedUser loggedUser, IRequestQueue requestQueue)
+        private readonly IQueueCreator _queueCreator;
+        public HomeViewModel(ILoggedUser loggedUser, IRequestQueue requestQueue, IQueueCreator queueCreator)
         {
             this.loggedUser = loggedUser;
             _requestQueue = requestQueue;
+            _queueCreator = queueCreator;
 
-            RequestCommand = new RequestCommand(_requestQueue);
+            RequestCommand = new RequestCommand(_requestQueue, _queueCreator);
         }
 
     }
