@@ -8,6 +8,9 @@ namespace DCGServiceDesk.Session.DataGetter
 {
     public interface IRequestQueue
     {
-        Task<List<ServiceRequest>> GetRequests();
+        Task<List<object>> GetRequests();
+        Task<List<Incident>> GetIncidents();
+        Task<List<TaskRequest>> GetTasks();
+        Task<List<ServiceRequest>> GetChanges();
     }
 }

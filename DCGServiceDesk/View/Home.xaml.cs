@@ -1,5 +1,9 @@
-﻿using System;
+﻿using DCGServiceDesk.Data.Models;
+using DCGServiceDesk.ViewModels;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,10 +22,22 @@ namespace DCGServiceDesk.View
     /// </summary>
     public partial class Home : UserControl
     {
+        private List<TabItem> _tabItems;
+        private TabItem _tabAdd;
+        public string xyz { get; set; }
         public Home()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
+
         private void GridSplitter_MouseEnter(object sender, MouseEventArgs e)
         {
             if (this.Cursor != Cursors.Wait)
@@ -32,6 +48,11 @@ namespace DCGServiceDesk.View
         {
             if (this.Cursor != Cursors.Wait)
                 Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

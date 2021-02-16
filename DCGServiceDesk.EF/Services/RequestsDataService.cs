@@ -32,6 +32,13 @@ namespace DCGServiceDesk.EF.Services
             return await _dbContext.Applications.ToListAsync();
         }
 
+        public async Task<List<Incident>> GetAllIncidents() => 
+            await _dbContext.Incidents.ToListAsync();
+
+        public async Task<List<TaskRequest>> GetAllTasks() => 
+            await _dbContext.Tasks.ToListAsync();
+
+
         //public async Task<User> GetByName(string username)
         //{
 

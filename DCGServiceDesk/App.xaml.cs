@@ -7,7 +7,6 @@ using DCGServiceDesk.Services;
 using DCGServiceDesk.Session.CurrentUser;
 using DCGServiceDesk.Session.DataGetter;
 using DCGServiceDesk.Session.Navigation;
-using DCGServiceDesk.Session.Queue;
 using DCGServiceDesk.ViewModels;
 using DCGServiceDesk.ViewModels.Factory;
 using Microsoft.AspNet.Identity;
@@ -65,7 +64,6 @@ namespace DCGServiceDesk
                 services.AddSingleton<ICrud<ServiceRequest>, RequestsDataService>();
                 services.AddSingleton<IRequestService, RequestsDataService>();
                 services.AddSingleton<IRequestQueue, RequestQueue>();
-                services.AddSingleton<IQueueCreator, QueueCreator>();
 
                 services.AddSingleton<CreateViewModel<LoginViewModel>>(service =>
                 {
@@ -79,8 +77,7 @@ namespace DCGServiceDesk
                 {
                     return () => new HomeViewModel(
                         service.GetRequiredService<ILoggedUser>(),
-                        service.GetRequiredService<IRequestQueue>(),
-                        service.GetRequiredService<IQueueCreator>());
+                        service.GetRequiredService<IRequestQueue>());
                 });
 
                 //MainWindow initializer

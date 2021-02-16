@@ -1,6 +1,6 @@
 ﻿using DCGServiceDesk.Data.Models;
 using DCGServiceDesk.Session.DataGetter;
-using DCGServiceDesk.Session.Queue;
+using DCGServiceDesk.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,12 +11,12 @@ namespace DCGServiceDesk.Commands
     public class RequestCommand : AsyncCommandBase
     {
         private readonly IRequestQueue _requestQueue;
-        private readonly IQueueCreator _queueCreator;
+        private HomeViewModel _hVM;
 
-        public RequestCommand(IRequestQueue requestQueue, IQueueCreator queueCreator)
+        public RequestCommand(IRequestQueue requestQueue, HomeViewModel hVM)
         {
             _requestQueue = requestQueue;
-            _queueCreator = queueCreator;
+            _hVM = hVM;
         }
 
         public async override Task ExecuteAsync(object parameter)
@@ -28,13 +28,19 @@ namespace DCGServiceDesk.Commands
                 {
                     case "RequestQueue":
                         var requests = await _requestQueue.GetRequests();
-                        _queueCreator.GenerateRequestQueue(requests);
+                        _hVM.SetRequests(requests);
                         break;
-                    case "IncidentManagment":
+                    case "IncidentQueue":
+                        var incidents = await _requestQueue.GetIncidents();
+                        _hVM.SetIncidents(incidents);
                         break;
-                    case "ChangeManagment":
+                    case "ChangesQueue":
+                        var changes = await _requestQueue.GetChanges();
+                        _hVM.SetChanges(changes);
                         break;
-                    case "TaskManagment":
+                    case "TasksQueue":
+                        var tasks = await _requestQueue.GetTasks();
+                        _hVM.SetTasks(tasks);
                         break;
                     default:
                         break;

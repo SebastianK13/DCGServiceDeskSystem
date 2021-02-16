@@ -14,11 +14,19 @@ namespace DCGServiceDesk.Session.DataGetter
         {
             _requestService = requestService;
         }
-        public async Task<List<ServiceRequest>> GetRequests()
-        {
-            List<ServiceRequest> requests = new List<ServiceRequest>();
 
-            return await _requestService.GetAll();
+        public async Task<List<Incident>> GetIncidents() =>
+            await _requestService.GetAllIncidents();
+
+        public async Task<List<ServiceRequest>> GetChanges() =>
+            await _requestService.GetAll();
+
+        public async Task<List<TaskRequest>> GetTasks() =>
+            await _requestService.GetAllTasks();
+
+        public async Task<List<object>> GetRequests()
+        {
+            throw new NotImplementedException();
         }
     }
 }
