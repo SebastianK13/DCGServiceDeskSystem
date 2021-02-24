@@ -22,9 +22,6 @@ namespace DCGServiceDesk.View
     /// </summary>
     public partial class Home : UserControl
     {
-        private List<TabItem> _tabItems;
-        private TabItem _tabAdd;
-        public string xyz { get; set; }
         public Home()
         {
             try

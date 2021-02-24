@@ -9,7 +9,7 @@ namespace DCGServiceDesk.Controls.Tab.Model
     public interface ITab
     {
         string Label { get; set; }
-        List<object> ServiceRequests { get; set; }
+        List<TabContainer> WorkspaceInfo { get; set; }
         ICommand CloseTabCommand { get; }
         event EventHandler CloseTabRequested;
     }

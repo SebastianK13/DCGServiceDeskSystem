@@ -1,5 +1,4 @@
-﻿using DCGServiceDesk.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -12,14 +11,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DCGServiceDesk.View
+namespace DCGServiceDesk.Controls.Tab.View
 {
     /// <summary>
-    /// Interaction logic for QueueView.xaml
+    /// Interaction logic for Workspace.xaml
     /// </summary>
-    public partial class QueueView : UserControl
+    public partial class Workspace : UserControl
     {
-        public QueueView()
+        public Workspace()
         {
             InitializeComponent();
         }

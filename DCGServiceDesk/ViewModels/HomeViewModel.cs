@@ -17,11 +17,15 @@ namespace DCGServiceDesk.ViewModels
         public ILoggedUser loggedUser;
 
         public ICommand RequestCommand { get; }
+        public ICommand UpdateRequest { get; }
         private readonly IRequestQueue _requestQueue;
+        private readonly IUserInfo _userInfo;
+        private readonly IEmployeeProfile _employeeProfile;
         private readonly ObservableCollection<ITab> _tabs;
+        public RequestViewModel RequestViewModel { get; set; }
         public ICollection<ITab> Tabs { get; }
 
-        public HomeViewModel(ILoggedUser loggedUser, IRequestQueue requestQueue)
+        public HomeViewModel(ILoggedUser loggedUser, IRequestQueue requestQueue, IUserInfo userInfo, IEmployeeProfile employeeProfile)
         {
             _tabs = new ObservableCollection<ITab>();
             _tabs.CollectionChanged += Tabs_CollectionChanged;
@@ -30,8 +34,11 @@ namespace DCGServiceDesk.ViewModels
 
             this.loggedUser = loggedUser;
             _requestQueue = requestQueue;
+            _userInfo = userInfo;
+            _employeeProfile = employeeProfile;
 
-            RequestCommand = new RequestCommand(_requestQueue, this);
+            RequestCommand = new RequestCommand(_requestQueue, _userInfo, _employeeProfile, this);
+            UpdateRequest = new UpdateRequest(this, _requestQueue, loggedUser.ActiveUser);
         }
         private void Tabs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -52,14 +59,14 @@ namespace DCGServiceDesk.ViewModels
         private void OnTabCloseRequested(object sender, EventArgs e) =>
             Tabs.Remove((ITab)sender);
 
-        public void SetRequests(List<object> requests) =>
-            Tabs.Add(new TabContent(requests, "Service Requests"));
-        public void SetIncidents(List<Incident> incidents) =>
-            Tabs.Add(new TabContent(incidents, "Incidents"));
-        public void SetChanges(List<ServiceRequest> changes) =>
-            Tabs.Add(new TabContent(changes, "Changes"));
-        public void SetTasks(List<TaskRequest> tasks) =>
-            Tabs.Add(new TabContent(tasks, "Tasks"));
+        public void SetRequests(List<object> requests, List<CommunicationInfo> info) =>
+            Tabs.Add(new QueueViewModel(requests, "Service Requests", info));
+        public void SetIncidents(List<Incident> incidents, List<CommunicationInfo> info) =>
+            Tabs.Add(new QueueViewModel(incidents, "Incidents", info));
+        public void SetChanges(List<ServiceRequest> changes, List<CommunicationInfo> info) =>
+            Tabs.Add(new QueueViewModel(changes, "Changes", info));
+        public void SetTasks(List<TaskRequest> tasks, List<CommunicationInfo> info) =>
+            Tabs.Add(new QueueViewModel(tasks, "Tasks", info));
 
     }
 }

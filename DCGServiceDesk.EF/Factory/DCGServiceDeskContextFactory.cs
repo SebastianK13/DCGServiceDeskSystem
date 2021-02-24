@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.EntityFrameworkCore.Proxies;
 
 namespace DCGServiceDesk.EF.Factory
 {
@@ -15,6 +16,15 @@ namespace DCGServiceDesk.EF.Factory
 
         public DCGServiceDeskContextFactory(IConfiguration configuration) =>
             _configuration = configuration;
+
+        public AppEmployeesDbContext CreateEmployeesDbContext()
+        {
+            AppEmployeesDbContext dbContext = new AppEmployeesDbContext();
+            DbContextOptionsBuilder<AppEmployeesDbContext> options = new DbContextOptionsBuilder<AppEmployeesDbContext>();
+            options.UseSqlServer(_configuration["Data:DCTEIdentity:ConnectionString"]);
+
+            return new AppEmployeesDbContext(options.Options);
+        }
 
         public AppIdentityDbContext CreateIdentityDbContext()
         {
@@ -30,6 +40,7 @@ namespace DCGServiceDesk.EF.Factory
             AppServiceDeskDbContext dbContext = new AppServiceDeskDbContext();
             DbContextOptionsBuilder<AppServiceDeskDbContext> options = new DbContextOptionsBuilder<AppServiceDeskDbContext>();
             options.UseSqlServer(_configuration["Data:DCTEServiceDesk:ConnectionString"]);
+            options.UseLazyLoadingProxies(true);
 
             return new AppServiceDeskDbContext(options.Options);
         }

@@ -120,4 +120,9 @@ namespace DCGServiceDesk.Data.Models
         public string? Login { get; set; }
         public string? Id { get; set; }
     }
+    public class CommunicationInfo
+    {
+        public string? ContactPerson { get; set; }
+        public string? RequestedPerson { get; set; }
+    }
 }

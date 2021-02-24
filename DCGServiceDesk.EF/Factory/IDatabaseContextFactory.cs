@@ -9,5 +9,6 @@ namespace DCGServiceDesk.EF.Factory
     {
         AppIdentityDbContext CreateIdentityDbContext();
         AppServiceDeskDbContext CreateServiceDeskDbContext();
+        AppEmployeesDbContext CreateEmployeesDbContext();
     }
 }

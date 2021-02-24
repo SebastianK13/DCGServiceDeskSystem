@@ -28,5 +28,8 @@ namespace DCGServiceDesk.Session.DataGetter
         {
             throw new NotImplementedException();
         }
+
+        public async Task<bool> ChangeRequestAsignee(int requestId, string requestType, string username) =>
+            await _requestService.UpdateRequestAssignee(requestId, requestType, username);
     }
 }

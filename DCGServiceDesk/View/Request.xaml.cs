@@ -16,11 +16,12 @@ namespace DCGServiceDesk.View
     /// <summary>
     /// Interaction logic for Request.xaml
     /// </summary>
-    public partial class Request : Page
+    public partial class Request : UserControl
     {
         public Request()
         {
             InitializeComponent();
         }
+
     }
 }

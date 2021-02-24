@@ -9,6 +9,7 @@ namespace DCGServiceDesk.EF.Context
 {
     public class AppEmployeesDbContext : DbContext
     {
+        public AppEmployeesDbContext() { }
         public AppEmployeesDbContext(DbContextOptions<AppEmployeesDbContext> options)
             : base(options) { }
 

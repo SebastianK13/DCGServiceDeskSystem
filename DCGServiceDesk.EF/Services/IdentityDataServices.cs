@@ -21,15 +21,6 @@ namespace DCGServiceDesk.EF.Services
             _databaseContextFactory = databaseContextFactory;
             _dbContext = _databaseContextFactory.CreateIdentityDbContext();
         }
-        public Task<User> Get(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<User>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<User> GetByName(string username)
         {
@@ -41,7 +32,26 @@ namespace DCGServiceDesk.EF.Services
             return user;
         }
 
+        public async Task<List<CommunicationInfo>> GetUserName(List<string> eIdContact, List<string> eIdRequested)
+        {
+            List<CommunicationInfo> communicationInfo = new List<CommunicationInfo>();
 
+            for (int i = 0; i < eIdRequested.Count(); i++)
+            {
+                communicationInfo.Add(new CommunicationInfo
+                {
+                    RequestedPerson = await _dbContext.AspNetUsers
+                    .Where(u => u.Id == eIdRequested[i])
+                    .Select(u => u.UserName).FirstOrDefaultAsync(),
+
+                    ContactPerson = await _dbContext.AspNetUsers
+                    .Where(u => u.Id == eIdContact[i])
+                    .Select(u => u.UserName).FirstOrDefaultAsync()
+                });                    
+            }
+
+            return communicationInfo;
+        }
 
         public Task<bool> Remove(int id)
         {
@@ -49,6 +59,15 @@ namespace DCGServiceDesk.EF.Services
         }
 
         public Task<User> Update(int id, User entity)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<User> Get(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<User>> GetAll()
         {
             throw new NotImplementedException();
         }

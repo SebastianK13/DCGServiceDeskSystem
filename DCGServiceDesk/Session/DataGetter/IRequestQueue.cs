@@ -12,5 +12,6 @@ namespace DCGServiceDesk.Session.DataGetter
         Task<List<Incident>> GetIncidents();
         Task<List<TaskRequest>> GetTasks();
         Task<List<ServiceRequest>> GetChanges();
+        Task<bool> ChangeRequestAsignee(int requestId, string requestType, string username);
     }
 }

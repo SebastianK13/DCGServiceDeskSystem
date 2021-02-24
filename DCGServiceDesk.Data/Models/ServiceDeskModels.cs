@@ -24,6 +24,7 @@ namespace DCGServiceDesk.Data.Models
         public int PriorityId { get; set; }
         [ForeignKey("Group")]
         public int? GroupId { get; set; }
+        public string? Assignee { get; set; }
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public virtual Status? Status { get; set; }
@@ -53,6 +54,7 @@ namespace DCGServiceDesk.Data.Models
         public int? GroupId { get; set; }
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
+        public string? Assignee { get; set; }
         [ForeignKey("AccountForm")]
         public int? AccountFormId { get; set; }
         public virtual Status? Status { get; set; }
@@ -80,6 +82,7 @@ namespace DCGServiceDesk.Data.Models
         public int PriorityId { get; set; }
         [ForeignKey("Group")]
         public int? GroupId { get; set; }
+        public string? Assignee { get; set; }
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public virtual Status? Status { get; set; }
@@ -224,7 +227,7 @@ namespace DCGServiceDesk.Data.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int MemberId { get; set; }
-        public int Username { get; set; }
+        public string Username { get; set; }
         [ForeignKey("Group")]
         public int GroupId { get; set; }
         public virtual AssigmentGroup? Group { get; set; }

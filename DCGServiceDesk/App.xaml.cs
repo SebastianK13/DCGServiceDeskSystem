@@ -50,7 +50,6 @@ namespace DCGServiceDesk
                 new DCGServiceDeskContextFactory(context.Configuration));
                 services.AddSingleton<IDatabaseContextFactory, DCGServiceDeskContextFactory>();
 
-
                 //ViewModels Factory
                 //Not at this moment
 
@@ -64,6 +63,9 @@ namespace DCGServiceDesk
                 services.AddSingleton<ICrud<ServiceRequest>, RequestsDataService>();
                 services.AddSingleton<IRequestService, RequestsDataService>();
                 services.AddSingleton<IRequestQueue, RequestQueue>();
+                services.AddSingleton<IUserInfo, UserInfo>();
+                services.AddSingleton<IEmployeeProfile, EmployeeProfile>();
+                services.AddSingleton<IEmployeeService, EmployeeDataService>();
 
                 services.AddSingleton<CreateViewModel<LoginViewModel>>(service =>
                 {
@@ -77,7 +79,9 @@ namespace DCGServiceDesk
                 {
                     return () => new HomeViewModel(
                         service.GetRequiredService<ILoggedUser>(),
-                        service.GetRequiredService<IRequestQueue>());
+                        service.GetRequiredService<IRequestQueue>(),
+                        service.GetRequiredService<IUserInfo>(),
+                        service.GetRequiredService<IEmployeeProfile>());
                 });
 
                 //MainWindow initializer
