@@ -24,10 +24,9 @@ namespace DCGServiceDesk.Session.DataGetter
         public async Task<List<TaskRequest>> GetTasks() =>
             await _requestService.GetAllTasks();
 
-        public async Task<List<object>> GetRequests()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<List<object>> GetRequests() =>
+            await _requestService.GetAllRequests();
+
 
         public async Task<bool> ChangeRequestAsignee(int requestId, string requestType, string username) =>
             await _requestService.UpdateRequestAssignee(requestId, requestType, username);

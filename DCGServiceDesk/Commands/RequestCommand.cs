@@ -42,8 +42,11 @@ namespace DCGServiceDesk.Commands
                 {
                     case "RequestQueue":
                         var requests = await _requestQueue.GetRequests();
-                        //var info = await _userInfo.GetUserName();
-                        //_hVM.SetRequests(requests);
+                        List<int> contactA = (List<int>)requests[1];
+                        List<int> requestedA = (List<int>)requests[2];
+                        List<string> contactIdA = await _employeeProfile.GetUserId(contactA);
+                        List<string> requestedIdA = await _employeeProfile.GetUserId(requestedA);
+                        _hVM.SetRequests((List<object>)requests[0], await _userInfo.GetUserName(contactIdA, requestedIdA));
                         break;
                     case "IncidentQueue":
                         var incidents = await _requestQueue.GetIncidents();

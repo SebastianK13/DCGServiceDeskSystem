@@ -37,9 +37,9 @@ namespace DCGServiceDesk.Commands
             try
             {
                 PasswordBox pswBox = parameter as PasswordBox;
-                await _authorization.Login(_loginViewModel.Username, pswBox.Password);
-                
-                UpdateViewModelCommand.Execute(ViewName.MainView);
+                var result = await _authorization.Login(_loginViewModel.Username, pswBox.Password);
+                if(result != null)
+                    UpdateViewModelCommand.Execute(ViewName.MainView);
             }
             catch (Exception e)
             {

@@ -36,6 +36,28 @@ namespace DCGServiceDesk.EF.Services
         public async Task<List<TaskRequest>> GetAllTasks() => 
             await _dbContext.Tasks.ToListAsync();
 
+        public async Task<List<object>> GetAllRequests()
+        {
+            List<object> requests = new List<object>();
+            var changes = await _dbContext.Applications.ToListAsync();
+            var incidents = await _dbContext.Incidents.ToListAsync();
+            var tasks = await _dbContext.Tasks.ToListAsync();
+
+            requests = requests.Concat(changes).Concat(incidents).Concat(tasks).ToList();
+
+            List<int> contacts = (List<int>)(changes.Select(c => c.ContactPerson).ToList())
+                .Concat(incidents.Select(i => i.ContactPerson).ToList())
+                .Concat(tasks.Select(t=>t.ContactPerson).ToList())
+                .ToList();
+
+            List<int> requested = (List<int>)(changes.Select(c => c.RequestedPerson).ToList())
+                .Concat(incidents.Select(i => i.RequestedPerson).ToList())
+                .Concat(tasks.Select(t => t.RequestedPerson).ToList())
+                .ToList();
+
+            return new List<object> { requests, contacts, requested };
+        }
+
         public async Task<bool> UpdateRequestAssignee(int requestId, string requestType, string username)
         {
             _username = username;
@@ -115,7 +137,5 @@ namespace DCGServiceDesk.EF.Services
         {
             throw new NotImplementedException();
         }
-
-
     }
 }

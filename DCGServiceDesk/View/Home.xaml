@@ -100,8 +100,8 @@
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
                             </Grid.RowDefinitions>
-                            <Button Click="Button_Click" BorderThickness="0" Grid.Row="0" HorizontalContentAlignment="Left" Background="White" 
-                                    >
+                            <Button BorderThickness="0" Grid.Row="0" HorizontalContentAlignment="Left" Background="White"
+                                    Command="{Binding RequestCommand}" CommandParameter="RequestQueue">
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal" >
                                     <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
                                     <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Request Queue" />

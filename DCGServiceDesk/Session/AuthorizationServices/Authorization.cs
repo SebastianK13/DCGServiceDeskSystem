@@ -43,11 +43,19 @@ namespace DCGServiceDesk.Services
             if (CurrentUsername is null)
             {
                 user = await _userService.GetByName(username);
-                _loggedUser.ActiveUser = user.Username;
 
                 if(user != null)
                 {
                     var result = _passwordHasher.VerifyHashedPassword(user, user.Password, password);
+                    if (result.ToString() == "Failed")
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        _loggedUser.ActiveUser = user.Username;
+                    }
+
                 }
 
             }
