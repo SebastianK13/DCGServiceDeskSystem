@@ -13,5 +13,7 @@ namespace DCGServiceDesk.Data.Services
         Task<List<Incident>> GetAllIncidents();
         Task<List<TaskRequest>> GetAllTasks();
         Task<bool> UpdateRequestAssignee(int requestId, string requestType, string username);
+        Task<List<object>> GetRequestsFromGroup(int groupId);
+        List<AssigmentGroup> GetAllMemberingGroups(string activeUser);
     }
 }

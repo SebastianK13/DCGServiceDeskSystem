@@ -135,6 +135,60 @@ namespace DCGServiceDesk.EF.Services
             return await _dbContext.SaveChangesAsync() > 0 ? true : false;
         }
 
+        public async Task<List<object>> GetRequestsFromGroup(int groupId)
+        {
+            List<object> requests = new List<object>();
+            var changes = await _dbContext.Applications
+                .Where(i=>i.GroupId == groupId)
+                .ToListAsync();
+
+            var incidents = await _dbContext.Incidents
+                .Where(i => i.GroupId == groupId)
+                .ToListAsync();
+
+            var tasks = await _dbContext.Tasks
+                .Where(i => i.GroupId == groupId)
+                .ToListAsync();
+
+            requests = requests.Concat(changes).Concat(incidents).Concat(tasks).ToList();
+
+            List<int> contacts = (List<int>)(changes.Select(c => c.ContactPerson).ToList())
+                .Concat(incidents.Select(i => i.ContactPerson).ToList())
+                .Concat(tasks.Select(t => t.ContactPerson).ToList())
+                .ToList();
+
+            List<int> requested = (List<int>)(changes.Select(c => c.RequestedPerson).ToList())
+                .Concat(incidents.Select(i => i.RequestedPerson).ToList())
+                .Concat(tasks.Select(t => t.RequestedPerson).ToList())
+                .ToList();
+
+            List<string> typeList = new List<string>();
+            typeList = CreateTypeList("Changes", changes.Count, typeList);
+            typeList = CreateTypeList("Tasks", tasks.Count, typeList);
+            typeList = CreateTypeList("Incidents", incidents.Count, typeList);
+
+            return new List<object> { requests, contacts, requested, typeList };
+        }
+
+        public List<AssigmentGroup> GetAllMemberingGroups(string activeUser)
+        {
+            List<AssigmentGroup> groups = new List<AssigmentGroup>();
+
+            var groupsId = _dbContext.Members
+                .Where(i => i.Username == activeUser)
+                .Select(g => g.GroupId)
+                .ToList();
+
+            for (int i = 0; i < groupsId.Count(); i++)
+            {
+                groups.Add( _dbContext.AssigmentGroup
+                    .Where(g=>g.GroupId == groupsId[i])
+                    .FirstOrDefault());
+            }
+
+            return groups;
+        }
+
         public Task<bool> Remove(int id)
         {
             throw new NotImplementedException();
@@ -149,5 +203,6 @@ namespace DCGServiceDesk.EF.Services
         {
             throw new NotImplementedException();
         }
+
     }
 }

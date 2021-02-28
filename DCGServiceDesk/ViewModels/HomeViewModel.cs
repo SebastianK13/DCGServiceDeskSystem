@@ -42,17 +42,7 @@ namespace DCGServiceDesk.ViewModels
             RequestCommand = new RequestCommand(_requestQueue, _userInfo, _employeeProfile, this);
             UpdateRequest = new UpdateRequest(this, _requestQueue, loggedUser.ActiveUser);
             UpdateGroupsCommand = new UpdateGroupsCommand(this, _requestQueue);
-            var y = new AssigmentGroup { GroupId = 1, GroupName = "SD" };
-            var e = new AssigmentGroup { GroupId = 2, GroupName = "AD" };
-            var r = new AssigmentGroup { GroupId = 3, GroupName = "Mailing" };
-            var t = new AssigmentGroup { GroupId = 4, GroupName = "Standarization" };
-            List<AssigmentGroup> xyz = new List<AssigmentGroup>();
-            xyz.Add(y);
-            xyz.Add(e);
-            xyz.Add(r);
-            xyz.Add(t);
-            Groups = xyz;
-
+            Groups = _requestQueue.GetGroups(loggedUser.ActiveUser);
         }
         private void Tabs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -73,8 +63,8 @@ namespace DCGServiceDesk.ViewModels
         private void OnTabCloseRequested(object sender, EventArgs e) =>
             Tabs.Remove((ITab)sender);
 
-        public void SetRequests(List<object> requests, List<CommunicationInfo> info, List<string> requestTypes) =>
-            Tabs.Add(new QueueViewModel(requests, "Service Requests", info, requestTypes));
+        public void SetRequests(List<object> requests, List<CommunicationInfo> info, List<string> requestTypes, string queueName) =>
+            Tabs.Add(new QueueViewModel(requests, queueName, info, requestTypes));
         public void SetIncidents(List<Incident> incidents, List<CommunicationInfo> info) =>
             Tabs.Add(new QueueViewModel(incidents, "Incidents", info));
         public void SetChanges(List<ServiceRequest> changes, List<CommunicationInfo> info) =>

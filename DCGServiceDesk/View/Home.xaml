@@ -167,12 +167,12 @@
                                                             <TextBlock HorizontalAlignment="Center" Width="auto" Height="17" VerticalAlignment="Center" Text="{Binding GroupName}" />
                                                         </StackPanel>
                                                         <i:Interaction.Triggers>
-                                                                <i:EventTrigger EventName="MouseDoubleClick">
-                                                                    <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
-                                                                  Path=DataContext.(vm:HomeViewModel.RequestCommand)}" 
-                                                                  CommandParameter="{Binding}"/>
-                                                                </i:EventTrigger>
-                                                            </i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="MouseDoubleClick">
+                                                                <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
+                                                                    Path=DataContext.(vm:HomeViewModel.RequestCommand)}" 
+                                                                    CommandParameter="{Binding}"/>
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
                                                     </Button>
                                                 </TreeViewItem.Header>
                                             </TreeViewItem>

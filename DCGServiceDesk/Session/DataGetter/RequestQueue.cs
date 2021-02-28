@@ -30,5 +30,11 @@ namespace DCGServiceDesk.Session.DataGetter
 
         public async Task<bool> ChangeRequestAsignee(int requestId, string requestType, string username) =>
             await _requestService.UpdateRequestAssignee(requestId, requestType, username);
+
+        public async Task<List<object>> GetGroupRequests(int groupId) =>
+            await _requestService.GetRequestsFromGroup(groupId);
+
+        public List<AssigmentGroup> GetGroups(string activeUser) =>
+             _requestService.GetAllMemberingGroups(activeUser);
     }
 }
