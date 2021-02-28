@@ -10,7 +10,9 @@
       d:DesignHeight="650" d:DesignWidth="1000"
       xmlns:v="clr-namespace:DCGServiceDesk.View"       
       xmlns:tm="clr-namespace:DCGServiceDesk.Controls.Tab.Model"
-      xmlns:tv="clr-namespace:DCGServiceDesk.Controls.Tab.View">
+      xmlns:tv="clr-namespace:DCGServiceDesk.Controls.Tab.View"
+                   xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+     xmlns:vm="clr-namespace:DCGServiceDesk.ViewModels">
 
     <UserControl.Resources>
         <ResourceDictionary >
@@ -95,7 +97,7 @@
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
-                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="auto"/>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
@@ -135,6 +137,49 @@
                                     <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Requests Assign" />
                                 </StackPanel>
                             </Button>
+
+
+                            <TreeView Grid.Row="5" BorderThickness="0">
+                                <TreeView.Resources>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                                         Color="Blue"/>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                                         Color="Blue"/>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                         Color="Transparent"/>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                                         Color="Transparent"/>
+                                </TreeView.Resources>
+                                <TreeViewItem ItemsSource="{Binding Groups}">
+                                    <TreeViewItem.Header>
+                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                            <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                            <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Groups" />
+                                        </StackPanel>
+                                    </TreeViewItem.Header>
+                                    <TreeViewItem.ItemTemplate>
+                                        <DataTemplate>
+                                            <TreeViewItem>
+                                                <TreeViewItem.Header>
+                                                    <Button BorderThickness="0" HorizontalContentAlignment="Left" Background="White">
+                                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                            <Image HorizontalAlignment="left"  Source="../Images/groupIcon.png" Height="15" Width="auto" Margin="0,0,2,0"/>
+                                                            <TextBlock HorizontalAlignment="Center" Width="auto" Height="17" VerticalAlignment="Center" Text="{Binding GroupName}" />
+                                                        </StackPanel>
+                                                        <i:Interaction.Triggers>
+                                                                <i:EventTrigger EventName="MouseDoubleClick">
+                                                                    <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
+                                                                  Path=DataContext.(vm:HomeViewModel.RequestCommand)}" 
+                                                                  CommandParameter="{Binding}"/>
+                                                                </i:EventTrigger>
+                                                            </i:Interaction.Triggers>
+                                                    </Button>
+                                                </TreeViewItem.Header>
+                                            </TreeViewItem>
+                                        </DataTemplate>
+                                    </TreeViewItem.ItemTemplate>
+                                </TreeViewItem>
+                            </TreeView>
                         </Grid>
                     </ScrollViewer>
                 </Border>

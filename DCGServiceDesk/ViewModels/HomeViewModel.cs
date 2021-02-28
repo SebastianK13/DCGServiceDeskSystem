@@ -18,12 +18,14 @@ namespace DCGServiceDesk.ViewModels
 
         public ICommand RequestCommand { get; }
         public ICommand UpdateRequest { get; }
+        public ICommand UpdateGroupsCommand { get; }
         private readonly IRequestQueue _requestQueue;
         private readonly IUserInfo _userInfo;
         private readonly IEmployeeProfile _employeeProfile;
         private readonly ObservableCollection<ITab> _tabs;
         public RequestViewModel RequestViewModel { get; set; }
         public ICollection<ITab> Tabs { get; }
+        public ICollection<AssigmentGroup> Groups { get; }
 
         public HomeViewModel(ILoggedUser loggedUser, IRequestQueue requestQueue, IUserInfo userInfo, IEmployeeProfile employeeProfile)
         {
@@ -39,6 +41,18 @@ namespace DCGServiceDesk.ViewModels
 
             RequestCommand = new RequestCommand(_requestQueue, _userInfo, _employeeProfile, this);
             UpdateRequest = new UpdateRequest(this, _requestQueue, loggedUser.ActiveUser);
+            UpdateGroupsCommand = new UpdateGroupsCommand(this, _requestQueue);
+            var y = new AssigmentGroup { GroupId = 1, GroupName = "SD" };
+            var e = new AssigmentGroup { GroupId = 2, GroupName = "AD" };
+            var r = new AssigmentGroup { GroupId = 3, GroupName = "Mailing" };
+            var t = new AssigmentGroup { GroupId = 4, GroupName = "Standarization" };
+            List<AssigmentGroup> xyz = new List<AssigmentGroup>();
+            xyz.Add(y);
+            xyz.Add(e);
+            xyz.Add(r);
+            xyz.Add(t);
+            Groups = xyz;
+
         }
         private void Tabs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -59,8 +73,8 @@ namespace DCGServiceDesk.ViewModels
         private void OnTabCloseRequested(object sender, EventArgs e) =>
             Tabs.Remove((ITab)sender);
 
-        public void SetRequests(List<object> requests, List<CommunicationInfo> info) =>
-            Tabs.Add(new QueueViewModel(requests, "Service Requests", info));
+        public void SetRequests(List<object> requests, List<CommunicationInfo> info, List<string> requestTypes) =>
+            Tabs.Add(new QueueViewModel(requests, "Service Requests", info, requestTypes));
         public void SetIncidents(List<Incident> incidents, List<CommunicationInfo> info) =>
             Tabs.Add(new QueueViewModel(incidents, "Incidents", info));
         public void SetChanges(List<ServiceRequest> changes, List<CommunicationInfo> info) =>

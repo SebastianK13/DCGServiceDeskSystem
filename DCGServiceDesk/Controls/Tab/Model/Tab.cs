@@ -24,5 +24,6 @@ namespace DCGServiceDesk.Controls.Tab.Model
         public object ServiceRequests { get; set; } = new List<object>();
         public CommunicationInfo CommunicationInfo { get; set; }
         public bool RequestVisibility { get; set; }
+        public string RequestType { get; set; }
     }
 }

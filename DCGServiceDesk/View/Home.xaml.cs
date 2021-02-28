@@ -51,5 +51,13 @@ namespace DCGServiceDesk.View
         {
 
         }
+
+        private void TreeView_SelectedItemChanged(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is TreeView myTreeView)) return;
+            var selectedItem = (TreeViewItem)myTreeView.SelectedItem;
+            if (selectedItem == null) return;
+            selectedItem.IsSelected = false;
+        }
     }
 }

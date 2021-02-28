@@ -50,7 +50,7 @@ namespace DCGServiceDesk.ViewModels
             WorkspaceInfo = wi;
             Label = label;
         }
-        public QueueViewModel(List<object> requests, string label, List<CommunicationInfo> communicationInfo)
+        public QueueViewModel(List<object> requests, string label, List<CommunicationInfo> communicationInfo, List<string> RequestTypes)
         {
             List<TabContainer> wi = new List<TabContainer>();
             for (int i = 0; i < requests.Count; i++)
@@ -59,7 +59,8 @@ namespace DCGServiceDesk.ViewModels
                 {
                     CommunicationInfo = communicationInfo[i],
                     RequestVisibility = true,
-                    ServiceRequests = requests[i]
+                    ServiceRequests = requests[i],
+                    RequestType = RequestTypes[i]
                 });
             }
             WorkspaceInfo = wi;

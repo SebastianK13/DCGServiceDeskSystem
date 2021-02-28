@@ -13,8 +13,8 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    
-        <Grid Height="auto" >
+
+    <Grid Height="auto" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="20"/>
                 <RowDefinition Height="*"/>
@@ -24,32 +24,38 @@
                 <Image Source="../Images/refreshIcon.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="2,2,5,0" />
             </StackPanel>
         </Border>
-        <ScrollViewer Grid.Row="1" VirtualizingPanel.IsVirtualizing="True" HorizontalScrollBarVisibility="Hidden" Margin="0, 0, 0 , 0"  VerticalContentAlignment="Stretch">
-            <Grid  VerticalAlignment="Stretch">
-                <ListView x:Name="serviceRequests" SelectionMode="Single" ItemsSource="{Binding WorkspaceInfo }"
+        <Grid Grid.Row="1">
+            <ListView x:Name="serviceRequests" SelectionMode="Single" ItemsSource="{Binding WorkspaceInfo }" ScrollViewer.VerticalScrollBarVisibility="Visible"
                           IsSynchronizedWithCurrentItem="True" HorizontalContentAlignment="Stretch" BorderThickness="0">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListViewItem}">
-                            <Setter Property="Visibility" Value="{Binding RequestVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Topic" Width="80" DisplayMemberBinding="{Binding ServiceRequests.Topic}"/>
-                            <GridViewColumn Header="Description" Width="80" DisplayMemberBinding="{Binding ServiceRequests.Description}"/>
-                            <GridViewColumn Header="Create Date" Width="80" DisplayMemberBinding="{Binding ServiceRequests.Status.CreateDate}"/>
-                            <GridViewColumn Header="Username" Width="80" DisplayMemberBinding="{Binding CommunicationInfo.RequestedPerson}"/>
-                        </GridView>
-                    </ListView.View>
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseDoubleClick">
-                            <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Visibility" Value="{Binding RequestVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RequestType}" Value="Tasks">
+                                <Setter Property="Foreground" Value="Green" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding RequestType}" Value="Incidents">
+                                <Setter Property="Foreground" Value="Red" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Topic" Width="80" DisplayMemberBinding="{Binding ServiceRequests.Topic}"/>
+                        <GridViewColumn Header="Description" Width="80" DisplayMemberBinding="{Binding ServiceRequests.Description}"/>
+                        <GridViewColumn Header="Create Date" Width="80" DisplayMemberBinding="{Binding ServiceRequests.Status.CreateDate}"/>
+                        <GridViewColumn Header="Username" Width="80" DisplayMemberBinding="{Binding CommunicationInfo.RequestedPerson}"/>
+                    </GridView>
+                </ListView.View>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
                               Path=DataContext.(vm:HomeViewModel.RequestCommand)}" 
                               CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </ListView>
-            </Grid>
-        </ScrollViewer>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ListView>
+        </Grid>
     </Grid>
 </UserControl>

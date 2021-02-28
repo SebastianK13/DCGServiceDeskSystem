@@ -10,6 +10,7 @@
     <None Remove="Images\closeBlackIcon.png" />
     <None Remove="Images\connectionWhiteImg.png" />
     <None Remove="Images\folderImg.png" />
+    <None Remove="Images\groupIcon.png" />
     <None Remove="Images\openSysNavIcon.png" />
     <None Remove="Images\refreshIcon.png" />
     <None Remove="Images\take2Icon.bmp" />
@@ -53,6 +54,7 @@
     <Resource Include="Images\closeBlackIcon.png" />
     <Resource Include="Images\connectionWhiteImg.png" />
     <Resource Include="Images\folderImg.png" />
+    <Resource Include="Images\groupIcon.png" />
     <Resource Include="Images\openSysNavIcon.png" />
     <Resource Include="Images\refreshIcon.png" />
     <Resource Include="Images\take2Icon.bmp" />

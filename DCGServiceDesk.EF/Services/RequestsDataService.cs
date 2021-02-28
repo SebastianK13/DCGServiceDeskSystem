@@ -55,9 +55,21 @@ namespace DCGServiceDesk.EF.Services
                 .Concat(tasks.Select(t => t.RequestedPerson).ToList())
                 .ToList();
 
-            return new List<object> { requests, contacts, requested };
-        }
+            List<string> typeList = new List<string>();
+            typeList = CreateTypeList("Changes", changes.Count, typeList);
+            typeList = CreateTypeList("Tasks", tasks.Count, typeList);
+            typeList = CreateTypeList("Incidents", incidents.Count, typeList);
 
+            return new List<object> { requests, contacts, requested, typeList };
+        }
+        public List<string> CreateTypeList(string type, int amount, List<string> typeList)
+        {
+            for(int i = 0; i < amount; i++)
+            {
+                typeList.Add(type);
+            }
+            return typeList;
+        }
         public async Task<bool> UpdateRequestAssignee(int requestId, string requestType, string username)
         {
             _username = username;
