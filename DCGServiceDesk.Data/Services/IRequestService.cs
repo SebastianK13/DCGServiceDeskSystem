@@ -15,5 +15,6 @@ namespace DCGServiceDesk.Data.Services
         Task<bool> UpdateRequestAssignee(int requestId, string requestType, string username);
         Task<List<object>> GetRequestsFromGroup(int groupId);
         List<AssigmentGroup> GetAllMemberingGroups(string activeUser);
+        Task<List<object>> GetAssignedNotEscalated(string username);
     }
 }

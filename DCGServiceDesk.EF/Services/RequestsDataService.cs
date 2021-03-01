@@ -28,20 +28,20 @@ namespace DCGServiceDesk.EF.Services
         }
 
         public async Task<List<ServiceRequest>> GetAll() =>
-            await _dbContext.Applications.ToListAsync();
+            await _dbContext.Applications.Where(a=>a.Group == null).ToListAsync();
 
         public async Task<List<Incident>> GetAllIncidents() => 
-            await _dbContext.Incidents.ToListAsync();
+            await _dbContext.Incidents.Where(i=>i.Group == null).ToListAsync();
 
         public async Task<List<TaskRequest>> GetAllTasks() => 
-            await _dbContext.Tasks.ToListAsync();
+            await _dbContext.Tasks.Where(t=>t.Group == null).ToListAsync();
 
         public async Task<List<object>> GetAllRequests()
         {
             List<object> requests = new List<object>();
-            var changes = await _dbContext.Applications.ToListAsync();
-            var incidents = await _dbContext.Incidents.ToListAsync();
-            var tasks = await _dbContext.Tasks.ToListAsync();
+            var changes = await GetAll();
+            var incidents = await GetAllIncidents();
+            var tasks = await GetAllTasks();
 
             requests = requests.Concat(changes).Concat(incidents).Concat(tasks).ToList();
 
@@ -187,6 +187,47 @@ namespace DCGServiceDesk.EF.Services
             }
 
             return groups;
+        }
+
+        public async Task<List<object>> GetAssignedNotEscalated(string username)
+        {
+            List<object> requests = new List<object>();
+            var changes = await _dbContext.Applications
+                .Where(i => i.Group.GroupName == "Service Desk" &&
+                i.Status.StateId == 1 && 
+                i.Assignee == username)
+                .ToListAsync();
+
+            var incidents = await _dbContext.Incidents
+                .Where(i => i.Group.GroupName == "Service Desk" &&
+                i.Status.StateId == 1 &&
+                i.Assignee == username)
+                .ToListAsync();
+
+            var tasks = await _dbContext.Tasks
+                .Where(i => i.Group.GroupName == "Service Desk" &&
+                i.Status.StateId == 1 &&
+                i.Assignee == username)
+                .ToListAsync();
+
+            requests = requests.Concat(changes).Concat(incidents).Concat(tasks).ToList();
+
+            List<int> contacts = (List<int>)(changes.Select(c => c.ContactPerson).ToList())
+                .Concat(incidents.Select(i => i.ContactPerson).ToList())
+                .Concat(tasks.Select(t => t.ContactPerson).ToList())
+                .ToList();
+
+            List<int> requested = (List<int>)(changes.Select(c => c.RequestedPerson).ToList())
+                .Concat(incidents.Select(i => i.RequestedPerson).ToList())
+                .Concat(tasks.Select(t => t.RequestedPerson).ToList())
+                .ToList();
+
+            List<string> typeList = new List<string>();
+            typeList = CreateTypeList("Changes", changes.Count, typeList);
+            typeList = CreateTypeList("Tasks", tasks.Count, typeList);
+            typeList = CreateTypeList("Incidents", incidents.Count, typeList);
+
+            return new List<object> { requests, contacts, requested, typeList };
         }
 
         public Task<bool> Remove(int id)

@@ -3,16 +3,17 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:ic="http://schemas.microsoft.com/expression/2010/interactions"
-             xmlns:core="using:Microsoft.Xaml.Interactions.Core"
-             xmlns:v="clr-namespace:DCGServiceDesk.View"
-             xmlns:vm="clr-namespace:DCGServiceDesk.ViewModels">
-
+             xmlns:core="using:Microsoft.Xaml.Interactions.Core">
 
     <UserControl.Resources>
         <ResourceDictionary >
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="QueueViewResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
+
 
     <Grid Height="auto" >
             <Grid.RowDefinitions>
@@ -24,38 +25,54 @@
                 <Image Source="../Images/refreshIcon.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="2,2,5,0" />
             </StackPanel>
         </Border>
-        <Grid Grid.Row="1">
-            <ListView x:Name="serviceRequests" SelectionMode="Single" ItemsSource="{Binding WorkspaceInfo }" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                          IsSynchronizedWithCurrentItem="True" HorizontalContentAlignment="Stretch" BorderThickness="0">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListViewItem}">
-                        <Setter Property="Visibility" Value="{Binding RequestVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding RequestType}" Value="Tasks">
-                                <Setter Property="Foreground" Value="Green" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RequestType}" Value="Incidents">
-                                <Setter Property="Foreground" Value="Red" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Topic" Width="80" DisplayMemberBinding="{Binding ServiceRequests.Topic}"/>
-                        <GridViewColumn Header="Description" Width="80" DisplayMemberBinding="{Binding ServiceRequests.Description}"/>
-                        <GridViewColumn Header="Create Date" Width="80" DisplayMemberBinding="{Binding ServiceRequests.Status.CreateDate}"/>
-                        <GridViewColumn Header="Username" Width="80" DisplayMemberBinding="{Binding CommunicationInfo.RequestedPerson}"/>
-                    </GridView>
-                </ListView.View>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseDoubleClick">
-                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
-                              Path=DataContext.(vm:HomeViewModel.RequestCommand)}" 
-                              CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </ListView>
+        <Grid Grid.Row="1" Margin="20,10,20,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" BorderThickness="0,0,0,3" BorderBrush="#87CEFA">
+                <TextBlock Text="{Binding Label}" FontSize="20"/>
+            </Border>
+            <Border Grid.Row="1" BorderThickness="1,1,1,15" BorderBrush="#87CEFA" Margin="0,30,0,0">
+                <ListView x:Name="serviceRequests" SelectionMode="Single" ItemsSource="{Binding WorkspaceInfo }" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                      IsSynchronizedWithCurrentItem="True" HorizontalContentAlignment="Stretch" BorderThickness="0" SizeChanged="serviceRequests_SizeChanged">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Height" Value="21"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,.2"/>
+                            <Setter Property="Margin" Value="-4,0,0,0"/>
+                            <Setter Property="BorderBrush" Value="Gray"/>
+                            <Setter Property="Visibility" Value="{Binding RequestVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RequestType}" Value="Tasks">
+                                    <Setter Property="Foreground" Value="Green" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding RequestType}" Value="Incidents">
+                                    <Setter Property="Foreground" Value="Red" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.View>
+                        <GridView x:Name="QueueList">
+                            <GridView.ColumnHeaderContainerStyle>
+                                <Style TargetType="GridViewColumnHeader">
+                                    <Setter Property="RenderTransform">
+                                        <Setter.Value>
+                                            <TranslateTransform X="-2"></TranslateTransform>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GridView.ColumnHeaderContainerStyle>
+                            <GridViewColumn x:Name="firstColumn" Header="Topic" CellTemplate="{StaticResource TopicCellTemplateStyle}"/>
+                            <GridViewColumn x:Name="secondColumn" Header="Service" CellTemplate="{StaticResource ServiceCellTemplateStyle}"/>
+                            <GridViewColumn x:Name="thirdColumn" Header="Requested by" CellTemplate="{StaticResource RequestedPersonCellTemplateStyle}"/>
+                            <GridViewColumn x:Name="fourthColumn" Header="Contact" CellTemplate="{StaticResource ContactPersonCellTemplateStyle}"/>
+                            <GridViewColumn x:Name="fifthColumn" Header="Create Date" CellTemplate="{StaticResource CreateDateCellTemplateStyle}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>

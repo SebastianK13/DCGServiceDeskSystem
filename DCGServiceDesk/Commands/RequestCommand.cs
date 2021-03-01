@@ -57,6 +57,10 @@ namespace DCGServiceDesk.Commands
                     case "TasksQueue":
                         await SetTasksQueue();
                         break;
+                    case "CurrentAssignRequests":
+                        var assignedRequests = await _requestQueue.GetAssignedRequests(_hVM.loggedUser.ActiveUser);
+                        await SetAllRequestQueue(assignedRequests, "Requests assigned");
+                        break;
                     case "Group":
                         var groupRequests = await _requestQueue.GetGroupRequests(((AssigmentGroup)parameter).GroupId);
                         await SetAllRequestQueue(groupRequests, ((AssigmentGroup)parameter).GroupName);

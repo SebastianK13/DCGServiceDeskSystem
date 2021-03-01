@@ -36,5 +36,8 @@ namespace DCGServiceDesk.Session.DataGetter
 
         public List<AssigmentGroup> GetGroups(string activeUser) =>
              _requestService.GetAllMemberingGroups(activeUser);
+
+        public async Task<List<object>> GetAssignedRequests(string username) =>
+            await _requestService.GetAssignedNotEscalated(username);
     }
 }

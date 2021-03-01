@@ -15,5 +15,6 @@ namespace DCGServiceDesk.Session.DataGetter
         Task<bool> ChangeRequestAsignee(int requestId, string requestType, string username);
         Task<List<object>> GetGroupRequests(int groupId);
         List<AssigmentGroup> GetGroups(string activeUser);
+        Task<List<object>> GetAssignedRequests(string username);
     }
 }

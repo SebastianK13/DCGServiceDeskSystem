@@ -20,7 +20,7 @@ namespace DCGServiceDesk.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == "False")
+            if (value == "false")
                 value = "false";
 
             return bool.Parse(value.ToString());
