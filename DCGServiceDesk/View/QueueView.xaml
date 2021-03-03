@@ -2,8 +2,11 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-             xmlns:ic="http://schemas.microsoft.com/expression/2010/interactions"
-             xmlns:core="using:Microsoft.Xaml.Interactions.Core">
+      xmlns:ic="http://schemas.microsoft.com/expression/2010/interactions"
+      xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+      xmlns:behaviours="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
+      xmlns:v="clr-namespace:DCGServiceDesk.View"
+      xmlns:vm="clr-namespace:DCGServiceDesk.ViewModels">
 
     <UserControl.Resources>
         <ResourceDictionary >
@@ -38,6 +41,13 @@
                       IsSynchronizedWithCurrentItem="True" HorizontalContentAlignment="Stretch" BorderThickness="0" SizeChanged="serviceRequests_SizeChanged">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="behaviours:CommandBehavior.Event"
+                            Value="MouseDoubleClick" />
+                            <Setter Property="behaviours:CommandBehavior.Command"
+                            Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
+                              Path=DataContext.(vm:HomeViewModel.RequestCommand)}" />
+                            <Setter Property="behaviours:CommandBehavior.CommandParameter"
+                            Value="{Binding}" />
                             <Setter Property="Height" Value="21"/>
                             <Setter Property="BorderThickness" Value="0,0,0,.2"/>
                             <Setter Property="Margin" Value="-4,0,0,0"/>
@@ -64,11 +74,13 @@
                                     </Setter>
                                 </Style>
                             </GridView.ColumnHeaderContainerStyle>
-                            <GridViewColumn x:Name="firstColumn" Header="Topic" CellTemplate="{StaticResource TopicCellTemplateStyle}"/>
-                            <GridViewColumn x:Name="secondColumn" Header="Service" CellTemplate="{StaticResource ServiceCellTemplateStyle}"/>
-                            <GridViewColumn x:Name="thirdColumn" Header="Requested by" CellTemplate="{StaticResource RequestedPersonCellTemplateStyle}"/>
-                            <GridViewColumn x:Name="fourthColumn" Header="Contact" CellTemplate="{StaticResource ContactPersonCellTemplateStyle}"/>
-                            <GridViewColumn x:Name="fifthColumn" Header="Create Date" CellTemplate="{StaticResource CreateDateCellTemplateStyle}"/>
+                            <GridViewColumn x:Name="IdColumn" Header="ID" CellTemplate="{StaticResource IDCellTemplateStyle}"/>
+                            <GridViewColumn x:Name="topicColumn" Header="Topic" CellTemplate="{StaticResource TopicCellTemplateStyle}"/>
+                            <GridViewColumn x:Name="requestedColumn" Header="Requested by" CellTemplate="{StaticResource RequestedPersonCellTemplateStyle}"/>
+                            <GridViewColumn x:Name="contactColumn" Header="Contact" CellTemplate="{StaticResource ContactPersonCellTemplateStyle}"/>
+                            <GridViewColumn x:Name="serviceColumn" Header="Service" CellTemplate="{StaticResource ServiceCellTemplateStyle}"/>
+                            <GridViewColumn x:Name="cDateColumn" Header="Create Date" CellTemplate="{StaticResource CreateDateCellTemplateStyle}"/>
+                            <GridViewColumn x:Name="dueDateColumn" Header="Due Time" CellTemplate="{StaticResource DueDateCellTemplateStyle}"/>
                         </GridView>
                     </ListView.View>
                 </ListView>

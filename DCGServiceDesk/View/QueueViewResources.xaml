@@ -8,71 +8,57 @@
     <con:DataConverter x:Key="dataConve"/>
 
     <DataTemplate x:Key="TopicCellTemplateStyle">
-        <StackPanel Margin="6,1,6,2" Height="25">
-            <TextBlock Text="{Binding ServiceRequests.Topic}" Width="{Binding ActualWidth, ElementName=firstColumn}">
-                <TextBlock.InputBindings>
-                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
-                              Path=DataContext.(vm:HomeViewModel.RequestCommand)}"
-                                      CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"/>
-                </TextBlock.InputBindings>
-            </TextBlock>
-        </StackPanel>
+        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3.2,-2,-8,-2">
+            <StackPanel Margin="6,2,6,2">
+                <TextBlock Text="{Binding ServiceRequests.Topic}" Width="{Binding ActualWidth, ElementName=topicColumn}"/>
+            </StackPanel>
+        </Border>
     </DataTemplate>
 
     <DataTemplate x:Key="ServiceCellTemplateStyle">
-        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3,-2,-8,-2">
+        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3.2,-2,-8,-2">
             <StackPanel Margin="6,2,6,2">
-                <TextBlock Text="{Binding ServiceRequests.Category.ServiceName}" Width="{Binding ActualWidth, ElementName=secondColumn}">
-                    <TextBlock.InputBindings>
-                        <MouseBinding Gesture="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
-                              Path=DataContext.(vm:HomeViewModel.RequestCommand)}"
-                                      CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"/>
-                    </TextBlock.InputBindings>
-                </TextBlock>
+                <TextBlock Text="{Binding ServiceRequests.Category.ServiceName}" Width="{Binding ActualWidth, ElementName=serviceColumn}"/>
             </StackPanel>
         </Border>
     </DataTemplate>
 
     <DataTemplate x:Key="CreateDateCellTemplateStyle">
-        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3,-2,-8,-2">
+        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3.2,-2,-8,-2">
             <StackPanel Margin="6,2,6,2">
-                <TextBlock Text="{Binding ServiceRequests.Status.CreateDate}" Width="{Binding ActualWidth, ElementName=fifthColumn}">
-                    <TextBlock.InputBindings>
-                        <MouseBinding Gesture="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
-                              Path=DataContext.(vm:HomeViewModel.RequestCommand)}"
-                                      CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"/>
-                    </TextBlock.InputBindings>
-                </TextBlock>
+                <TextBlock TextAlignment="Center" Text="{Binding ServiceRequests.Status.CreateDate}" Width="{Binding ActualWidth, ElementName=cDateColumn}"/>
             </StackPanel>
         </Border>
     </DataTemplate>
 
     <DataTemplate x:Key="RequestedPersonCellTemplateStyle">
-        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3,-2,-8,-2">
+        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3.2,-2,-8,-2">
             <StackPanel Margin="6,2,6,2">
-                <TextBlock Margin="-6,0,0,0" TextAlignment="Center" Text="{Binding CommunicationInfo.RequestedPerson}" Width="{Binding ActualWidth, ElementName=thirdColumn}">
-                    <TextBlock.InputBindings>
-                        <MouseBinding Gesture="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
-                              Path=DataContext.(vm:HomeViewModel.RequestCommand)}"
-                                      CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"/>
-                    </TextBlock.InputBindings>
-                </TextBlock>
+                <TextBlock Margin="-6,0,0,0" TextAlignment="Center" Text="{Binding CommunicationInfo.RequestedPerson}" Width="{Binding ActualWidth, ElementName=requestedColumn}"/>
             </StackPanel>
         </Border>
     </DataTemplate>
 
     <DataTemplate x:Key="ContactPersonCellTemplateStyle">
-        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3,-2,-8,-2">
+        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3.2,-2,-8,-2">
             <StackPanel Margin="6,2,6,2">
-                <TextBlock Margin="-6,0,0,0" TextAlignment="Center" Text="{Binding CommunicationInfo.ContactPerson}" Width="{Binding ActualWidth, ElementName=fourthColumn}">
-                    <TextBlock.InputBindings>
-                        <MouseBinding Gesture="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
-                              Path=DataContext.(vm:HomeViewModel.RequestCommand)}"
-                                      CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"/>
-                    </TextBlock.InputBindings>
-                </TextBlock>
+                <TextBlock Margin="-6,0,0,0" TextAlignment="Center" Text="{Binding CommunicationInfo.ContactPerson}" Width="{Binding ActualWidth, ElementName=contactColumn}"/>
             </StackPanel>
         </Border>
     </DataTemplate>
-    
+
+    <DataTemplate x:Key="DueDateCellTemplateStyle">
+        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3.2,-2,-8,-2">
+            <StackPanel Margin="6,2,6,2">
+                <TextBlock Margin="-6,0,0,0" TextAlignment="Center" Text="{Binding ServiceRequests.Status.DueTime}" Width="{Binding ActualWidth, ElementName=dueDateColumn}"/>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="IDCellTemplateStyle">
+        <StackPanel Margin="6,2,6,2">
+            <TextBlock Margin="-6,0,0,0" TextAlignment="Center" Text="{Binding CommunicationInfo.RequestId}" Width="{Binding ActualWidth, ElementName=IdColumn}"/>
+        </StackPanel>
+    </DataTemplate>
+
 </ResourceDictionary>

@@ -38,6 +38,7 @@ namespace DCGServiceDesk.EF.Services
 
         public async Task<List<object>> GetAllRequests()
         {
+            List<int> requestIds = new List<int>();
             List<object> requests = new List<object>();
             var changes = await GetAll();
             var incidents = await GetAllIncidents();
@@ -55,12 +56,18 @@ namespace DCGServiceDesk.EF.Services
                 .Concat(tasks.Select(t => t.RequestedPerson).ToList())
                 .ToList();
 
+            requestIds = requestIds
+                .Concat(changes.Select(i => i.RequestId))
+                .Concat(incidents.Select(i => i.IncidentId))
+                .Concat(tasks.Select(i => i.TaskId))
+                .ToList();
+
             List<string> typeList = new List<string>();
             typeList = CreateTypeList("Changes", changes.Count, typeList);
-            typeList = CreateTypeList("Tasks", tasks.Count, typeList);
             typeList = CreateTypeList("Incidents", incidents.Count, typeList);
+            typeList = CreateTypeList("Tasks", tasks.Count, typeList);
 
-            return new List<object> { requests, contacts, requested, typeList };
+            return new List<object> { requests, contacts, requested, typeList, requestIds };
         }
         public List<string> CreateTypeList(string type, int amount, List<string> typeList)
         {
@@ -137,6 +144,7 @@ namespace DCGServiceDesk.EF.Services
 
         public async Task<List<object>> GetRequestsFromGroup(int groupId)
         {
+            List<int> requestIds = new List<int>();
             List<object> requests = new List<object>();
             var changes = await _dbContext.Applications
                 .Where(i=>i.GroupId == groupId)
@@ -164,10 +172,16 @@ namespace DCGServiceDesk.EF.Services
 
             List<string> typeList = new List<string>();
             typeList = CreateTypeList("Changes", changes.Count, typeList);
-            typeList = CreateTypeList("Tasks", tasks.Count, typeList);
             typeList = CreateTypeList("Incidents", incidents.Count, typeList);
+            typeList = CreateTypeList("Tasks", tasks.Count, typeList);
 
-            return new List<object> { requests, contacts, requested, typeList };
+            requestIds = requestIds
+                .Concat(changes.Select(i => i.RequestId))
+                .Concat(incidents.Select(i => i.IncidentId))
+                .Concat(tasks.Select(i => i.TaskId))
+                .ToList();
+
+            return new List<object> { requests, contacts, requested, typeList, requestIds };
         }
 
         public List<AssigmentGroup> GetAllMemberingGroups(string activeUser)
@@ -191,6 +205,7 @@ namespace DCGServiceDesk.EF.Services
 
         public async Task<List<object>> GetAssignedNotEscalated(string username)
         {
+            List<int> requestIds = new List<int>();
             List<object> requests = new List<object>();
             var changes = await _dbContext.Applications
                 .Where(i => i.Group.GroupName == "Service Desk" &&
@@ -224,10 +239,16 @@ namespace DCGServiceDesk.EF.Services
 
             List<string> typeList = new List<string>();
             typeList = CreateTypeList("Changes", changes.Count, typeList);
-            typeList = CreateTypeList("Tasks", tasks.Count, typeList);
             typeList = CreateTypeList("Incidents", incidents.Count, typeList);
+            typeList = CreateTypeList("Tasks", tasks.Count, typeList);
 
-            return new List<object> { requests, contacts, requested, typeList };
+            requestIds = requestIds
+                .Concat(changes.Select(i => i.RequestId))
+                .Concat(incidents.Select(i => i.IncidentId))
+                .Concat(tasks.Select(i => i.TaskId))
+                .ToList();
+
+            return new List<object> { requests, contacts, requested, typeList, requestIds };
         }
 
         public Task<bool> Remove(int id)

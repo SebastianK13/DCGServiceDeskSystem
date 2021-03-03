@@ -101,8 +101,9 @@ namespace DCGServiceDesk.Commands
             List<int> requested = (List<int>)requests[2];
             List<string> contactId = await _employeeProfile.GetUserId(contact);
             List<string> requestedId = await _employeeProfile.GetUserId(requested);
-            _hVM.SetRequests((List<object>)requests[0],
-            await _userInfo.GetUserName(contactId, requestedId),
+            var aInfo = await _userInfo.GetUserName(contactId, requestedId);
+            AddRequestIdsMixed(aInfo, (List<int>)requests[4], (List<string>)requests[3]);
+            _hVM.SetRequests((List<object>)requests[0], aInfo,
             (List<string>)requests[3], queueName);
         }
 
@@ -113,7 +114,9 @@ namespace DCGServiceDesk.Commands
             List<int> requested = incidents.Select(i => i.RequestedPerson).ToList();
             List<string> contactId2 = await _employeeProfile.GetUserId(contact);
             List<string> requestedId2 = await _employeeProfile.GetUserId(requested);
-            _hVM.SetIncidents(incidents, await _userInfo.GetUserName(contactId, requestedId));
+            var tInfo = await _userInfo.GetUserName(contactId, requestedId);
+            AddRequestIds(tInfo, incidents.Select(i => i.IncidentId).ToList(), "IM");
+            _hVM.SetIncidents(incidents, tInfo);
         }
 
         private async Task SetChangesQueue()
@@ -123,7 +126,9 @@ namespace DCGServiceDesk.Commands
             List<int> requestedC = changes.Select(i => i.RequestedPerson).ToList();
             List<string> contactIdC = await _employeeProfile.GetUserId(contactC);
             List<string> requestedIdC = await _employeeProfile.GetUserId(requestedC);
-            _hVM.SetChanges(changes, await _userInfo.GetUserName(contactIdC, requestedIdC));
+            var cInfo = await _userInfo.GetUserName(contactIdC, requestedIdC);
+            AddRequestIds(cInfo, changes.Select(i => i.RequestId).ToList(), "C");
+            _hVM.SetChanges(changes, cInfo);
         }
 
         private async Task SetTasksQueue()
@@ -133,8 +138,44 @@ namespace DCGServiceDesk.Commands
             List<int> requestedT = tasks.Select(i => i.RequestedPerson).ToList();
             List<string> contactIdT = await _employeeProfile.GetUserId(contactT);
             List<string> requestedIdT = await _employeeProfile.GetUserId(requestedT);
-            _hVM.SetTasks(tasks, await _userInfo.GetUserName(contactIdT, requestedIdT));
+            var info = await _userInfo.GetUserName(contactIdT, requestedIdT);
+            AddRequestIds(info, tasks.Select(i => i.TaskId).ToList(), "T");
+            _hVM.SetTasks(tasks, info);
         }
 
+        private List<CommunicationInfo> AddRequestIds(List<CommunicationInfo> info, List<int> Ids, string requestType)
+        {
+            for(int i = 0; i < info.Count; i++)
+            {
+                int temp = 1000000 + Ids[i];
+                info[i].RequestId = requestType + temp.ToString().Substring(1);
+            }
+
+            return info;
+        }
+        private List<CommunicationInfo> AddRequestIdsMixed(List<CommunicationInfo> info, List<int> Ids, List<string> requestTypes)
+        {
+            for (int i = 0; i < info.Count; i++)
+            {
+                int temp = 1000000 + Ids[i];
+                info[i].RequestId = SetShortcut(requestTypes[i]) + temp.ToString().Substring(1);
+            }
+
+            return info;
+        }
+        private string SetShortcut(string typeName)
+        {
+            switch (typeName)
+            {
+                case "Tasks":
+                    return "T";
+                case "Incidents":
+                    return "IM";
+                case "Changes":
+                    return "C";
+            }
+
+            return "SD";
+        }
     }
 }

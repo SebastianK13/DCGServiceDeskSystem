@@ -30,16 +30,21 @@ namespace DCGServiceDesk.View
             GridView gView = listView.View as GridView;
 
             var workingWidth = listView.ActualWidth - SystemParameters.VerticalScrollBarWidth; // take into account vertical scrollbar
-            var col1 = 0.25;
-            var col2 = 0.25;
-            var col3 = 0.25;
-            var col4 = 0.25;
+            double col1 = 0.13;
+            double col2 = 0.2;
+            double col3 = 0.12;
+            double col4 = 0.12;
+            double col5 = 0.14;
+            double col6 = 0.15;
+            double col7 = 0.14;
 
             gView.Columns[0].Width = workingWidth * col1;
             gView.Columns[1].Width = workingWidth * col2;
-            gView.Columns[2].Width = 80;
-            gView.Columns[3].Width = 80;
-            gView.Columns[4].Width = workingWidth * col4;
+            gView.Columns[2].Width = workingWidth * col3;
+            gView.Columns[3].Width = workingWidth * col4;
+            gView.Columns[4].Width = workingWidth * col5;
+            gView.Columns[5].Width = workingWidth * col6;
+            gView.Columns[6].Width = workingWidth * col7;
         }
     }
 }

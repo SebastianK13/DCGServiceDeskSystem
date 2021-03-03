@@ -124,5 +124,6 @@ namespace DCGServiceDesk.Data.Models
     {
         public string? ContactPerson { get; set; }
         public string? RequestedPerson { get; set; }
+        public string? RequestId { get; set; }
     }
 }
