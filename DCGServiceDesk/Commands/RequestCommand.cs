@@ -66,13 +66,13 @@ namespace DCGServiceDesk.Commands
                         await SetAllRequestQueue(groupRequests, ((AssigmentGroup)parameter).GroupName);
                         break;
                     case "IncidentProxy":
-                        _hVM.Tabs.Add(new RequestViewModel( ExtractIncident(parameter), "Incident", ExtractAdditionalInfo(parameter)));
+                        EscalatedOrNot(parameter, "IM");
                         break;
                     case "ServiceRequestProxy":
-                        _hVM.Tabs.Add(new RequestViewModel(ExtractChange(parameter), "Change", ExtractAdditionalInfo(parameter)));
+                        EscalatedOrNot(parameter, "C");
                         break;
                     case "TaskRequestProxy":
-                        _hVM.Tabs.Add(new RequestViewModel(ExtractTask(parameter), "Task", ExtractAdditionalInfo(parameter)));
+                        EscalatedOrNot(parameter, "T");
                         break;
                     default:
                         break;
@@ -82,6 +82,50 @@ namespace DCGServiceDesk.Commands
             catch (Exception e)
             {
 
+            }
+        }
+        private async Task EscalatedOrNot(object parameter, string requestType)
+        {
+            var states = await _requestQueue.GetAllStates();
+
+            switch (requestType)
+            {
+                case "T":
+                    var t = ExtractTask(parameter);
+                    string labelT = SetRequestId(t.TaskId, "T");
+                    if(t.Group == null)
+                    {
+                        _hVM.Tabs.Add(new RequestViewModel(t, labelT, ExtractAdditionalInfo(parameter), states));
+                    }
+                    else
+                    {
+                        _hVM.Tabs.Add(new EscalatedViewModel(t, labelT, ExtractAdditionalInfo(parameter),states));
+                    }
+                    break;
+                case "IM":
+                    var im = ExtractIncident(parameter);
+                    string labelIM = SetRequestId(im.IncidentId, "IM");
+                    if (im.Group == null)
+                    {
+                        _hVM.Tabs.Add(new RequestViewModel(im, labelIM, ExtractAdditionalInfo(parameter),states));
+                    }
+                    else
+                    {
+                        _hVM.Tabs.Add(new EscalatedViewModel(im, labelIM, ExtractAdditionalInfo(parameter),states));
+                    }
+                    break;
+                case "C":
+                    var c = ExtractChange(parameter);
+                    string labelC = SetRequestId(c.RequestId, "C");
+                    if (c.Group == null)
+                    {
+                        _hVM.Tabs.Add(new RequestViewModel(c, labelC, ExtractAdditionalInfo(parameter), states));
+                    }
+                    else
+                    {
+                        _hVM.Tabs.Add(new EscalatedViewModel(c, labelC, ExtractAdditionalInfo(parameter), states));
+                    }
+                    break;
             }
         }
         private Incident ExtractIncident(object parameter) =>
@@ -152,6 +196,11 @@ namespace DCGServiceDesk.Commands
             }
 
             return info;
+        }
+        private string SetRequestId(int id, string requestType)
+        {
+            int temp = 1000000 + id;
+            return requestType + temp.ToString().Substring(1);
         }
         private List<CommunicationInfo> AddRequestIdsMixed(List<CommunicationInfo> info, List<int> Ids, List<string> requestTypes)
         {

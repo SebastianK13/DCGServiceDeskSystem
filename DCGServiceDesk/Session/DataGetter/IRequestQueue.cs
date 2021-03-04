@@ -16,5 +16,6 @@ namespace DCGServiceDesk.Session.DataGetter
         Task<List<object>> GetGroupRequests(int groupId);
         List<AssigmentGroup> GetGroups(string activeUser);
         Task<List<object>> GetAssignedRequests(string username);
+        Task<List<State>> GetAllStates();
     }
 }

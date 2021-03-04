@@ -9,6 +9,7 @@
   <ItemGroup>
     <None Remove="Images\closeBlackIcon.png" />
     <None Remove="Images\connectionWhiteImg.png" />
+    <None Remove="Images\escalationIcon.bmp" />
     <None Remove="Images\folderImg.png" />
     <None Remove="Images\groupIcon.png" />
     <None Remove="Images\openSysNavIcon.png" />
@@ -54,6 +55,7 @@
   <ItemGroup>
     <Resource Include="Images\closeBlackIcon.png" />
     <Resource Include="Images\connectionWhiteImg.png" />
+    <Resource Include="Images\escalationIcon.bmp" />
     <Resource Include="Images\folderImg.png" />
     <Resource Include="Images\groupIcon.png" />
     <Resource Include="Images\openSysNavIcon.png" />

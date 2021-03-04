@@ -22,6 +22,9 @@ namespace DCGServiceDesk.EF.Services
             _databaseContextFactory = databaseContextFactory;
             _dbContext = _databaseContextFactory.CreateServiceDeskDbContext();
         }
+        public void CreateNewInstance() =>
+            _dbContext = _databaseContextFactory.CreateServiceDeskDbContext();
+
         public Task<ServiceRequest> Get(int id)
         {
             throw new NotImplementedException();
@@ -38,6 +41,7 @@ namespace DCGServiceDesk.EF.Services
 
         public async Task<List<object>> GetAllRequests()
         {
+            CreateNewInstance();
             List<int> requestIds = new List<int>();
             List<object> requests = new List<object>();
             var changes = await GetAll();
@@ -251,6 +255,8 @@ namespace DCGServiceDesk.EF.Services
             return new List<object> { requests, contacts, requested, typeList, requestIds };
         }
 
+        public async Task<List<State>> GetRequestStates() =>
+            await _dbContext.States.ToListAsync();
         public Task<bool> Remove(int id)
         {
             throw new NotImplementedException();
@@ -265,6 +271,5 @@ namespace DCGServiceDesk.EF.Services
         {
             throw new NotImplementedException();
         }
-
     }
 }

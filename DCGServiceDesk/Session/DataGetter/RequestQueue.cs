@@ -27,7 +27,6 @@ namespace DCGServiceDesk.Session.DataGetter
         public async Task<List<object>> GetRequests() =>
             await _requestService.GetAllRequests();
 
-
         public async Task<bool> ChangeRequestAsignee(int requestId, string requestType, string username) =>
             await _requestService.UpdateRequestAssignee(requestId, requestType, username);
 
@@ -39,5 +38,9 @@ namespace DCGServiceDesk.Session.DataGetter
 
         public async Task<List<object>> GetAssignedRequests(string username) =>
             await _requestService.GetAssignedNotEscalated(username);
+
+        public async Task<List<State>> GetAllStates() =>
+            await _requestService.GetRequestStates();
+
     }
 }

@@ -16,5 +16,6 @@ namespace DCGServiceDesk.Data.Services
         Task<List<object>> GetRequestsFromGroup(int groupId);
         List<AssigmentGroup> GetAllMemberingGroups(string activeUser);
         Task<List<object>> GetAssignedNotEscalated(string username);
+        Task<List<State>> GetRequestStates();
     }
 }

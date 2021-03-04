@@ -1,17 +1,15 @@
-﻿using DCGServiceDesk.Commands;
-using DCGServiceDesk.Controls.Tab.Model;
+﻿using DCGServiceDesk.Controls.Tab.Model;
 using DCGServiceDesk.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Windows.Input;
 
 namespace DCGServiceDesk.ViewModels
 {
-    public class RequestViewModel:Tab
+    public class EscalatedViewModel:Tab
     {
         public List<State> States { get; set; }
-        public RequestViewModel(ServiceRequest changes, string label, CommunicationInfo communicationInfo, List<State> states)
+        public EscalatedViewModel(ServiceRequest changes, string label, CommunicationInfo communicationInfo, List<State> states)
         {
             States = states;
             TabContainer wi = new TabContainer();
@@ -21,7 +19,7 @@ namespace DCGServiceDesk.ViewModels
             WorkspaceInfo = new List<TabContainer> { wi };
             Label = label;
         }
-        public RequestViewModel(Incident incidents, string label, CommunicationInfo communicationInfo, List<State> states)
+        public EscalatedViewModel(Incident incidents, string label, CommunicationInfo communicationInfo, List<State> states)
         {
             States = states;
             TabContainer wi = new TabContainer();
@@ -31,7 +29,7 @@ namespace DCGServiceDesk.ViewModels
             WorkspaceInfo = new List<TabContainer> { wi };
             Label = label;
         }
-        public RequestViewModel(TaskRequest tasks, string label, CommunicationInfo communicationInfo, List<State> states)
+        public EscalatedViewModel(TaskRequest tasks, string label, CommunicationInfo communicationInfo, List<State> states)
         {
             States = states;
             TabContainer wi = new TabContainer();

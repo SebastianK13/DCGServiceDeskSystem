@@ -23,7 +23,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Images/refreshIcon.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="0,0,0,0" />
                         <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Refresh</TextBlock>
-                </StackPanel>
+                    </StackPanel>
                 </Button>
                 <Button Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
                               Path=DataContext.(vm:HomeViewModel.UpdateRequest)}" BorderThickness="0" 
@@ -33,39 +33,56 @@
                         <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Assign</TextBlock>
                     </StackPanel>
                 </Button>
+                <Button Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
+                              Path=DataContext.(vm:HomeViewModel.UpdateRequest)}" BorderThickness="0" 
+                              CommandParameter="{Binding WorkspaceInfo[0].ServiceRequests }" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="../Images/escalationIcon.bmp" Height="15" Width="auto" HorizontalAlignment="Right" Margin="6,0,4,0" />
+                        <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Escalate</TextBlock>
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </Border>
         <Grid Grid.Row="1" x:Name="form" Margin="25,20,0,0">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="450"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="20"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="450"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,0">
-                <Label HorizontalAlignment="Left" Height="25" MaxWidth="80" FontSize="12" Margin="0,-4,0,0">ID</Label>
-                <TextBox Width="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding WorkspaceInfo[0].ServiceRequests.Topic}"/>
-            </StackPanel>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,0">
+                    <Label HorizontalAlignment="Left" Height="25" MaxWidth="80" FontSize="12" Margin="0,-4,0,0">ID</Label>
+                    <TextBox Width="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding WorkspaceInfo[0].CommunicationInfo.RequestId}"/>
+                </StackPanel>
                 <StackPanel Grid.Row="1" Orientation="Horizontal">
                     <Label Margin="0,-4,0,0" MaxWidth="80">ID</Label>
-                    <TextBox Width="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding WorkspaceInfo[0].RequestVisibility}"/>
+                    <ComboBox ItemsSource="{Binding States}" Width="200"
+                              IsSynchronizedWithCurrentItem="True"
+                              SelectedItem="{Binding Path=StateName}"
+                              SelectedValue="{Binding WorkspaceInfo[0].ServiceRequests.Status.State}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding StateName}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </StackPanel>
             </Grid>
-    </Grid>
+        </Grid>
     </Grid>
 </UserControl>

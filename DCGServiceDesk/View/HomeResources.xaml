@@ -13,6 +13,10 @@
         <vw:QueueView />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type vm:EscalatedViewModel}">
+        <vw:EscalatedView/>
+    </DataTemplate>
+
     <con:DataConverter x:Key="dataConv"/>
 
     <DataTemplate x:Key="WorkspacesTemplate" >
