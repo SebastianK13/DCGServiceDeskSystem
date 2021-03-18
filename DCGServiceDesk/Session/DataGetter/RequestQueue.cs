@@ -42,5 +42,16 @@ namespace DCGServiceDesk.Session.DataGetter
         public async Task<List<State>> GetAllStates() =>
             await _requestService.GetRequestStates();
 
+        public void RefreshData() =>
+            _requestService.RefreshDatabase();
+
+        public async Task<TaskRequest> GetTask(int taskId) =>
+            await _requestService.GetSingleTask(taskId);
+
+        public async Task<ServiceRequest> GetChange(int requestId) =>
+            await _requestService.GetSingleChange(requestId);
+
+        public async Task<Incident> GetIncident(int incidentId) =>
+            await _requestService.GetSingleIncident(incidentId);
     }
 }

@@ -17,5 +17,9 @@ namespace DCGServiceDesk.Data.Services
         List<AssigmentGroup> GetAllMemberingGroups(string activeUser);
         Task<List<object>> GetAssignedNotEscalated(string username);
         Task<List<State>> GetRequestStates();
+        void RefreshDatabase();
+        Task<TaskRequest> GetSingleTask(int taskId);
+        Task<ServiceRequest> GetSingleChange(int requestId);
+        Task<Incident> GetSingleIncident(int incidentId);
     }
 }

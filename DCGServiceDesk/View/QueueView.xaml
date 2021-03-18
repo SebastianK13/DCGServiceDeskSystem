@@ -25,7 +25,12 @@
             </Grid.RowDefinitions>
         <Border Grid.Row="0" BorderBrush="#FFACACAC" BorderThickness="0,0,0,1">
             <StackPanel Background="#D6D6CE" Orientation="Horizontal">
-                <Image Source="../Images/refreshIcon.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="2,2,5,0" />
+                <Button BorderThickness="0" HorizontalContentAlignment="Left" Background="Transparent"
+                    Command="{Binding RefreshCommand}" 
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
+                              Path=DataContext}">
+                    <Image Source="../Images/refreshIcon.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="2,2,5,0" />
+                </Button>
             </StackPanel>
         </Border>
         <Grid Grid.Row="1" Margin="20,10,20,10">

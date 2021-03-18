@@ -35,7 +35,6 @@ namespace DCGServiceDesk
         {
             _host = CreateHostBuilder().Build();
         }
-
         public static IHostBuilder CreateHostBuilder() =>
             Host.CreateDefaultBuilder(null)
             .ConfigureAppConfiguration(c =>
@@ -49,6 +48,31 @@ namespace DCGServiceDesk
                 services.AddSingleton<DCGServiceDeskContextFactory>(s =>
                 new DCGServiceDeskContextFactory(context.Configuration));
                 services.AddSingleton<IDatabaseContextFactory, DCGServiceDeskContextFactory>();
+
+                //services.AddDbContext<AppIdentityDbContext>(options =>
+                //{
+                //    options.UseSqlServer(context.Configuration["Data:DCTEIdentity:ConnectionString"]);
+                //    options.UseLazyLoadingProxies(true);
+                //});
+
+
+                //services.AddDbContext<AppServiceDeskDbContext>(options =>
+                //{
+
+                //    options.UseSqlServer(
+                //        context.Configuration["Data:DCTEServiceDesk:ConnectionString"]);
+                //    options.UseLazyLoadingProxies(true);
+                //});
+
+                //services.AddDbContext<AppCustomersDbContext>(options =>
+                //{
+                //    options.UseSqlServer(context.Configuration["Data:DCTECustomers:ConnectionString"]);
+                //    options.UseLazyLoadingProxies(true);
+                //});
+
+                //services.AddTransient<IEmployeeService, EmployeeDataService>();
+                //services.AddTransient<IRequestService, RequestsDataService>();
+                //services.AddTransient<IUserService, IdentityDataServices>();
 
                 //ViewModels Factory
                 //Not at this moment
