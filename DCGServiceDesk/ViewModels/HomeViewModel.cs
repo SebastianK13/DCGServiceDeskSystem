@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Text;
 using System.Windows.Input;
 
@@ -18,11 +19,12 @@ namespace DCGServiceDesk.ViewModels
         public ILoggedUser loggedUser;
 
         public ICommand RequestCommand { get; }
-        public ICommand UpdateRequest { get; }
+        public ICommand UpdateRequestCommand { get; }
         public ICommand UpdateGroupsCommand { get; }
         private readonly IRequestQueue _requestQueue;
         private readonly IUserInfo _userInfo;
         private readonly IEmployeeProfile _employeeProfile;
+        private readonly DbInterfaceContainer _interfaceContainer;
         private readonly ObservableCollection<ITab> _tabs;
         public IList<ITab> Tabs { get; }
         public ICollection<AssigmentGroup> Groups { get; }
@@ -38,9 +40,10 @@ namespace DCGServiceDesk.ViewModels
             _requestQueue = requestQueue;
             _userInfo = userInfo;
             _employeeProfile = employeeProfile;
+            _interfaceContainer = new DbInterfaceContainer(_requestQueue,_userInfo, _employeeProfile);
 
             RequestCommand = new RequestCommand(_requestQueue, _userInfo, _employeeProfile, this);
-            UpdateRequest = new UpdateRequest(this, _requestQueue, loggedUser.ActiveUser);
+            UpdateRequestCommand = new UpdateRequestCommand(this, _requestQueue, loggedUser.ActiveUser);
             UpdateGroupsCommand = new UpdateGroupsCommand(this, _requestQueue);
             Groups = _requestQueue.GetGroups(loggedUser.ActiveUser);
         }
@@ -66,11 +69,11 @@ namespace DCGServiceDesk.ViewModels
         public void TabRefresh(ITab tab, RequestInfo requestInfo)
         {
             int index = Tabs.IndexOf(tab);
-            Tabs[index] = new QueueViewModel(requestInfo, _requestQueue, _userInfo, _employeeProfile);
+            Tabs[index] = new QueueViewModel(requestInfo, _interfaceContainer, this);
         }
 
         public void SetRequestsQueue(RequestInfo requestInfo) =>
-            Tabs.Add(new QueueViewModel(requestInfo, _requestQueue, _userInfo, _employeeProfile));
+            Tabs.Add(new QueueViewModel(requestInfo, _interfaceContainer, this));
 
     }
 }

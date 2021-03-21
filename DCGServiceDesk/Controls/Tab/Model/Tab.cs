@@ -12,17 +12,18 @@ namespace DCGServiceDesk.Controls.Tab.Model
 {
     public abstract class Tab : ITab
     {
-        public Tab(IRequestQueue requestQueue,
-            IUserInfo userInfo, IEmployeeProfile employeeProfile)
+        public Tab(DbInterfaceContainer interfaceContainer, HomeViewModel homeViewModel)
         {
-            _requestQueue = requestQueue;
-            _userInfo = userInfo;
-            _employeeProfile = employeeProfile;
-            CloseTabCommand = new ActionCommand(p => CloseTabRequested?.Invoke(this, EventArgs.Empty));
+            HVM = homeViewModel;
+            _requestQueue = interfaceContainer.RequestQueue;
+            _userInfo = interfaceContainer.UserInfo;
+            _employeeProfile = interfaceContainer.EmployeeProfile;
+            CloseTabCommand = new CloseTabCommand();
             IViewRequestService vRS =
-                new ViewRequestService(_requestQueue, _userInfo, _employeeProfile);
+                new ViewRequestService(interfaceContainer);
             RefreshCommand = new RefreshTabCommand(this, vRS, _requestQueue);
         }
+        private HomeViewModel HVM { get; set; }
         public List<TabContainer> WorkspaceInfo { get; set; } = new List<TabContainer>();
         public string Label { get; set; }
         public string QueueType { get; set; }

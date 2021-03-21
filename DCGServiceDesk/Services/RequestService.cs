@@ -12,16 +12,31 @@ namespace DCGServiceDesk.Services
         public static List<object> ConvertTotListObject(object list) =>
             (list as IEnumerable<object>).Cast<object>().ToList();
 
-        public static dynamic ConvertRequest(List<object> requests,string requestType)
+        public static dynamic ConvertRequest(object request,string requestType)
         {
             switch (requestType)
             {
-                case "Tasks":
-                    return requests.Cast<TaskRequest>().ToList();
+                case "TaskRequestProxy":
+                    return (TaskRequest)request;
+                case "IncidentProxy":
+                    return (Incident)request;
+                case "ServiceRequestProxy":
+                    return (ServiceRequest)request;
+                default:
+                    return null;
+
+            }
+        }
+        public static dynamic GetId(object request)
+        {
+            switch (request.GetType().Name)
+            {
+                case "TaskRequestProxy":
+                    return ((TaskRequest)request).TaskId;
                 case "Incidents":
-                    return requests.Cast<Incident>().ToList();
+                    return ((Incident)request).IncidentId;
                 case "Changes":
-                    return requests.Cast<Incident>().ToList();
+                    return ((ServiceRequest)request).RequestId;
                 default:
                     return null;
 

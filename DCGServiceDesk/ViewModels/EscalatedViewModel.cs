@@ -12,9 +12,9 @@ namespace DCGServiceDesk.ViewModels
     public class EscalatedViewModel:Tab
     {
         public List<State> States { get; set; }
-        public EscalatedViewModel(SingleRequestInfo singleRequest, IRequestQueue requestQueue,
-            IUserInfo userInfo, IEmployeeProfile employeeProfile) : base(requestQueue,
-             userInfo, employeeProfile)
+        public EscalatedViewModel(SingleRequestInfo singleRequest,
+            DbInterfaceContainer interfaceContainer, HomeViewModel hVM) 
+            : base(interfaceContainer, hVM)
         {
             States = singleRequest.States;
             TabContainer wi = new TabContainer();

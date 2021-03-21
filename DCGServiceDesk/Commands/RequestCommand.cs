@@ -13,6 +13,7 @@ namespace DCGServiceDesk.Commands
 {
     public class RequestCommand : AsyncCommandBase
     {
+        private readonly DbInterfaceContainer _interfaceContainer;
         private readonly IRequestQueue _requestQueue;
         private readonly IUserInfo _userInfo;
         private readonly IEmployeeProfile _employeeProfile;
@@ -22,11 +23,12 @@ namespace DCGServiceDesk.Commands
 
         public RequestCommand(IRequestQueue requestQueue, IUserInfo userInfo, IEmployeeProfile employeeProfile, HomeViewModel hVM)
         {
+            _interfaceContainer = new DbInterfaceContainer(requestQueue, userInfo, employeeProfile);
             _requestQueue = requestQueue;
             _userInfo = userInfo;
             _employeeProfile = employeeProfile;
             _hVM = hVM;
-            _viewRequestService = new ViewRequestService(_requestQueue, _userInfo, _employeeProfile);
+            _viewRequestService = new ViewRequestService(_interfaceContainer);
         }
 
         public async override Task ExecuteAsync(object parameter)
@@ -95,7 +97,6 @@ namespace DCGServiceDesk.Commands
         private async Task EscalatedOrNot(object parameter, string requestType)
         {
             var states = await _requestQueue.GetAllStates();
-
             SingleRequestInfo request = new SingleRequestInfo { States = states};
 
             switch (requestType)
@@ -108,15 +109,10 @@ namespace DCGServiceDesk.Commands
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
                     request.Label = labelT;
                     if (t.Group == null)
-                    {
-                        _hVM.Tabs.Add(new RequestViewModel(request,
-                            _requestQueue, _userInfo, _employeeProfile));
-                    }
+                        _hVM.Tabs.Add(new RequestViewModel(request, _interfaceContainer, _hVM));
                     else
-                    {
-                        _hVM.Tabs.Add(new EscalatedViewModel(request,
-                             _requestQueue, _userInfo, _employeeProfile));
-                    }
+                        _hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
+
                     break;
                 case "IM":
                     var im = RequestService.ExtractIncident(parameter);
@@ -126,15 +122,9 @@ namespace DCGServiceDesk.Commands
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
                     request.Label = labelIM;
                     if (im.Group == null)
-                    {
-                        _hVM.Tabs.Add(new RequestViewModel(request,
-                            _requestQueue, _userInfo, _employeeProfile));
-                    }
+                        _hVM.Tabs.Add(new RequestViewModel(request, _interfaceContainer, _hVM));
                     else
-                    {
-                        _hVM.Tabs.Add(new EscalatedViewModel(request,
-                             _requestQueue, _userInfo, _employeeProfile));
-                    }
+                        _hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
                     break;
                 case "C":
                     var c = RequestService.ExtractChange(parameter);
@@ -144,15 +134,9 @@ namespace DCGServiceDesk.Commands
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
                     request.Label = labelC;
                     if (c.Group == null)
-                    {
-                        _hVM.Tabs.Add(new RequestViewModel(request,
-                             _requestQueue, _userInfo, _employeeProfile));
-                    }
+                        _hVM.Tabs.Add(new RequestViewModel(request, _interfaceContainer, _hVM));
                     else
-                    {
-                        _hVM.Tabs.Add(new EscalatedViewModel(request,
-                             _requestQueue, _userInfo, _employeeProfile));
-                    }
+                        _hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
                     break;
             }
         }

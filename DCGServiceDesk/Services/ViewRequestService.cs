@@ -12,11 +12,14 @@ namespace DCGServiceDesk.Services
         private readonly IRequestQueue _requestQueue;
         private readonly IUserInfo _userInfo;
         private readonly IEmployeeProfile _employeeProfile;
-        public ViewRequestService(IRequestQueue requestQueue, IUserInfo userInfo, IEmployeeProfile employeeProfile)
+        private readonly DbInterfaceContainer _interfaceContainer;
+
+        public ViewRequestService(DbInterfaceContainer interfaceContainer)
         {
-            _requestQueue = requestQueue;
-            _userInfo = userInfo;
-            _employeeProfile = employeeProfile;
+            _interfaceContainer = interfaceContainer;
+            _requestQueue = _interfaceContainer.RequestQueue;
+            _userInfo = _interfaceContainer.UserInfo;
+            _employeeProfile = _interfaceContainer.EmployeeProfile;
         }
 
         public async Task<RequestInfo> SetAllRequestQueue(List<object> requests, string queueName, bool isGroup = false)
@@ -114,5 +117,18 @@ namespace DCGServiceDesk.Services
             };
             return requestInfo;
         }
+    }
+    public class DbInterfaceContainer
+    {
+        public DbInterfaceContainer(IRequestQueue requestQueue, IUserInfo userInfo, IEmployeeProfile employeeProfile)
+        {
+            RequestQueue = requestQueue;
+            UserInfo = userInfo;
+            EmployeeProfile = employeeProfile;
+        }
+
+        public IRequestQueue RequestQueue { get; set; }
+        public IUserInfo UserInfo { get; set; }
+        public IEmployeeProfile EmployeeProfile { get; set; }
     }
 }

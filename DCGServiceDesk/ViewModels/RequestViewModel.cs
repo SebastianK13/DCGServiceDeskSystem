@@ -13,9 +13,9 @@ namespace DCGServiceDesk.ViewModels
     public class RequestViewModel:Tab
     {
         public List<State> States { get; set; }
-        public RequestViewModel(SingleRequestInfo singleRequest, IRequestQueue requestQueue,
-            IUserInfo userInfo, IEmployeeProfile employeeProfile) : base(requestQueue,
-             userInfo, employeeProfile)
+        public RequestViewModel(SingleRequestInfo singleRequest, 
+            DbInterfaceContainer interfaceContainer, HomeViewModel hVM) 
+            : base(interfaceContainer, hVM)
         {
             States = singleRequest.States;
             TabContainer wi = new TabContainer();
@@ -24,6 +24,7 @@ namespace DCGServiceDesk.ViewModels
             wi.RequestVisibility = true;
             WorkspaceInfo = new List<TabContainer> { wi };
             Label = singleRequest.Label;
+            
         }
     }
 }

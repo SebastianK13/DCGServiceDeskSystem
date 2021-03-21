@@ -11,9 +11,9 @@ namespace DCGServiceDesk.ViewModels
     public class QueueViewModel : Tab
     {
         private List<string> requestTypes = new List<string> { "Incidents", "Changes", "Tasks" };
-        public QueueViewModel(RequestInfo requestInfo, IRequestQueue requestQueue,
-            IUserInfo userInfo, IEmployeeProfile employeeProfile):base(requestQueue,
-             userInfo,  employeeProfile)
+        public QueueViewModel(RequestInfo requestInfo, 
+            DbInterfaceContainer interfaceContainer, 
+            HomeViewModel hVM):base(interfaceContainer, hVM)
         {
             if (!requestTypes.Contains(requestInfo.QueueName))
                 MixedTypeQueue(requestInfo);

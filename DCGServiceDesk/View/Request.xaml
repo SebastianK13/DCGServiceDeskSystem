@@ -26,15 +26,15 @@
                     </StackPanel>
                 </Button>
                 <Button Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
-                              Path=DataContext.(vm:HomeViewModel.UpdateRequest)}" BorderThickness="0" 
-                              CommandParameter="{Binding WorkspaceInfo[0].ServiceRequests }" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                              Path=DataContext.(vm:HomeViewModel.UpdateRequestCommand)}" BorderThickness="0" 
+                              CommandParameter="{Binding }" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Images/take2Icon.bmp" Height="12" Width="25" HorizontalAlignment="Right" Margin="0,0,4,0" />
                         <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Assign</TextBlock>
                     </StackPanel>
                 </Button>
                 <Button Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
-                              Path=DataContext.(vm:HomeViewModel.UpdateRequest)}" BorderThickness="0" 
+                              Path=DataContext.(vm:HomeViewModel.UpdateRequestCommand)}" BorderThickness="0" 
                               CommandParameter="{Binding WorkspaceInfo[0].ServiceRequests }" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Images/escalationIcon.bmp" Height="15" Width="auto" HorizontalAlignment="Right" Margin="6,0,4,0" />
