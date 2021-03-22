@@ -88,7 +88,7 @@
                 <DataTemplate >
                     <TextBlock>
                         <Run Text="{Binding Label}"/>
-                        <Button Command="{Binding CloseTabCommand}" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" BorderThickness="0" Margin="6,0,0,3">
+                        <Button Command="{Binding CloseTabCommand}" CommandParameter="{Binding}" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" BorderThickness="0" Margin="6,0,0,3">
                             <Image  Source="../Images/closeBlackIcon.png" HorizontalAlignment="Center" Height="6" Width="auto"/>
                         </Button>
                     </TextBlock>

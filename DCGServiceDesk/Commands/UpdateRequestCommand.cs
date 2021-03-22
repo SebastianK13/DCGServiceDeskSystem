@@ -25,10 +25,11 @@ namespace DCGServiceDesk.Commands
         }
         public override async Task ExecuteAsync(object parameter)
         {
-            var choosenRequest = ((RequestViewModel)parameter).WorkspaceInfo[0].ServiceRequests;
-            string option = choosenRequest.GetType().Name;
             try
             {
+                var choosenRequest = ((RequestViewModel)parameter).WorkspaceInfo[0].ServiceRequests;
+                string option = choosenRequest.GetType().Name;
+
                 switch (option)
                 {
                     case "IncidentProxy":

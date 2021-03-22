@@ -18,7 +18,7 @@ namespace DCGServiceDesk.Controls.Tab.Model
             _requestQueue = interfaceContainer.RequestQueue;
             _userInfo = interfaceContainer.UserInfo;
             _employeeProfile = interfaceContainer.EmployeeProfile;
-            CloseTabCommand = new CloseTabCommand();
+            CloseTabCommand = new CloseTabCommand(HVM);
             IViewRequestService vRS =
                 new ViewRequestService(interfaceContainer);
             RefreshCommand = new RefreshTabCommand(this, vRS, _requestQueue);
@@ -34,7 +34,6 @@ namespace DCGServiceDesk.Controls.Tab.Model
         private readonly IRequestQueue _requestQueue;
         private readonly IUserInfo _userInfo;
         private readonly IEmployeeProfile _employeeProfile;
-
     }
     public class TabContainer
     {
