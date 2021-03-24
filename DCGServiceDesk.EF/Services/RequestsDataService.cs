@@ -265,6 +265,9 @@ namespace DCGServiceDesk.EF.Services
 
         public async Task<Incident> GetSingleIncident(int incidentId) =>
             await _dbContext.Incidents.Where(i => i.IncidentId == incidentId).FirstOrDefaultAsync();
+
+        public async Task<List<AssigmentGroup>> GetAllGroups() =>
+            await _dbContext.AssigmentGroup.ToListAsync();
         public Task<bool> Remove(int id)
         {
             throw new NotImplementedException();
@@ -279,6 +282,5 @@ namespace DCGServiceDesk.EF.Services
         {
             throw new NotImplementedException();
         }
-
     }
 }

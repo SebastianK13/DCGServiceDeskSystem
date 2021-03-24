@@ -14,10 +14,5 @@ namespace DCGServiceDesk.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        //protected void RaisePropertyChanged(string propertyName)
-        //{
-        //    if (this.PropertyChanged != null)
-        //        this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        //}
     }
 }

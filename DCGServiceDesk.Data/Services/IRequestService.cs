@@ -21,5 +21,6 @@ namespace DCGServiceDesk.Data.Services
         Task<TaskRequest> GetSingleTask(int taskId);
         Task<ServiceRequest> GetSingleChange(int requestId);
         Task<Incident> GetSingleIncident(int incidentId);
+        Task<List<AssigmentGroup>> GetAllGroups();
     }
 }

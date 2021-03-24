@@ -97,7 +97,8 @@ namespace DCGServiceDesk.Commands
         private async Task EscalatedOrNot(object parameter, string requestType)
         {
             var states = await _requestQueue.GetAllStates();
-            SingleRequestInfo request = new SingleRequestInfo { States = states};
+            var groups = await _requestQueue.GetGroups();
+            SingleRequestInfo request = new SingleRequestInfo { States = states, Groups = groups};
 
             switch (requestType)
             {

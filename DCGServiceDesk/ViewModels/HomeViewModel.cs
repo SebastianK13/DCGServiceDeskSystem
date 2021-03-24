@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace DCGServiceDesk.ViewModels
@@ -45,7 +46,7 @@ namespace DCGServiceDesk.ViewModels
             RequestCommand = new RequestCommand(_requestQueue, _userInfo, _employeeProfile, this);
             UpdateRequestCommand = new UpdateRequestCommand(this, _requestQueue, loggedUser.ActiveUser);
             UpdateGroupsCommand = new UpdateGroupsCommand(this, _requestQueue);
-            Groups = _requestQueue.GetGroups(loggedUser.ActiveUser);
+            Groups = _requestQueue.GetUserGroups(loggedUser.ActiveUser);
         }
         private void Tabs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -77,5 +78,6 @@ namespace DCGServiceDesk.ViewModels
 
         public void CloseTab(ITab tab) =>
             Tabs.Remove(tab);
+
     }
 }

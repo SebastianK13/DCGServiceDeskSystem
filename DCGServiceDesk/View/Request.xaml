@@ -5,84 +5,15 @@
       xmlns:vm="clr-namespace:DCGServiceDesk.ViewModels"
       xmlns:con="clr-namespace:DCGServiceDesk.Converters">
 
+
     <UserControl.Resources>
         <ResourceDictionary >
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="RequestResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Height="auto" >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Border Grid.Row="0" BorderBrush="#FFACACAC" BorderThickness="0,0,0,1">
-            <StackPanel Background="#D6D6CE" Orientation="Horizontal">
-                <Button Background="Transparent" Width="0"/>
-                <Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" BorderThickness="0" Margin="0,0,2,0">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="../Images/refreshIcon.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="0,0,0,0" />
-                        <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Refresh</TextBlock>
-                    </StackPanel>
-                </Button>
-                <Button Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
-                              Path=DataContext.(vm:HomeViewModel.UpdateRequestCommand)}" BorderThickness="0" 
-                              CommandParameter="{Binding }" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="../Images/take2Icon.bmp" Height="12" Width="25" HorizontalAlignment="Right" Margin="0,0,4,0" />
-                        <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Assign</TextBlock>
-                    </StackPanel>
-                </Button>
-                <Button Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
-                              Path=DataContext.(vm:HomeViewModel.UpdateRequestCommand)}" BorderThickness="0" 
-                              CommandParameter="{Binding WorkspaceInfo[0].ServiceRequests }" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="../Images/escalationIcon.bmp" Height="15" Width="auto" HorizontalAlignment="Right" Margin="6,0,4,0" />
-                        <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Escalate</TextBlock>
-                    </StackPanel>
-                </Button>
-            </StackPanel>
-        </Border>
-        <Grid Grid.Row="1" x:Name="form" Margin="25,20,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="450"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,0">
-                    <Label HorizontalAlignment="Left" Height="25" MaxWidth="80" FontSize="12" Margin="0,-4,0,0">ID</Label>
-                    <TextBox Width="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding WorkspaceInfo[0].CommunicationInfo.RequestId}"/>
-                </StackPanel>
-                <StackPanel Grid.Row="1" Orientation="Horizontal">
-                    <Label Margin="0,-4,0,0" MaxWidth="80">ID</Label>
-                    <ComboBox ItemsSource="{Binding States}" Width="200"
-                              IsSynchronizedWithCurrentItem="True"
-                              SelectedItem="{Binding Path=StateName}"
-                              SelectedValue="{Binding WorkspaceInfo[0].ServiceRequests.Status.State}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding StateName}"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </StackPanel>
-            </Grid>
-        </Grid>
-    </Grid>
+    <ContentPresenter Content="{Binding CurrentMode}"/>
 </UserControl>

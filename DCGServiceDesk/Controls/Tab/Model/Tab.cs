@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace DCGServiceDesk.Controls.Tab.Model
 {
-    public abstract class Tab : ITab
+    public abstract class Tab : ViewModelBase, ITab
     {
         public Tab(DbInterfaceContainer interfaceContainer, HomeViewModel homeViewModel)
         {
@@ -22,18 +22,34 @@ namespace DCGServiceDesk.Controls.Tab.Model
             IViewRequestService vRS =
                 new ViewRequestService(interfaceContainer);
             RefreshCommand = new RefreshTabCommand(this, vRS, _requestQueue);
+            EscalateRequestCommand = new EscalateRequestCommand(this, HVM, _requestQueue);
         }
         private HomeViewModel HVM { get; set; }
         public List<TabContainer> WorkspaceInfo { get; set; } = new List<TabContainer>();
         public string Label { get; set; }
         public string QueueType { get; set; }
+        public ICommand EscalateRequestCommand { get; }
         public ICommand CloseTabCommand { get; }
-        public object CloseRequested { get; }
-        public event EventHandler CloseTabRequested;
         public ICommand RefreshCommand { get; }
         private readonly IRequestQueue _requestQueue;
         private readonly IUserInfo _userInfo;
         private readonly IEmployeeProfile _employeeProfile;
+        public event EventHandler CloseTabRequested;
+        public NotEscalatedViewModel NotEscalated { get; set; }
+        public EscalationViewModel Escalation { get; set; }
+        private object _currentMode;
+        public object CurrentMode
+        {
+            get { return _currentMode; }
+            set
+            {
+                if (_currentMode != value)
+                {
+                    _currentMode = value;
+                    OnPropertyChanged("CurrentMode");
+                }
+            }
+        }
     }
     public class TabContainer
     {

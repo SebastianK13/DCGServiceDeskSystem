@@ -97,6 +97,7 @@ namespace DCGServiceDesk.Services
         public object Request { get; set; }
         public CommunicationInfo Info { get; set; }
         public List<State> States { get; set; }
+        public List<AssigmentGroup> Groups { get; set; }
         public string Label { get; set; }
     }
     public class RequestInfo

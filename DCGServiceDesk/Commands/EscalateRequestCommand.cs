@@ -1,4 +1,5 @@
-﻿using DCGServiceDesk.Session.DataGetter;
+﻿using DCGServiceDesk.Controls.Tab.Model;
+using DCGServiceDesk.Session.DataGetter;
 using DCGServiceDesk.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -11,26 +12,28 @@ namespace DCGServiceDesk.Commands
     {
         private readonly IRequestQueue _requestQueue;
         private readonly HomeViewModel _hVM;
-        public EscalateRequestCommand(HomeViewModel homeViewModel, IRequestQueue requestQueue)
+        private Tab tab;
+        public EscalateRequestCommand(Tab tab, HomeViewModel homeViewModel, IRequestQueue requestQueue)
         {
             _hVM = homeViewModel;
             _requestQueue = requestQueue;
+            this.tab = tab;
         }
         public async override Task ExecuteAsync(object parameter)
         {
             try
             {
                 string option = parameter.GetType().Name;
+                if (option == "string")
+                    option = parameter.ToString();
 
                 switch (option)
                 {
-                    case "IncidentProxy":
-                        //method implementation
+                    case "NotEscalatedViewModel":
+                        NotEscalatedViewModel notEscalated = ((NotEscalatedViewModel)parameter);
+                        notEscalated.RequestViewModel.CurrentMode = notEscalated.RequestViewModel.Escalation;
                         break;
-                    case "ServiceRequestProxy":
-                        //method implementation
-                        break;
-                    case "TaskRequestProxy":
+                    case "EscalationViewModel":
                         //method implementation
                         break;
                 }
