@@ -32,9 +32,10 @@ namespace DCGServiceDesk.Commands
                     case "NotEscalatedViewModel":
                         NotEscalatedViewModel notEscalated = ((NotEscalatedViewModel)parameter);
                         notEscalated.RequestViewModel.CurrentMode = notEscalated.RequestViewModel.Escalation;
+                        notEscalated.RequestViewModel.Escalation.RequestViewModel = notEscalated.RequestViewModel;
                         break;
                     case "EscalationViewModel":
-                        //method implementation
+                        
                         break;
                 }
             }

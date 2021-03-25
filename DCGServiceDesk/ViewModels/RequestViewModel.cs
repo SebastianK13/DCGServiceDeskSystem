@@ -24,19 +24,45 @@ namespace DCGServiceDesk.ViewModels
             wi.RequestVisibility = true;
             WorkspaceInfo = new List<TabContainer> { wi };
             Label = singleRequest.Label;
-            NotEscalated = new NotEscalatedViewModel() 
-            { States = singleRequest.States, RequestViewModel = this};
+            NotEscalated = new NotEscalatedViewModel(RequestService.ConvertRequest(singleRequest.Request));
+            NotEscalated.RequestViewModel = this;
             Escalation = new EscalationViewModel() { AssigmentGroups = singleRequest.Groups };
             CurrentMode = NotEscalated;
         }
     }
-    public class NotEscalatedViewModel
+    public class NotEscalatedViewModel:ViewModelBase
     {
-        public List<State> States { get; set; }
         public RequestViewModel RequestViewModel { get; set; }
+        public NotEscalatedViewModel(TaskRequest t)
+        {
+            CurrentState = t.Status.State;
+        }
+        public NotEscalatedViewModel(Incident i)
+        {
+            CurrentState = i.Status.State;
+        }
+        public NotEscalatedViewModel(ServiceRequest c)
+        {
+            CurrentState = c.Status.State;
+        }
+        private State _state;
+        public State CurrentState
+        {
+            get { return _state; }
+            set
+            {
+                if (value != null)
+                {
+                    _state = value;
+                    OnPropertyChanged("CurrentState");
+                }
+            }
+        } 
+
     }
     public class EscalationViewModel
     {
         public List<AssigmentGroup> AssigmentGroups { get; set; }
+        public RequestViewModel RequestViewModel { get; set; }
     }
 }

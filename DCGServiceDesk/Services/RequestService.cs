@@ -12,8 +12,10 @@ namespace DCGServiceDesk.Services
         public static List<object> ConvertTotListObject(object list) =>
             (list as IEnumerable<object>).Cast<object>().ToList();
 
-        public static dynamic ConvertRequest(object request,string requestType)
+        public static dynamic ConvertRequest(object request,string requestType = "")
         {
+            if (requestType == "")
+                requestType = request.GetType().Name;
             switch (requestType)
             {
                 case "TaskRequestProxy":
