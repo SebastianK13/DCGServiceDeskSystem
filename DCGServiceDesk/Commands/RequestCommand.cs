@@ -96,9 +96,8 @@ namespace DCGServiceDesk.Commands
         }
         private async Task EscalatedOrNot(object parameter, string requestType)
         {
-            var states = await _requestQueue.GetAllStates();
             var groups = await _requestQueue.GetGroups();
-            SingleRequestInfo request = new SingleRequestInfo { States = states, Groups = groups};
+            SingleRequestInfo request = new SingleRequestInfo {Groups = groups};
 
             switch (requestType)
             {
@@ -110,9 +109,15 @@ namespace DCGServiceDesk.Commands
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
                     request.Label = labelT;
                     if (t.Group == null)
-                        _hVM.Tabs.Add(new RequestViewModel(request, _interfaceContainer, _hVM));
+                    {
+                        RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
+                        await rVM.InitializeNEVMComboBoxes();
+                        _hVM.Tabs.Add(rVM);
+                    }
                     else
+                    {
                         _hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
+                    }
 
                     break;
                 case "IM":
@@ -123,9 +128,15 @@ namespace DCGServiceDesk.Commands
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
                     request.Label = labelIM;
                     if (im.Group == null)
-                        _hVM.Tabs.Add(new RequestViewModel(request, _interfaceContainer, _hVM));
+                    {
+                        RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
+                        await rVM.InitializeNEVMComboBoxes();
+                        _hVM.Tabs.Add(rVM);
+                    }
                     else
+                    {
                         _hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
+                    }
                     break;
                 case "C":
                     var c = RequestService.ExtractChange(parameter);
@@ -135,9 +146,15 @@ namespace DCGServiceDesk.Commands
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
                     request.Label = labelC;
                     if (c.Group == null)
-                        _hVM.Tabs.Add(new RequestViewModel(request, _interfaceContainer, _hVM));
+                    {
+                        RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
+                        await rVM.InitializeNEVMComboBoxes();
+                        _hVM.Tabs.Add(rVM);
+                    }
                     else
+                    {
                         _hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
+                    }
                     break;
             }
         }

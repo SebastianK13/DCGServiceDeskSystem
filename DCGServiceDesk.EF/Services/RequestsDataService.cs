@@ -212,19 +212,19 @@ namespace DCGServiceDesk.EF.Services
             List<object> requests = new List<object>();
             var changes = await _dbContext.Applications
                 .Where(i => i.Group.GroupName == "Service Desk" &&
-                i.Status.StateId == 1 && 
+                i.History.ActiveStatus.StateId == 1 && 
                 i.Assignee == username)
                 .ToListAsync();
 
             var incidents = await _dbContext.Incidents
                 .Where(i => i.Group.GroupName == "Service Desk" &&
-                i.Status.StateId == 1 &&
+                i.History.ActiveStatus.StateId == 1 &&
                 i.Assignee == username)
                 .ToListAsync();
 
             var tasks = await _dbContext.Tasks
                 .Where(i => i.Group.GroupName == "Service Desk" &&
-                i.Status.StateId == 1 &&
+                i.History.ActiveStatus.StateId == 1 &&
                 i.Assignee == username)
                 .ToListAsync();
 
@@ -268,6 +268,22 @@ namespace DCGServiceDesk.EF.Services
 
         public async Task<List<AssigmentGroup>> GetAllGroups() =>
             await _dbContext.AssigmentGroup.ToListAsync();
+
+        public async Task<List<Impact>> GetAllImpacts() =>
+            await _dbContext.Impacts.ToListAsync();
+
+        public async Task<List<Urgency>> GetAllUrgencies() =>
+            await _dbContext.Urgencies.ToListAsync();
+
+        public async Task<List<Categorization>> GetAllSubcategories() =>
+            await _dbContext.Categorizations.ToListAsync();
+
+        public async Task<List<Priority>> GetPriorityByLevel() =>
+            await _dbContext.Priorities.ToListAsync();
+
+        public async Task<List<CloserDue>> GetClosureCodes() =>
+            await _dbContext.CloserDues.ToListAsync();
+
         public Task<bool> Remove(int id)
         {
             throw new NotImplementedException();

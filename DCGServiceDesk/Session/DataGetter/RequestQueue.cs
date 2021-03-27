@@ -56,5 +56,20 @@ namespace DCGServiceDesk.Session.DataGetter
 
         public async Task<List<AssigmentGroup>> GetGroups() =>
             await _requestService.GetAllGroups();
+
+        public async Task<List<Categorization>> GetSubcategories() =>
+            await _requestService.GetAllSubcategories();
+
+        public async Task<List<Urgency>> GetUrgencies() =>
+            await _requestService.GetAllUrgencies();
+
+        public async Task<List<Impact>> GetImpacts() =>
+            await _requestService.GetAllImpacts();
+
+        public async Task<List<Priority>> GetPriority() =>
+            await _requestService.GetPriorityByLevel();
+
+        public async Task<List<CloserDue>> GetCloserDues() =>
+            await _requestService.GetClosureCodes();
     }
 }

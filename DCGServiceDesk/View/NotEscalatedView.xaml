@@ -8,7 +8,181 @@
              d:DesignHeight="450" d:DesignWidth="800"
              xmlns:v="clr-namespace:DCGServiceDesk.View"
              xmlns:vm="clr-namespace:DCGServiceDesk.ViewModels"
-             xmlns:con="clr-namespace:DCGServiceDesk.Converters">
+             xmlns:con="clr-namespace:DCGServiceDesk.Converters"
+    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="ComboBox.Static.Background" Color="White"/>
+        <SolidColorBrush x:Key="ComboBox.Static.Border" Color="#FFACACAC"/>
+        <SolidColorBrush x:Key="ComboBox.Static.Glyph" Color="#FF606060"/>
+        <SolidColorBrush x:Key="ComboBox.Static.Editable.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="ComboBox.Static.Editable.Border" Color="#FFABADB3"/>
+        <SolidColorBrush x:Key="ComboBox.Static.Editable.Button.Background" Color="Transparent"/>
+        <SolidColorBrush x:Key="ComboBox.Static.Editable.Button.Border" Color="Transparent"/>
+        <SolidColorBrush x:Key="ComboBox.MouseOver.Background" Color="White"/>
+        <SolidColorBrush x:Key="ComboBox.MouseOver.Border" Color="#FF7EB4EA"/>
+        <SolidColorBrush x:Key="ComboBox.MouseOver.Glyph" Color="#FF000000"/>
+        <SolidColorBrush x:Key="ComboBox.MouseOver.Editable.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="ComboBox.MouseOver.Editable.Border" Color="#FF7EB4EA"/>
+        <LinearGradientBrush x:Key="ComboBox.MouseOver.Editable.Button.Background" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFEBF4FC" Offset="0.0"/>
+            <GradientStop Color="#FFDCECFC" Offset="1.0"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="ComboBox.MouseOver.Editable.Button.Border" Color="#FF7EB4EA"/>
+        <LinearGradientBrush x:Key="ComboBox.Pressed.Background" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFDAECFC" Offset="0.0"/>
+            <GradientStop Color="#FFC4E0FC" Offset="1.0"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="ComboBox.Pressed.Border" Color="#FF569DE5"/>
+        <SolidColorBrush x:Key="ComboBox.Pressed.Glyph" Color="#FF000000"/>
+        <SolidColorBrush x:Key="ComboBox.Pressed.Editable.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="ComboBox.Pressed.Editable.Border" Color="#FF569DE5"/>
+        <LinearGradientBrush x:Key="ComboBox.Pressed.Editable.Button.Background" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFDAEBFC" Offset="0.0"/>
+            <GradientStop Color="#FFC4E0FC" Offset="1.0"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="ComboBox.Pressed.Editable.Button.Border" Color="#FF569DE5"/>
+        <SolidColorBrush x:Key="ComboBox.Disabled.Background" Color="#FFF0F0F0"/>
+        <SolidColorBrush x:Key="ComboBox.Disabled.Border" Color="#FFD9D9D9"/>
+        <SolidColorBrush x:Key="ComboBox.Disabled.Glyph" Color="#FFBFBFBF"/>
+        <SolidColorBrush x:Key="ComboBox.Disabled.Editable.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="ComboBox.Disabled.Editable.Border" Color="#FFBFBFBF"/>
+        <SolidColorBrush x:Key="ComboBox.Disabled.Editable.Button.Background" Color="Transparent"/>
+        <SolidColorBrush x:Key="ComboBox.Disabled.Editable.Button.Border" Color="Transparent"/>
+        <Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="templateRoot" Background="{StaticResource ComboBox.Static.Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{StaticResource ComboBox.Static.Border}" SnapsToDevicePixels="true">
+                            <Border x:Name="splitBorder" BorderThickness="1" Margin="-1,-1,-1,-1" BorderBrush="#87CEFA" Background="#87CEFA" HorizontalAlignment="Right" SnapsToDevicePixels="true" Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
+                                <Path x:Name="arrow" Data="F1 M 0,0 L 2.667,2.66665 L 5.3334,0 L 5.3334,-1.78168 L 2.6667,0.88501 L0,-1.78168 L0,0 Z" Fill="{StaticResource ComboBox.Static.Glyph}" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center"/>
+                            </Border>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsEditable, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="true"/>
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                    <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Static.Editable.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Static.Editable.Border}"/>
+                                <Setter Property="Background" TargetName="splitBorder" Value="{StaticResource ComboBox.Static.Editable.Button.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource ComboBox.Static.Editable.Button.Border}"/>
+                            </MultiDataTrigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Fill" TargetName="arrow" Value="{StaticResource ComboBox.MouseOver.Glyph}"/>
+                            </Trigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                    <Condition Binding="{Binding IsEditable, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="false"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.MouseOver.Border}"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                    <Condition Binding="{Binding IsEditable, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="true"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.MouseOver.Editable.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.MouseOver.Editable.Border}"/>
+                                <Setter Property="Background" TargetName="splitBorder" Value="{StaticResource ComboBox.MouseOver.Editable.Button.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource ComboBox.MouseOver.Editable.Button.Border}"/>
+                            </MultiDataTrigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Fill" TargetName="arrow" Value="{StaticResource ComboBox.Pressed.Glyph}"/>
+                            </Trigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                    <Condition Binding="{Binding IsEditable, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="false"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Pressed.Border}"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                    <Condition Binding="{Binding IsEditable, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="true"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Pressed.Editable.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Pressed.Editable.Border}"/>
+                                <Setter Property="Background" TargetName="splitBorder" Value="{StaticResource ComboBox.Pressed.Editable.Button.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource ComboBox.Pressed.Editable.Button.Border}"/>
+                            </MultiDataTrigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Fill" TargetName="arrow" Value="{StaticResource ComboBox.Disabled.Glyph}"/>
+                            </Trigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                    <Condition Binding="{Binding IsEditable, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="false"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Border}"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                    <Condition Binding="{Binding IsEditable, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="true"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Editable.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Editable.Border}"/>
+                                <Setter Property="Background" TargetName="splitBorder" Value="{StaticResource ComboBox.Disabled.Editable.Button.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource ComboBox.Disabled.Editable.Button.Border}"/>
+                            </MultiDataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <ControlTemplate x:Key="ComboBoxTemplate1" TargetType="{x:Type ComboBox}">
+            <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0"/>
+                </Grid.ColumnDefinitions>
+                <Popup x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" Placement="Bottom" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+                    <theme:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MinWidth="{Binding ActualWidth, ElementName=templateRoot}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                        <Border x:Name="dropDownBorder" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}">
+                            <ScrollViewer x:Name="DropDownScrollViewer">
+                                <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
+                                    <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
+                                        <Rectangle x:Name="opaqueRect" Fill="{Binding Background, ElementName=dropDownBorder}" Height="{Binding ActualHeight, ElementName=dropDownBorder}" Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
+                                    </Canvas>
+                                    <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </Grid>
+                            </ScrollViewer>
+                        </Border>
+                    </theme:SystemDropShadowChrome>
+                </Popup>
+                <ToggleButton x:Name="toggleButton" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxToggleButton}"/>
+                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" Content="{TemplateBinding SelectionBoxItem}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
+                    <Setter Property="Margin" TargetName="shadow" Value="0,0,5,5"/>
+                    <Setter Property="Color" TargetName="shadow" Value="#71000000"/>
+                </Trigger>
+                <Trigger Property="HasItems" Value="false">
+                    <Setter Property="Height" TargetName="dropDownBorder" Value="95"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsGrouping" Value="true"/>
+                        <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                </MultiTrigger>
+                <Trigger Property="ScrollViewer.CanContentScroll" SourceName="DropDownScrollViewer" Value="false">
+                    <Setter Property="Canvas.Top" TargetName="opaqueRect" Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}"/>
+                    <Setter Property="Canvas.Left" TargetName="opaqueRect" Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </UserControl.Resources>
     
     <Grid Height="auto" >
         <Grid.RowDefinitions>
@@ -41,178 +215,219 @@
                 </Button>
             </StackPanel>
         </Border>
-        <Grid Grid.Row="1" x:Name="form" Margin="25,40,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="220"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150"/>
-                    <ColumnDefinition MinWidth="200" Width="*"/>
-                    <ColumnDefinition Width="150"/>
-                    <ColumnDefinition MinWidth="200"  Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="60"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <Grid.Resources>
-                        <Style TargetType="Label">
-                            <Setter Property="HorizontalAlignment" Value="Left"/>
-                            <Setter Property="FontSize" Value="12"/>
-                            <Setter Property="MaxWidth" Value="80"/>
-                            <Setter Property="Margin" Value="50,-2,0,0"/>
-                            <Setter Property="Height" Value="26"/>
-                        </Style>
-                    </Grid.Resources>
-                    <Label Grid.Row="0">ID:</Label>
-                    <Label Grid.Row="1">Phase:</Label>
-                    <Label Grid.Row="3">Contact:</Label>
-                    <Label Grid.Row="5">Recipient:</Label>
-                </Grid>
-                <Grid Grid.Column="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="60"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                            <TextBox Background="WhiteSmoke" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding RequestViewModel.WorkspaceInfo[0].CommunicationInfo.RequestId}"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <ComboBox Name="phase" ItemsSource="{Binding RequestViewModel.States}" Width="200" Height="22"
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+            <Grid x:Name="form" Margin="25,40,0,0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="220"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition MinWidth="200" Width="*"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition MinWidth="200"  Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <Style TargetType="Label">
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="MaxWidth" Value="80"/>
+                                <Setter Property="Margin" Value="50,-2,0,0"/>
+                                <Setter Property="Height" Value="26"/>
+                            </Style>
+                        </Grid.Resources>
+                        <Label Grid.Row="0">ID:</Label>
+                        <Label Grid.Row="1">Phase:</Label>
+                        <Label Grid.Row="3">Contact:</Label>
+                        <Label Grid.Row="5">Recipient:</Label>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding RequestViewModel.WorkspaceInfo[0].CommunicationInfo.RequestId}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <ComboBox Template="{DynamicResource ComboBoxTemplate1}" ItemsSource="{Binding States}" Width="200" Height="22"
                               IsSynchronizedWithCurrentItem="True"
                               SelectedItem="{Binding StateName}"
                               SelectedValue="{Binding CurrentState}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Margin="0,-1,0,0" Text="{Binding StateName}"/>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </StackPanel>
-                    <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                        <TextBox Height="22" Width="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding RequestViewModel.WorkspaceInfo[0].CommunicationInfo.RequestedPerson}"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                        <TextBox Height="22" Width="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding RequestViewModel.WorkspaceInfo[0].CommunicationInfo.ContactPerson}"/>
-                    </StackPanel>
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="0,-1,0,0" Text="{Binding StateName}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Height="22" Width="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding RequestViewModel.WorkspaceInfo[0].CommunicationInfo.RequestedPerson}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Height="22" Width="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding RequestViewModel.WorkspaceInfo[0].CommunicationInfo.ContactPerson}"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <Style TargetType="Label">
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="MaxWidth" Value="80"/>
+                                <Setter Property="Margin" Value="50,-2,0,0"/>
+                                <Setter Property="Height" Value="26"/>
+                            </Style>
+                        </Grid.Resources>
+                        <Label Grid.Row="0">Category:</Label>
+                        <Label Grid.Row="1">Subcategory:</Label>
+                        <Label Grid.Row="3">Impact:</Label>
+                        <Label Grid.Row="4">Urgency:</Label>
+                        <Label Grid.Row="5">Priority:</Label>
+                    </Grid>
+                    <Grid Grid.Column="3" Margin="0,0,10,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" 
+                                 VerticalAlignment="Stretch" VerticalContentAlignment="Center" 
+                                 Text="{Binding RequestViewModel.WorkspaceInfo[0].ServiceRequests.Category.Category.CategoryName}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <ComboBox Template="{DynamicResource ComboBoxTemplate1}" Width="200" Height="22"
+                                      ItemsSource="{Binding Categorizations}"                             
+                                      IsSynchronizedWithCurrentItem="True"                              
+                                      SelectedItem="{Binding ServiceName}"
+                                      SelectedValue="{Binding CurrentSubcategory}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="0,-1,0,0" Text="{Binding ServiceName}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <ComboBox Template="{DynamicResource ComboBoxTemplate1}" Width="200" Height="22"
+                                      ItemsSource="{Binding Impacts}"
+                                      IsSynchronizedWithCurrentItem="True"                             
+                                      SelectedItem="{Binding Name}"                             
+                                      SelectedValue="{Binding CurrentImpact}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="0,-1,0,0" Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <ComboBox Template="{DynamicResource ComboBoxTemplate1}" Width="200" Height="22"                             
+                                      ItemsSource="{Binding Urgencies}"
+                                      IsSynchronizedWithCurrentItem="True"                              
+                                      SelectedItem="{Binding Name}"                             
+                                      SelectedValue="{Binding CurrentUrgency}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="0,-1,0,0" Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" 
+                                 VerticalAlignment="Stretch" VerticalContentAlignment="Center"                                     
+                                 Text="{Binding CurrentPriority.Name, Mode=OneWay}"/>
+                        </StackPanel>
+                    </Grid>
                 </Grid>
-                <Grid Grid.Column="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="60"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <Grid.Resources>
-                        <Style TargetType="Label">
-                            <Setter Property="HorizontalAlignment" Value="Left"/>
-                            <Setter Property="FontSize" Value="12"/>
-                            <Setter Property="MaxWidth" Value="80"/>
-                            <Setter Property="Margin" Value="50,-2,0,0"/>
-                            <Setter Property="Height" Value="26"/>
-                        </Style>
-                    </Grid.Resources>
-                    <Label Grid.Row="0">Category:</Label>
-                    <Label Grid.Row="1">Subcategory:</Label>
-                    <Label Grid.Row="3">Impact:</Label>
-                    <Label Grid.Row="4">Urgency:</Label>
-                    <Label Grid.Row="5">Priority:</Label>
-                </Grid>
-                <Grid Grid.Column="3">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="60"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                        <TextBox Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <ComboBox Width="200" Height="22"
-                              IsSynchronizedWithCurrentItem="True"
-                              SelectedItem="{Binding StateName}"
-                              SelectedValue="{Binding CurrentState}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Margin="0,-1,0,0" Text="{Binding StateName}"/>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </StackPanel>
-                    <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                        <TextBox Height="22" Width="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                        <TextBox Height="22" Width="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                        <TextBox Height="22" Width="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
-                    </StackPanel>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="150"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="70"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <Style TargetType="Label">
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="MaxWidth" Value="80"/>
+                                <Setter Property="Margin" Value="50,-2,0,0"/>
+                                <Setter Property="Height" Value="26"/>
+                            </Style>
+                        </Grid.Resources>
+                        <Label Grid.Row="0">Title:</Label>
+                        <Label Grid.Row="1" VerticalAlignment="Top">Description:</Label>
+                        <Label Grid.Row="2">Closer due:</Label>
+                        <Label Grid.Row="3" VerticalAlignment="Top">Solution:</Label>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="150"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="70"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel HorizontalAlignment="Stretch" Grid.Row="0" Margin="0,0,10,0" VerticalAlignment="Center">
+                            <TextBox HorizontalAlignment="Stretch" Height="23" VerticalContentAlignment="Center"
+                                 Text="{Binding RequestViewModel.WorkspaceInfo[0].ServiceRequests.Topic}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Margin="0,0,10,0">
+                            <TextBox VerticalScrollBarVisibility="Visible" Padding="2,3,2,2" AcceptsReturn="True" 
+                                     TextWrapping="Wrap" Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                 Text="{Binding RequestViewModel.WorkspaceInfo[0].ServiceRequests.Description}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <ComboBox Template="{DynamicResource ComboBoxTemplate1}" Width="200" Height="22"
+                                      ItemsSource="{Binding CloserDues}"
+                                      IsSynchronizedWithCurrentItem="True"                              
+                                      SelectedItem="{Binding Due}"                              
+                                      SelectedValue="1">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="0,-1,0,0" Text="{Binding Due}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Margin="0,0,10,0">
+                            <TextBox VerticalScrollBarVisibility="Visible" Padding="2,3,2,2" Height="70" AcceptsReturn="True" 
+                                     TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </StackPanel>
+                    </Grid>
                 </Grid>
             </Grid>
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="150"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="70"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <Grid.Resources>
-                        <Style TargetType="Label">
-                            <Setter Property="HorizontalAlignment" Value="Left"/>
-                            <Setter Property="FontSize" Value="12"/>
-                            <Setter Property="MaxWidth" Value="80"/>
-                            <Setter Property="Margin" Value="50,-2,0,0"/>
-                            <Setter Property="Height" Value="26"/>
-                        </Style>
-                    </Grid.Resources>
-                    <Label Grid.Row="0">Title:</Label>
-                    <Label Grid.Row="1" VerticalAlignment="Top">Description:</Label>
-                    <Label Grid.Row="2">Closer due:</Label>
-                    <Label Grid.Row="3">Solution:</Label>
-                </Grid>
-                <Grid Grid.Column="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="150"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="70"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel HorizontalAlignment="Stretch" Grid.Row="0" Margin="0,0,10,0" VerticalAlignment="Center">
-                        <TextBox HorizontalAlignment="Stretch"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="1" Margin="0,0,10,0">
-                        <TextBox Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                        <TextBox Height="22" Width="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="3" Margin="0,0,10,0">
-                        <TextBox Height="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
-                    </StackPanel>
-                </Grid>
-            </Grid>
-        </Grid>
+        </ScrollViewer>
     </Grid>
 </UserControl>

@@ -22,5 +22,10 @@ namespace DCGServiceDesk.Session.DataGetter
         Task<TaskRequest> GetTask(int taskId);
         Task<ServiceRequest> GetChange(int requestId);
         Task<Incident> GetIncident(int incidentId);
+        Task<List<Categorization>> GetSubcategories();
+        Task<List<Urgency>> GetUrgencies();
+        Task<List<Impact>> GetImpacts();
+        Task<List<Priority>> GetPriority();
+        Task<List<CloserDue>> GetCloserDues();
     }
 }

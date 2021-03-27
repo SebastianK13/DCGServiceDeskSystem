@@ -93,6 +93,45 @@ namespace DCGServiceDesk.Services
 
         public static CommunicationInfo ExtractAdditionalInfo(object parameter) =>
             ((TabContainer)parameter).CommunicationInfo;
+
+        public static int GetPriorityLvl(int urgency, int impact)
+        {
+            switch (urgency)
+            {
+                case 1:
+                    switch (impact)
+                    {
+                        case int i when (i <= 2):
+                            return 1;
+                        case int i when (i > 3):
+                            return 2;
+                    }
+                    break;
+                case 2:
+                    switch (impact)
+                    {
+                        case 1:
+                            return 1;
+                        case int i when (i == 2 || i == 3):
+                            return 2;
+                        case 4:
+                            return 3;
+                    }
+                    break;
+                case 3:
+                    switch (impact)
+                    {
+                        case 1:
+                            return 2;
+                        case int i when (i > 1):
+                            return 3;
+                    }
+                    break;
+                case 4:
+                    return 4;
+            }
+            return 0;
+        }
     }
     public class SingleRequestInfo
     {
