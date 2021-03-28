@@ -71,6 +71,10 @@ namespace DCGServiceDesk.Data.Models
     }
     public class Incident
     {
+        public Incident()
+        {
+            this.AffectedIncidents = new HashSet<Incident>();
+        }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int IncidentId { get; set; }
@@ -97,6 +101,8 @@ namespace DCGServiceDesk.Data.Models
         public virtual Priority? Priority { get; set; }
         public virtual AssigmentGroup? Group { get; set; }
         public virtual Categorization? Category { get; set; }
+        [ForeignKey("AffectedIM")]
+        public virtual ICollection<Incident> AffectedIncidents { get; set; }
     }
     public class NewAccountForm
     {

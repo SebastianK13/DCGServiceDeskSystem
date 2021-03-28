@@ -12,7 +12,9 @@
     <None Remove="Images\escalationIcon.bmp" />
     <None Remove="Images\folderImg.png" />
     <None Remove="Images\groupIcon.png" />
+    <None Remove="Images\loupeGray.png" />
     <None Remove="Images\openSysNavIcon.png" />
+    <None Remove="Images\redCross.png" />
     <None Remove="Images\refreshIcon.png" />
     <None Remove="Images\take2Icon.bmp" />
     <None Remove="Images\takeIcon.bmp" />
@@ -58,7 +60,9 @@
     <Resource Include="Images\escalationIcon.bmp" />
     <Resource Include="Images\folderImg.png" />
     <Resource Include="Images\groupIcon.png" />
+    <Resource Include="Images\loupeGray.png" />
     <Resource Include="Images\openSysNavIcon.png" />
+    <Resource Include="Images\redCross.png" />
     <Resource Include="Images\refreshIcon.png" />
     <Resource Include="Images\take2Icon.bmp" />
     <Resource Include="Images\takeIcon.bmp" />

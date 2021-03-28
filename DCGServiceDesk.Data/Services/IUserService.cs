@@ -8,5 +8,6 @@ namespace DCGServiceDesk.Data.Services
     {
         Task<User> GetByName(string username);
         Task<List<CommunicationInfo>> GetUserName(List<string> eIdContact, List<string> eIdRequested);
+        Task<string> GetUserId(string username);
     }
 }

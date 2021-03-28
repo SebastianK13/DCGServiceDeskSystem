@@ -9,5 +9,6 @@ namespace DCGServiceDesk.Session.DataGetter
     public interface IUserInfo
     {
         Task<List<CommunicationInfo>> GetUserName(List<string> eIdContact, List<string> eIdRequested);
+        Task<string> GetUserId(string username);
     }
 }

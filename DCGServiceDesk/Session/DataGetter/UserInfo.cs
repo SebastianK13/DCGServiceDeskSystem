@@ -17,5 +17,7 @@ namespace DCGServiceDesk.Session.DataGetter
         public async Task<List<CommunicationInfo>> GetUserName(List<string> eIdContact, List<string> eIdRequested) =>
             await _userService.GetUserName(eIdContact, eIdRequested);
 
+        public async Task<string> GetUserId(string username) =>
+            await _userService.GetUserId(username);
     }
 }

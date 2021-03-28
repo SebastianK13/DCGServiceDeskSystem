@@ -53,6 +53,9 @@ namespace DCGServiceDesk.EF.Services
             return communicationInfo;
         }
 
+        public async Task<string> GetUserId(string username) =>
+            await _dbContext.AspNetUsers.Where(u => u.UserName == username).Select(i => i.Id).FirstOrDefaultAsync();
+
         public Task<bool> Remove(int id)
         {
             throw new NotImplementedException();
@@ -71,5 +74,6 @@ namespace DCGServiceDesk.EF.Services
         {
             throw new NotImplementedException();
         }
+
     }
 }

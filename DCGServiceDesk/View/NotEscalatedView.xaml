@@ -11,6 +11,10 @@
              xmlns:con="clr-namespace:DCGServiceDesk.Converters"
     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="NotEscalatedViewResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
         <SolidColorBrush x:Key="ComboBox.Static.Background" Color="White"/>
         <SolidColorBrush x:Key="ComboBox.Static.Border" Color="#FFACACAC"/>
         <SolidColorBrush x:Key="ComboBox.Static.Glyph" Color="#FF606060"/>
@@ -182,6 +186,7 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+        </ResourceDictionary>
     </UserControl.Resources>
     
     <Grid Height="auto" >
@@ -213,12 +218,19 @@
                         <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Escalate</TextBlock>
                     </StackPanel>
                 </Button>
+                <Button Command="{Binding RequestViewModel.EscalateRequestCommand}" CommandParameter="{Binding }" BorderThickness="0" 
+                              Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="../Images/redCross.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="6,0,4,0" />
+                        <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Close request</TextBlock>
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </Border>
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
             <Grid x:Name="form" Margin="25,40,0,0" >
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="220"/>
+                    <RowDefinition Height="400"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
@@ -248,8 +260,18 @@
                         <Label Grid.Row="0">ID:</Label>
                         <Label Grid.Row="1">Phase:</Label>
                         <Label Grid.Row="3">Contact:</Label>
-                        <Label Grid.Row="5">Recipient:</Label>
+                        <Label Grid.Row="4">Recipient:</Label>
                     </Grid>
+                    <StackPanel HorizontalAlignment="Left" Grid.Column="1"
+                                Margin="0,150,0,0" 
+                                Panel.ZIndex="1">
+                        <ContentPresenter Content="{Binding Contact}"/>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Grid.Column="1"
+                                Margin="0,180,0,0" 
+                                Panel.ZIndex="1">
+                        <ContentPresenter Content="{Binding Recipient}"/>
+                    </StackPanel>
                     <Grid Grid.Column="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"/>
@@ -274,10 +296,20 @@
                             </ComboBox>
                         </StackPanel>
                         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                            <TextBox Height="22" Width="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding RequestViewModel.WorkspaceInfo[0].CommunicationInfo.RequestedPerson}"/>
+                            <TextBox Height="22" Width="178" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding CUsername}"/>
+                            <Button BorderThickness="0,.8,.8,.8" BorderBrush="Gray" Command="{Binding FindUserCommand}"
+                                    CommandParameter="Contact"
+                                    Background="WhiteSmoke" VerticalAlignment="Center" Height="22" Width="22">
+                                <Image VerticalAlignment="Center" Source="../Images/loupeGray.png" Height="15" Width="auto" Margin="0,2,0,0" />
+                            </Button>
                         </StackPanel>
                         <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                            <TextBox Height="22" Width="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding RequestViewModel.WorkspaceInfo[0].CommunicationInfo.ContactPerson}"/>
+                            <TextBox Height="22" Width="178" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding RUsername}"/>
+                            <Button BorderThickness="0,.8,.8,.8" BorderBrush="Gray" Command="{Binding FindUserCommand}"
+                                    CommandParameter="Recipient"
+                                    Background="WhiteSmoke" VerticalAlignment="Center" Height="22" Width="22">
+                                <Image VerticalAlignment="Center" Source="../Images/loupeGray.png" Height="15" Width="auto" Margin="0,2,0,0" />
+                            </Button>
                         </StackPanel>
                     </Grid>
                     <Grid Grid.Column="2">
