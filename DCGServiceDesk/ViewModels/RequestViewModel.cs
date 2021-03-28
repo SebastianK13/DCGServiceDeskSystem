@@ -9,13 +9,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace DCGServiceDesk.ViewModels
 {
-    public class RequestViewModel:Tab
+    public class RequestViewModel : Tab
     {
-        public RequestViewModel(SingleRequestInfo singleRequest, 
-            DbInterfaceContainer interfaceContainer, HomeViewModel hVM) 
+        public RequestViewModel(SingleRequestInfo singleRequest,
+            DbInterfaceContainer interfaceContainer, HomeViewModel hVM)
             : base(interfaceContainer, hVM)
         {
             TabContainer wi = new TabContainer();
@@ -33,7 +34,7 @@ namespace DCGServiceDesk.ViewModels
         public async Task InitializeNEVMComboBoxes() =>
             await NotEscalated.SetComboBoxModels();
     }
-    public class NotEscalatedViewModel:ViewModelBase
+    public class NotEscalatedViewModel : ViewModelBase
     {
         public NotEscalatedViewModel(TaskRequest t, DbInterfaceContainer dbInterfaces)
         {
@@ -62,6 +63,7 @@ namespace DCGServiceDesk.ViewModels
             _requestQueue = dbInterfaces.RequestQueue;
             FindUserCommand = new FindUserCommand(dbInterfaces, this);
         }
+
         public ICommand FindUserCommand { get; }
         private readonly IRequestQueue _requestQueue;
         public RequestViewModel RequestViewModel { get; set; }
@@ -82,6 +84,47 @@ namespace DCGServiceDesk.ViewModels
         private AccountInfo _recipient;
         private string _cUsername;
         private string _rUsername;
+        private Brush _cBorderBrush;
+        private Brush _rBorderBrush;
+        private CloserDue _closerDue;
+
+        public CloserDue CloserDue
+        {
+            get { return _closerDue; }
+            set
+            {
+                if (value != null)
+                {
+                    _closerDue = value;
+                    OnPropertyChanged("CloserDue");
+                }
+            }
+        }
+        public Brush ContactValid
+        {
+            get { return _cBorderBrush; }
+            set
+            {
+                if (value != _cBorderBrush)
+                {
+                    _cBorderBrush = value;
+                    OnPropertyChanged("ContactValid");
+                }
+            }
+        }
+
+        public Brush RecipientValid
+        {
+            get { return _rBorderBrush; }
+            set
+            {
+                if (value != _rBorderBrush)
+                {
+                    _rBorderBrush = value;
+                    OnPropertyChanged("RecipientValid");
+                }
+            }
+        }
 
         public State CurrentState
         {
@@ -94,7 +137,7 @@ namespace DCGServiceDesk.ViewModels
                     OnPropertyChanged("CurrentState");
                 }
             }
-        } 
+        }
         public Categorization CurrentSubcategory
         {
             get { return _subcategory; }
@@ -135,7 +178,7 @@ namespace DCGServiceDesk.ViewModels
         }
         public Priority CurrentPriority
         {
-            get{ return _priority; }
+            get { return _priority; }
             private set
             {
                 if (value != null)
@@ -168,11 +211,8 @@ namespace DCGServiceDesk.ViewModels
             get { return _contact; }
             set
             {
-                if (value != null)
-                {
-                    _contact = value;
-                    OnPropertyChanged("Contact");
-                }
+                _contact = value;
+                OnPropertyChanged("Contact");
             }
         }
         public AccountInfo Recipient
@@ -180,11 +220,8 @@ namespace DCGServiceDesk.ViewModels
             get { return _recipient; }
             set
             {
-                if (value != null)
-                {
-                    _recipient = value;
-                    OnPropertyChanged("Recipient");
-                }
+                _recipient = value;
+                OnPropertyChanged("Recipient");
             }
         }
         public async Task SetComboBoxModels()
@@ -197,12 +234,14 @@ namespace DCGServiceDesk.ViewModels
             CloserDues = await _requestQueue.GetCloserDues();
             CUsername = RequestViewModel.WorkspaceInfo[0].CommunicationInfo.RequestedPerson;
             RUsername = RequestViewModel.WorkspaceInfo[0].CommunicationInfo.ContactPerson;
+            ContactValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
+            RecipientValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
             SetPriority();
         }
 
-        private void SetPriority() 
+        private void SetPriority()
         {
-            if(CurrentUrgency!=null && CurrentImpact!=null && Priorities!=null)
+            if (CurrentUrgency != null && CurrentImpact != null && Priorities != null)
             {
                 _currentLevel = RequestService.GetPriorityLvl(CurrentUrgency.level, CurrentImpact.level);
                 CurrentPriority = Priorities
@@ -219,6 +258,19 @@ namespace DCGServiceDesk.ViewModels
 
     public class AccountInfo
     {
+        public AccountInfo(Employee _user, string superiorUsername)
+        {
+            Firstname = _user.Firstname;
+            Surname = _user.Surname;
+            Localization = _user.Location.City;
+            Position = _user.Positions.PositionName;
+            SuperiorName = _user.Superior.Firstname;
+            SuperiorSurname = _user.Superior.Surname;
+            SuperiorEmail = _user.Superior.Email;
+            SuperiorUsername = superiorUsername;
+            DepartmentName = _user.Department.DepartmentName;
+            Email = _user.Email;
+        }
         public string Firstname { get; set; }
         public string Surname { get; set; }
         public string Localization { get; set; }

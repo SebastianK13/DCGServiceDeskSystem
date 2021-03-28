@@ -22,6 +22,7 @@ namespace DCGServiceDesk.EF.Factory
             AppEmployeesDbContext dbContext = new AppEmployeesDbContext();
             DbContextOptionsBuilder<AppEmployeesDbContext> options = new DbContextOptionsBuilder<AppEmployeesDbContext>();
             options.UseSqlServer(_configuration["Data:DCTEIdentity:ConnectionString"]);
+            options.UseLazyLoadingProxies(true);
 
             return new AppEmployeesDbContext(options.Options);
         }

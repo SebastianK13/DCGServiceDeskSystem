@@ -54,7 +54,16 @@ namespace DCGServiceDesk.EF.Services
         }
 
         public async Task<string> GetUserId(string username) =>
-            await _dbContext.AspNetUsers.Where(u => u.UserName == username).Select(i => i.Id).FirstOrDefaultAsync();
+            await _dbContext.AspNetUsers
+            .Where(u => u.UserName == username)
+            .Select(i => i.Id)
+            .FirstOrDefaultAsync();
+
+        public async Task<string> GetUserNameById(string userId) =>
+            await _dbContext.AspNetUsers
+            .Where(i => i.Id == userId)
+            .Select(u=>u.UserName)
+            .FirstOrDefaultAsync();
 
         public Task<bool> Remove(int id)
         {
@@ -74,6 +83,5 @@ namespace DCGServiceDesk.EF.Services
         {
             throw new NotImplementedException();
         }
-
     }
 }

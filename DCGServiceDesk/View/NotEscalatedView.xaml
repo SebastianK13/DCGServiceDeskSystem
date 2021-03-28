@@ -8,14 +8,18 @@
              d:DesignHeight="450" d:DesignWidth="800"
              xmlns:v="clr-namespace:DCGServiceDesk.View"
              xmlns:vm="clr-namespace:DCGServiceDesk.ViewModels"
-             xmlns:con="clr-namespace:DCGServiceDesk.Converters"
-    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:ic="http://schemas.microsoft.com/expression/2010/interactions"
+             xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+             xmlns:behaviours="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
+             xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="NotEscalatedViewResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
-        <SolidColorBrush x:Key="ComboBox.Static.Background" Color="White"/>
+            <SolidColorBrush x:Key="ComboBox.Static.Background" Color="White"/>
         <SolidColorBrush x:Key="ComboBox.Static.Border" Color="#FFACACAC"/>
         <SolidColorBrush x:Key="ComboBox.Static.Glyph" Color="#FF606060"/>
         <SolidColorBrush x:Key="ComboBox.Static.Editable.Background" Color="#FFFFFFFF"/>
@@ -296,17 +300,37 @@
                             </ComboBox>
                         </StackPanel>
                         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                            <TextBox Height="22" Width="178" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding CUsername}"/>
+                            <StackPanel.Style>
+                                <Style>
+                                    <Setter Property="behaviours:CommandBehavior.Event"
+                                     Value="MouseLeave" />
+                                    <Setter Property="behaviours:CommandBehavior.Command"
+                                     Value="{Binding FindUserCommand}" />
+                                    <Setter Property="behaviours:CommandBehavior.CommandParameter"
+                                     Value="CloseContact" />
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBox BorderBrush="{Binding ContactValid}" Height="22" Width="178" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding CUsername}"/>
                             <Button BorderThickness="0,.8,.8,.8" BorderBrush="Gray" Command="{Binding FindUserCommand}"
-                                    CommandParameter="Contact"
+                                    CommandParameter="FindContact"
                                     Background="WhiteSmoke" VerticalAlignment="Center" Height="22" Width="22">
                                 <Image VerticalAlignment="Center" Source="../Images/loupeGray.png" Height="15" Width="auto" Margin="0,2,0,0" />
                             </Button>
                         </StackPanel>
                         <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                            <TextBox Height="22" Width="178" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding RUsername}"/>
+                            <StackPanel.Style>
+                                <Style>
+                                    <Setter Property="behaviours:CommandBehavior.Event"
+                                     Value="MouseLeave" />
+                                    <Setter Property="behaviours:CommandBehavior.Command"
+                                     Value="{Binding FindUserCommand}" />
+                                    <Setter Property="behaviours:CommandBehavior.CommandParameter"
+                                     Value="CloseRecipient" />
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBox BorderBrush="{Binding RecipientValid}" Height="22" Width="178" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding RUsername}"/>
                             <Button BorderThickness="0,.8,.8,.8" BorderBrush="Gray" Command="{Binding FindUserCommand}"
-                                    CommandParameter="Recipient"
+                                    CommandParameter="FindRecipient"
                                     Background="WhiteSmoke" VerticalAlignment="Center" Height="22" Width="22">
                                 <Image VerticalAlignment="Center" Source="../Images/loupeGray.png" Height="15" Width="auto" Margin="0,2,0,0" />
                             </Button>
@@ -445,7 +469,7 @@
                                       ItemsSource="{Binding CloserDues}"
                                       IsSynchronizedWithCurrentItem="True"                              
                                       SelectedItem="{Binding Due}"                              
-                                      SelectedValue="1">
+                                      SelectedValue="{Binding CloserDue}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Margin="0,-1,0,0" Text="{Binding Due}"/>

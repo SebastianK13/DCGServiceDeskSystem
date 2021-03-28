@@ -1,4 +1,5 @@
-﻿using DCGServiceDesk.Data.Services;
+﻿using DCGServiceDesk.Data.Models;
+using DCGServiceDesk.Data.Services;
 using DCGServiceDesk.EF.Context;
 using DCGServiceDesk.EF.Factory;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +36,11 @@ namespace DCGServiceDesk.EF.Services
 
             return usernamesList;
         }
+
+        public async Task<Employee> GetUserProfile(string id) =>
+            await _dbContext.Employees
+            .Where(i => i.UserId == id)
+            .FirstOrDefaultAsync();
     }
 
 

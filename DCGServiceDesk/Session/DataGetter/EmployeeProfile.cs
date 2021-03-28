@@ -1,4 +1,5 @@
-﻿using DCGServiceDesk.Data.Services;
+﻿using DCGServiceDesk.Data.Models;
+using DCGServiceDesk.Data.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,10 +11,13 @@ namespace DCGServiceDesk.Session.DataGetter
     {
         private readonly IEmployeeService _employeeService;
 
-        public EmployeeProfile(IEmployeeService employeeProfile)
-        {
+        public EmployeeProfile(IEmployeeService employeeProfile) =>
             _employeeService = employeeProfile;
-        }
+
+
+        public async Task<Employee> GetUser(string id) =>
+            await _employeeService.GetUserProfile(id);
+
         public async Task<List<string>> GetUserId(List<int> employeesId) =>
             await _employeeService.GetUserIdFromEmployee(employeesId);
     }
