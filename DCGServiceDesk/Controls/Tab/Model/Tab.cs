@@ -50,6 +50,8 @@ namespace DCGServiceDesk.Controls.Tab.Model
                 }
             }
         }
+        public string GetUsername() =>
+            HVM.loggedUser.ActiveUser;
     }
     public class TabContainer
     {

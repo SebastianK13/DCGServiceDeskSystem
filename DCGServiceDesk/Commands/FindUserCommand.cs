@@ -35,17 +35,17 @@ namespace DCGServiceDesk.Commands
                      id = await _userInfo.GetUserId(_nEVM.RUsername);
                     _nEVM.RecipientValid = await GenerateProperColorAsync(id);
                     _nEVM.Recipient = new AccountInfo(_user, superiorUsername);
+                    _nEVM.FindUserEventArea = true;
                     break;
                 case "FindContact":
                      id = await _userInfo.GetUserId(_nEVM.CUsername);
                     _nEVM.ContactValid = await GenerateProperColorAsync(id);
                     _nEVM.Contact = new AccountInfo(_user, superiorUsername);
+                    _nEVM.FindUserEventArea = true;
                     break;
-                case "CloseContact":
-                    _nEVM.Contact = null;
-                    break;
-                case "CloseRecipient":
-                    _nEVM.Recipient = null;
+                case "CloseUserInfo":
+                    CloseOpened();
+                    _nEVM.FindUserEventArea = false;
                     break;
             }
         }
@@ -63,6 +63,13 @@ namespace DCGServiceDesk.Commands
                 return new SolidColorBrush(Color.FromRgb(255, 0, 0));
             }
         }
-
+        private void CloseOpened()
+        {
+            if (_nEVM.Contact != null)
+                _nEVM.Contact = null;
+            else if (_nEVM.Recipient != null)
+                _nEVM.Recipient = null;
+        }
+            
     }
 }

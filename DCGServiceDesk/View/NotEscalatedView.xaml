@@ -19,6 +19,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="NotEscalatedViewResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <SolidColorBrush x:Key="ComboBox.Static.Background" Color="White"/>
         <SolidColorBrush x:Key="ComboBox.Static.Border" Color="#FFACACAC"/>
         <SolidColorBrush x:Key="ComboBox.Static.Glyph" Color="#FF606060"/>
@@ -60,7 +61,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Border x:Name="templateRoot" Background="{StaticResource ComboBox.Static.Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{StaticResource ComboBox.Static.Border}" SnapsToDevicePixels="true">
+                            <Border x:Name="templateRoot" Background="{StaticResource ComboBox.Static.Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="true">
                             <Border x:Name="splitBorder" BorderThickness="1" Margin="-1,-1,-1,-1" BorderBrush="#87CEFA" Background="#87CEFA" HorizontalAlignment="Right" SnapsToDevicePixels="true" Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
                                 <Path x:Name="arrow" Data="F1 M 0,0 L 2.667,2.66665 L 5.3334,0 L 5.3334,-1.78168 L 2.6667,0.88501 L0,-1.78168 L0,0 Z" Fill="{StaticResource ComboBox.Static.Glyph}" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center"/>
                             </Border>
@@ -222,7 +223,7 @@
                         <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Escalate</TextBlock>
                     </StackPanel>
                 </Button>
-                <Button Command="{Binding RequestViewModel.EscalateRequestCommand}" CommandParameter="{Binding }" BorderThickness="0" 
+                <Button Command="{Binding CloseRequestCommand}" CommandParameter="{Binding }" BorderThickness="0" 
                               Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Images/redCross.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="6,0,4,0" />
@@ -267,12 +268,26 @@
                         <Label Grid.Row="4">Recipient:</Label>
                     </Grid>
                     <StackPanel HorizontalAlignment="Left" Grid.Column="1"
-                                Margin="0,150,0,0" 
+                                Margin="0,145,0,0" 
                                 Panel.ZIndex="1">
                         <ContentPresenter Content="{Binding Contact}"/>
                     </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Panel.ZIndex="-1" Height="329"
+                            Width="305" Background="Transparent" Grid.Column="1" Margin="-50,73,0,0"
+                                Visibility="{Binding FindUserEventArea, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel.Style>
+                            <Style>
+                                <Setter Property="behaviours:CommandBehavior.Event"
+                                     Value="MouseEnter" />
+                                <Setter Property="behaviours:CommandBehavior.Command"
+                                     Value="{Binding FindUserCommand}" />
+                                <Setter Property="behaviours:CommandBehavior.CommandParameter"
+                                     Value="CloseUserInfo" />
+                            </Style>
+                        </StackPanel.Style>
+                    </StackPanel>
                     <StackPanel HorizontalAlignment="Left" Grid.Column="1"
-                                Margin="0,180,0,0" 
+                                Margin="0,175,0,0" 
                                 Panel.ZIndex="1">
                         <ContentPresenter Content="{Binding Recipient}"/>
                     </StackPanel>
@@ -291,7 +306,8 @@
                             <ComboBox Template="{DynamicResource ComboBoxTemplate1}" ItemsSource="{Binding States}" Width="200" Height="22"
                               IsSynchronizedWithCurrentItem="True"
                               SelectedItem="{Binding StateName}"
-                              SelectedValue="{Binding CurrentState}">
+                              SelectedValue="{Binding CurrentState}"
+                              BorderBrush="{Binding StatusValid}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Margin="0,-1,0,0" Text="{Binding StateName}"/>
@@ -300,16 +316,6 @@
                             </ComboBox>
                         </StackPanel>
                         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                            <StackPanel.Style>
-                                <Style>
-                                    <Setter Property="behaviours:CommandBehavior.Event"
-                                     Value="MouseLeave" />
-                                    <Setter Property="behaviours:CommandBehavior.Command"
-                                     Value="{Binding FindUserCommand}" />
-                                    <Setter Property="behaviours:CommandBehavior.CommandParameter"
-                                     Value="CloseContact" />
-                                </Style>
-                            </StackPanel.Style>
                             <TextBox BorderBrush="{Binding ContactValid}" Height="22" Width="178" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding CUsername}"/>
                             <Button BorderThickness="0,.8,.8,.8" BorderBrush="Gray" Command="{Binding FindUserCommand}"
                                     CommandParameter="FindContact"
@@ -318,16 +324,6 @@
                             </Button>
                         </StackPanel>
                         <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                            <StackPanel.Style>
-                                <Style>
-                                    <Setter Property="behaviours:CommandBehavior.Event"
-                                     Value="MouseLeave" />
-                                    <Setter Property="behaviours:CommandBehavior.Command"
-                                     Value="{Binding FindUserCommand}" />
-                                    <Setter Property="behaviours:CommandBehavior.CommandParameter"
-                                     Value="CloseRecipient" />
-                                </Style>
-                            </StackPanel.Style>
                             <TextBox BorderBrush="{Binding RecipientValid}" Height="22" Width="178" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding RUsername}"/>
                             <Button BorderThickness="0,.8,.8,.8" BorderBrush="Gray" Command="{Binding FindUserCommand}"
                                     CommandParameter="FindRecipient"
@@ -457,19 +453,20 @@
                         </Grid.RowDefinitions>
                         <StackPanel HorizontalAlignment="Stretch" Grid.Row="0" Margin="0,0,10,0" VerticalAlignment="Center">
                             <TextBox HorizontalAlignment="Stretch" Height="23" VerticalContentAlignment="Center"
-                                 Text="{Binding RequestViewModel.WorkspaceInfo[0].ServiceRequests.Topic}"/>
+                                 Text="{Binding Topic}" BorderBrush="{Binding TitleValid}"/>
                         </StackPanel>
                         <StackPanel Grid.Row="1" Margin="0,0,10,0">
                             <TextBox VerticalScrollBarVisibility="Visible" Padding="2,3,2,2" AcceptsReturn="True" 
                                      TextWrapping="Wrap" Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                                 Text="{Binding RequestViewModel.WorkspaceInfo[0].ServiceRequests.Description}"/>
+                                 Text="{Binding Description}" BorderBrush="{Binding DescriptionValid}"/>
                         </StackPanel>
                         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
                             <ComboBox Template="{DynamicResource ComboBoxTemplate1}" Width="200" Height="22"
                                       ItemsSource="{Binding CloserDues}"
                                       IsSynchronizedWithCurrentItem="True"                              
                                       SelectedItem="{Binding Due}"                              
-                                      SelectedValue="{Binding CloserDue}">
+                                      SelectedValue="{Binding CloserDue}"
+                                      BorderBrush="{Binding CloserDueValid}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Margin="0,-1,0,0" Text="{Binding Due}"/>
@@ -479,7 +476,8 @@
                         </StackPanel>
                         <StackPanel Grid.Row="3" Margin="0,0,10,0">
                             <TextBox VerticalScrollBarVisibility="Visible" Padding="2,3,2,2" Height="70" AcceptsReturn="True" 
-                                     TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                     TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                     Text="{Binding Solution}" BorderBrush="{Binding SolutionValid}"/>
                         </StackPanel>
                     </Grid>
                 </Grid>

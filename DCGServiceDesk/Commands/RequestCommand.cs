@@ -111,7 +111,7 @@ namespace DCGServiceDesk.Commands
                     if (t.Group == null)
                     {
                         RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
-                        await rVM.InitializeNEVMComboBoxes();
+                        await rVM.InitializeNEVMModel();
                         _hVM.Tabs.Add(rVM);
                     }
                     else
@@ -130,7 +130,7 @@ namespace DCGServiceDesk.Commands
                     if (im.Group == null)
                     {
                         RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
-                        await rVM.InitializeNEVMComboBoxes();
+                        await rVM.InitializeNEVMModel();
                         _hVM.Tabs.Add(rVM);
                     }
                     else
@@ -148,7 +148,7 @@ namespace DCGServiceDesk.Commands
                     if (c.Group == null)
                     {
                         RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
-                        await rVM.InitializeNEVMComboBoxes();
+                        await rVM.InitializeNEVMModel();
                         _hVM.Tabs.Add(rVM);
                     }
                     else
