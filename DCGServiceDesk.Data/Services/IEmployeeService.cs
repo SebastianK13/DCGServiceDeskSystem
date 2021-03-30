@@ -10,5 +10,6 @@ namespace DCGServiceDesk.Data.Services
     {
         Task<List<string>> GetUserIdFromEmployee(List<int> employeesId);
         Task<Employee> GetUserProfile(string id);
+        Task<int> GetIdByUId(string id);
     }
 }

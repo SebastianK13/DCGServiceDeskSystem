@@ -22,10 +22,16 @@ namespace DCGServiceDesk.Session.DataGetter
         Task<TaskRequest> GetTask(int taskId);
         Task<ServiceRequest> GetChange(int requestId);
         Task<Incident> GetIncident(int incidentId);
-        Task<List<Categorization>> GetSubcategories();
+        Task<List<Categorization>> GetSubcategories(string designation);
         Task<List<Urgency>> GetUrgencies();
         Task<List<Impact>> GetImpacts();
         Task<List<Priority>> GetPriority();
         Task<List<CloserDue>> GetCloserDues();
+        Task UpdateServiceRequest(ServiceRequest request);
+        Task UpdateTaskRequest(TaskRequest task);
+        Task UpdateIncident(Incident incident);
+        Task<string> GetChangeAssignee(int requestId);
+        Task<string> GetTaskAssignee(int requestId);
+        Task<string> GetIncidentAssignee(int requestId);
     }
 }

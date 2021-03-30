@@ -10,5 +10,6 @@ namespace DCGServiceDesk.Session.DataGetter
     {
         Task<List<string>> GetUserId(List<int> employeesId);
         Task<Employee> GetUser(string id);
+        Task<int> GetEmployeeIdByUId(string id);
     }
 }

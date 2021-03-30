@@ -14,6 +14,8 @@ namespace DCGServiceDesk.Session.DataGetter
         public EmployeeProfile(IEmployeeService employeeProfile) =>
             _employeeService = employeeProfile;
 
+        public async Task<int> GetEmployeeIdByUId(string id) =>
+            await _employeeService.GetIdByUId(id);
 
         public async Task<Employee> GetUser(string id) =>
             await _employeeService.GetUserProfile(id);

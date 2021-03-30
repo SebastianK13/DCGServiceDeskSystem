@@ -24,8 +24,14 @@ namespace DCGServiceDesk.Data.Services
         Task<List<AssigmentGroup>> GetAllGroups();
         Task<List<Impact>> GetAllImpacts();
         Task<List<Urgency>> GetAllUrgencies();
-        Task<List<Categorization>> GetAllSubcategories();
+        Task<List<Categorization>> GetAllSubcategories(string designation);
         Task<List<Priority>> GetPriorityByLevel();
         Task<List<CloserDue>> GetClosureCodes();
+        Task UpdateC(ServiceRequest request);
+        Task UpdateT(TaskRequest task);
+        Task UpdateIM(Incident incident);
+        Task<string> GetChangeAssignee(int requestId);
+        Task<string> GetTaskAssignee(int requestId);
+        Task<string> GetIncidentAssignee(int requestId);
     }
 }

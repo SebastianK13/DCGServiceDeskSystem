@@ -14,38 +14,40 @@ namespace DCGServiceDesk.Commands
 {
     public class UpdateRequestCommand : AsyncCommandBase
     {
-        private readonly string _username;
+        private string _username;
         private readonly IRequestQueue _requestQueue;
-        private readonly HomeViewModel _hVM;
-        public UpdateRequestCommand(HomeViewModel homeViewModel, IRequestQueue requestQueue, string username)
+        private readonly NotEscalatedViewModel _nEVM;
+        public UpdateRequestCommand(IRequestQueue requestQueue, NotEscalatedViewModel nEVM)
         {
-            _hVM = homeViewModel;
             _requestQueue = requestQueue;
-            _username = username;
+            _nEVM = nEVM;
         }
         public override async Task ExecuteAsync(object parameter)
         {
             try
             {
-                var choosenRequest = ((RequestViewModel)parameter).WorkspaceInfo[0].ServiceRequests;
-                string option = choosenRequest.GetType().Name;
+                string option = parameter.GetType().Name;
+                _username = _nEVM.RequestViewModel.GetUsername();
 
                 switch (option)
                 {
                     case "IncidentProxy":
-                        Incident im = (Incident)choosenRequest;
+                        Incident im = (Incident)parameter;
                         await UpdateRequestAssignee(im.IncidentId, "Incident", im);
-                        RemoveFromQueue(im);
+                        _nEVM.RequestViewModel.RemoveAssignedRequest(im);
+                        await _nEVM.CheckIfRequestAssigned();
                         break;
                     case "ServiceRequestProxy":
-                        ServiceRequest c = (ServiceRequest)choosenRequest;
+                        ServiceRequest c = (ServiceRequest)parameter;
                         await UpdateRequestAssignee(c.RequestId, "Change", c);
-                        RemoveFromQueue(c);
+                        _nEVM.RequestViewModel.RemoveAssignedRequest(c);
+                        await _nEVM.CheckIfRequestAssigned();
                         break;
                     case "TaskRequestProxy":
-                        TaskRequest t = (TaskRequest)choosenRequest;
+                        TaskRequest t = (TaskRequest)parameter;
                         await UpdateRequestAssignee(t.TaskId, "Task", t);
-                        RemoveFromQueue(t);
+                        _nEVM.RequestViewModel.RemoveAssignedRequest(t);
+                        await _nEVM.CheckIfRequestAssigned();
                         break;
                 }
             }
@@ -54,36 +56,15 @@ namespace DCGServiceDesk.Commands
 
             }
         }
-        public async Task UpdateRequestAssignee(int rId, string requestType, object request) =>
-            await _requestQueue.ChangeRequestAsignee(rId, requestType, _username);
-
-        public void RemoveFromQueue(object request)
-        {
-            string requestType = request.GetType().Name;
-            var choosenRequest = RequestService.ConvertRequest(request, requestType);
-            int y = 0;
-            foreach (var r in _hVM.Tabs)
+        public async Task UpdateRequestAssignee(int rId, string requestType, object request)
+        { 
+            if(_username != null && _username != "")
             {
-                if (r.GetType().Name == "QueueViewModel")
-                {
-                    foreach (var t in r.WorkspaceInfo)
-                    {
-                        string currentType = t.ServiceRequests.GetType().Name;
-
-                        if (currentType == requestType)
-                        {
-                            var currentRequest = RequestService.ConvertRequest(t.ServiceRequests, requestType);
-
-                            if (RequestService.GetId(choosenRequest) == RequestService.GetId(currentRequest))
-                            {
-                                r.WorkspaceInfo.Remove(t);
-                                y++;
-                                break;
-                            }
-                        }
-                    }
-                }
+                await _requestQueue.ChangeRequestAsignee(rId, requestType, _username);
             }
+
         }
+            
+
     }
 }

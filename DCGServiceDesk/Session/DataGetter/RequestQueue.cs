@@ -57,8 +57,8 @@ namespace DCGServiceDesk.Session.DataGetter
         public async Task<List<AssigmentGroup>> GetGroups() =>
             await _requestService.GetAllGroups();
 
-        public async Task<List<Categorization>> GetSubcategories() =>
-            await _requestService.GetAllSubcategories();
+        public async Task<List<Categorization>> GetSubcategories(string designation) =>
+            await _requestService.GetAllSubcategories(designation);
 
         public async Task<List<Urgency>> GetUrgencies() =>
             await _requestService.GetAllUrgencies();
@@ -71,5 +71,23 @@ namespace DCGServiceDesk.Session.DataGetter
 
         public async Task<List<CloserDue>> GetCloserDues() =>
             await _requestService.GetClosureCodes();
+
+        public async Task UpdateServiceRequest(ServiceRequest request) =>
+            await _requestService.UpdateC(request);
+
+        public async Task UpdateTaskRequest(TaskRequest task) =>
+            await _requestService.UpdateT(task);
+
+        public async Task UpdateIncident(Incident incident) =>
+            await _requestService.UpdateIM(incident);
+
+        public async Task<string> GetChangeAssignee(int requestId) =>
+            await _requestService.GetChangeAssignee(requestId);
+
+        public async Task<string> GetTaskAssignee(int requestId) =>
+            await _requestService.GetTaskAssignee(requestId);
+
+        public async Task<string> GetIncidentAssignee(int requestId) =>
+            await _requestService.GetIncidentAssignee(requestId);
     }
 }

@@ -20,7 +20,6 @@ namespace DCGServiceDesk.ViewModels
         public ILoggedUser loggedUser;
 
         public ICommand RequestCommand { get; }
-        public ICommand UpdateRequestCommand { get; }
         public ICommand UpdateGroupsCommand { get; }
         private readonly IRequestQueue _requestQueue;
         private readonly IUserInfo _userInfo;
@@ -43,8 +42,7 @@ namespace DCGServiceDesk.ViewModels
             _employeeProfile = employeeProfile;
             _interfaceContainer = new DbInterfaceContainer(_requestQueue,_userInfo, _employeeProfile);
 
-            RequestCommand = new RequestCommand(_requestQueue, _userInfo, _employeeProfile, this);
-            UpdateRequestCommand = new UpdateRequestCommand(this, _requestQueue, loggedUser.ActiveUser);
+            RequestCommand = new RequestCommand(_requestQueue, _userInfo, _employeeProfile, this);           
             UpdateGroupsCommand = new UpdateGroupsCommand(this, _requestQueue);
             Groups = _requestQueue.GetUserGroups(loggedUser.ActiveUser);
         }
@@ -79,5 +77,33 @@ namespace DCGServiceDesk.ViewModels
         public void CloseTab(ITab tab) =>
             Tabs.Remove(tab);
 
+        public void RemoveFromQueue(object request)
+        {
+            string requestType = request.GetType().Name;
+            var choosenRequest = RequestService.ConvertRequest(request, requestType);
+            int y = 0;
+            foreach (var r in Tabs)
+            {
+                if (r.GetType().Name == "QueueViewModel")
+                {
+                    foreach (var t in r.WorkspaceInfo)
+                    {
+                        string currentType = t.ServiceRequests.GetType().Name;
+
+                        if (currentType == requestType)
+                        {
+                            var currentRequest = RequestService.ConvertRequest(t.ServiceRequests, requestType);
+
+                            if (RequestService.GetId(choosenRequest) == RequestService.GetId(currentRequest))
+                            {
+                                r.WorkspaceInfo.Remove(t);
+                                y++;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

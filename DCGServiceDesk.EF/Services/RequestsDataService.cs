@@ -99,7 +99,7 @@ namespace DCGServiceDesk.EF.Services
         public async Task<bool> UpdateIncidentAssignee(int id)
         {
             Incident im = await _dbContext.Incidents
-                .Where(i => i.IncidentId == id)
+                .Where(i => i.IncidentId == id && i.Assignee == null)
                 .FirstOrDefaultAsync();
 
             int gId = await _dbContext.AssigmentGroup
@@ -107,15 +107,19 @@ namespace DCGServiceDesk.EF.Services
                 .Select(i => i.GroupId)
                 .FirstOrDefaultAsync();
 
-            im.GroupId = gId;
-            im.Assignee = _username;
+            if (im != null)
+            {
+                im.GroupId = gId;
+                im.Assignee = _username;
 
-            return await _dbContext.SaveChangesAsync() > 0? true:false;
+                return await _dbContext.SaveChangesAsync() > 0 ? true : false;
+            }
+            return false;
         }
         public async Task<bool> UpdateChangeAssignee(int id)
         {
             ServiceRequest c = await _dbContext.Applications
-                .Where(i => i.RequestId == id)
+                .Where(i => i.RequestId == id && i.Assignee == null)
                 .FirstOrDefaultAsync();
 
             int gId = await _dbContext.AssigmentGroup
@@ -123,26 +127,33 @@ namespace DCGServiceDesk.EF.Services
                 .Select(i => i.GroupId)
                 .FirstOrDefaultAsync();
 
-            c.GroupId = gId;
-            c.Assignee = _username;
+            if (c != null)
+            {
+                c.GroupId = gId;
+                c.Assignee = _username;
 
-            return await _dbContext.SaveChangesAsync() > 0 ? true : false;
+                return await _dbContext.SaveChangesAsync() > 0 ? true : false;
+            }
+            return false;
         }
         public async Task<bool> UpdateTaskAssignee(int id)
         {
             TaskRequest t = await _dbContext.Tasks
-                .Where(i => i.TaskId == id)
+                .Where(i => i.TaskId == id && i.Assignee == null)
                 .FirstOrDefaultAsync();
 
             int gId = await _dbContext.AssigmentGroup
                 .Where(n => n.GroupName == "Service Desk")
                 .Select(i => i.GroupId)
                 .FirstOrDefaultAsync();
+            if (t != null)
+            {
+                t.GroupId = gId;
+                t.Assignee = _username;
 
-            t.GroupId = gId;
-            t.Assignee = _username;
-
-            return await _dbContext.SaveChangesAsync() > 0 ? true : false;
+                return await _dbContext.SaveChangesAsync() > 0 ? true : false;
+            }
+            return false;
         }
 
         public async Task<List<object>> GetRequestsFromGroup(int groupId)
@@ -275,8 +286,10 @@ namespace DCGServiceDesk.EF.Services
         public async Task<List<Urgency>> GetAllUrgencies() =>
             await _dbContext.Urgencies.ToListAsync();
 
-        public async Task<List<Categorization>> GetAllSubcategories() =>
-            await _dbContext.Categorizations.ToListAsync();
+        public async Task<List<Categorization>> GetAllSubcategories(string designation) =>
+            await _dbContext.Categorizations
+            .Where(d=>d.Category.Designation == designation)
+            .ToListAsync();
 
         public async Task<List<Priority>> GetPriorityByLevel() =>
             await _dbContext.Priorities.ToListAsync();
@@ -284,6 +297,92 @@ namespace DCGServiceDesk.EF.Services
         public async Task<List<CloserDue>> GetClosureCodes() =>
             await _dbContext.CloserDues.ToListAsync();
 
+        public async Task UpdateC(ServiceRequest request)
+        {
+            ServiceRequest c = await _dbContext.Applications
+                .Where(i => i.RequestId == request.RequestId)
+                .FirstOrDefaultAsync();
+
+            c = request;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateT(TaskRequest task)
+        {
+            TaskRequest t2 = await _dbContext.Tasks.Where(i => i.TaskId == 5).FirstOrDefaultAsync();
+            TaskRequest t = await _dbContext.Tasks
+                .Where(i => i.TaskId == task.TaskId)
+                .FirstOrDefaultAsync();
+
+            Status newStatus = await CreateStatus(DateTime.Now, task.History.ActiveStatus.DueTime);
+
+            t.History.Status.Add(newStatus);
+            t.History.ActiveStatus = task.History.ActiveStatus;
+            t.History.CloserDue = task.History.CloserDue;
+            t.History.Solution = task.History.Solution;
+            t.RequestedPerson = task.RequestedPerson;
+            t.ContactPerson = task.ContactPerson;
+            t.Category = task.Category;
+            t.Impact = task.Impact;
+            t.Urgency = task.Urgency;
+            t.Priority = task.Priority;
+            t.Topic = task.Topic;
+            t.Description = task.Description;
+
+            await _dbContext.SaveChangesAsync();
+        }
+        private async Task<Status> CreateStatus(DateTime createTime, DateTime dueTime)
+        {
+            Status status = new Status();
+            status.StateId = await _dbContext.States
+                .Where(n => n.StateName == "New")
+                .Select(i => i.StateId)
+                .FirstOrDefaultAsync();
+            status.CreateDate = createTime.ToUniversalTime();
+
+            if (status.CreateDate > status.DueTime)
+                status.Expired = true;
+            else
+                status.Expired = false;
+
+            status.DueTime = dueTime;
+            status.State = await _dbContext.States
+                .Where(n => n.StateName == "Closed")
+                .FirstOrDefaultAsync();
+
+            _dbContext.Statuses.Add(status);
+            await _dbContext.SaveChangesAsync();
+
+            return status;
+        }
+        public async Task UpdateIM(Incident incident)
+        {
+            Incident im = await _dbContext.Incidents
+                .Where(i => i.IncidentId == incident.IncidentId)
+                .FirstOrDefaultAsync();
+
+            im = incident;
+
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task<string> GetChangeAssignee(int requestId) =>
+            await _dbContext.Applications
+            .Where(i => i.RequestId == requestId)
+            .Select(a=>a.Assignee)
+            .FirstOrDefaultAsync();
+
+        public async Task<string> GetTaskAssignee(int requestId) =>
+            await _dbContext.Tasks
+            .Where(i => i.TaskId == requestId)
+            .Select(a => a.Assignee)
+            .FirstOrDefaultAsync();
+
+        public async Task<string> GetIncidentAssignee(int requestId) =>
+            await _dbContext.Incidents
+            .Where(i => i.IncidentId == requestId)
+            .Select(a => a.Assignee)
+            .FirstOrDefaultAsync();
         public Task<bool> Remove(int id)
         {
             throw new NotImplementedException();
@@ -298,5 +397,6 @@ namespace DCGServiceDesk.EF.Services
         {
             throw new NotImplementedException();
         }
+
     }
 }

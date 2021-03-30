@@ -22,13 +22,11 @@ namespace DCGServiceDesk.Controls.Tab.Model
             IViewRequestService vRS =
                 new ViewRequestService(interfaceContainer);
             RefreshCommand = new RefreshTabCommand(this, vRS, _requestQueue);
-            EscalateRequestCommand = new EscalateRequestCommand(this, HVM, _requestQueue);
         }
         private HomeViewModel HVM { get; set; }
         public List<TabContainer> WorkspaceInfo { get; set; } = new List<TabContainer>();
         public string Label { get; set; }
         public string QueueType { get; set; }
-        public ICommand EscalateRequestCommand { get; }
         public ICommand CloseTabCommand { get; }
         public ICommand RefreshCommand { get; }
         private readonly IRequestQueue _requestQueue;
@@ -52,6 +50,8 @@ namespace DCGServiceDesk.Controls.Tab.Model
         }
         public string GetUsername() =>
             HVM.loggedUser.ActiveUser;
+        public void RemoveAssignedRequest(object request) =>
+            HVM.RemoveFromQueue(request);
     }
     public class TabContainer
     {

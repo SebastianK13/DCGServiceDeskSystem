@@ -22,6 +22,12 @@ namespace DCGServiceDesk.EF.Services
             _dbContext = _databaseContextFactory.CreateEmployeesDbContext();
         }
 
+        public async Task<int> GetIdByUId(string id) =>
+            await _dbContext.Employees
+            .Where(u => u.UserId == id)
+            .Select(i => i.EmployeeId)
+            .FirstOrDefaultAsync();
+
         public async Task<List<string>> GetUserIdFromEmployee(List<int> eIds)
         {
             List<string> usernamesList = new List<string>();

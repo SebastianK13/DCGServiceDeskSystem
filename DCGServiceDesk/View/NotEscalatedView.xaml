@@ -208,23 +208,26 @@
                         <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Refresh</TextBlock>
                     </StackPanel>
                 </Button>
-                <Button Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type v:Home}},
-                              Path=DataContext.(vm:HomeViewModel.UpdateRequestCommand)}" BorderThickness="0" 
-                              CommandParameter="{Binding }" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                <Button Command="{Binding UpdateRequestCommand}" BorderThickness="0" 
+                        CommandParameter="{Binding RequestViewModel.WorkspaceInfo[0].ServiceRequests}"
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                        Visibility="{Binding AssignBtnVisibile, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Images/take2Icon.bmp" Height="12" Width="25" HorizontalAlignment="Right" Margin="0,0,4,0" />
                         <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Assign</TextBlock>
                     </StackPanel>
                 </Button>
-                <Button Command="{Binding RequestViewModel.EscalateRequestCommand}" CommandParameter="{Binding }" BorderThickness="0" 
-                              Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                <Button Command="{Binding EscalateRequestCommand}" CommandParameter="{Binding }" BorderThickness="0" 
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                        Visibility="{Binding ButtonsVisibile, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Images/escalationIcon.bmp" Height="15" Width="auto" HorizontalAlignment="Right" Margin="6,0,4,0" />
                         <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Escalate</TextBlock>
                     </StackPanel>
                 </Button>
                 <Button Command="{Binding CloseRequestCommand}" CommandParameter="{Binding }" BorderThickness="0" 
-                              Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                        Visibility="{Binding ButtonsVisibile, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Images/redCross.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="6,0,4,0" />
                         <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Close request</TextBlock>

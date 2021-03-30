@@ -25,9 +25,9 @@ namespace DCGServiceDesk.ViewModels
             wi.RequestVisibility = true;
             WorkspaceInfo = new List<TabContainer> { wi };
             Label = singleRequest.Label;
+            wi.RequestType = singleRequest.Request.GetType().Name;
             NotEscalated = new NotEscalatedViewModel(RequestService.ConvertRequest(singleRequest.Request),
-                interfaceContainer);
-            NotEscalated.RequestViewModel = this;
+                interfaceContainer, this);
             Escalation = new EscalationViewModel() { AssigmentGroups = singleRequest.Groups };
             CurrentMode = NotEscalated;
         }
@@ -39,8 +39,9 @@ namespace DCGServiceDesk.ViewModels
     }
     public class NotEscalatedViewModel : ViewModelBase
     {
-        public NotEscalatedViewModel(TaskRequest t, DbInterfaceContainer dbInterfaces)
+        public NotEscalatedViewModel(TaskRequest t, DbInterfaceContainer dbInterfaces, RequestViewModel rVM)
         {
+            RequestViewModel = rVM;
             CurrentState = t.History.ActiveStatus.State;
             CurrentImpact = t.Impact;
             CurrentSubcategory = t.Category;
@@ -52,9 +53,14 @@ namespace DCGServiceDesk.ViewModels
             Topic = t.Topic;
             Description = t.Description;
             Solution = t.History.Solution;
+            _designation = "T";
+            UpdateRequestCommand = new UpdateRequestCommand(_requestQueue, this);
+            EscalateRequestCommand = new EscalateRequestCommand(RequestViewModel, _requestQueue);
+            _requestId = t.TaskId;
         }
-        public NotEscalatedViewModel(Incident i, DbInterfaceContainer dbInterfaces)
+        public NotEscalatedViewModel(Incident i, DbInterfaceContainer dbInterfaces, RequestViewModel rVM)
         {
+            RequestViewModel = rVM;
             CurrentState = i.History.ActiveStatus.State;
             CurrentImpact = i.Impact;
             CurrentSubcategory = i.Category;
@@ -66,9 +72,14 @@ namespace DCGServiceDesk.ViewModels
             Topic = i.Topic;
             Description = i.Description;
             Solution = i.History.Solution;
+            _designation = "IM";
+            UpdateRequestCommand = new UpdateRequestCommand(_requestQueue, this);
+            EscalateRequestCommand = new EscalateRequestCommand(RequestViewModel, _requestQueue);
+            _requestId = i.IncidentId;
         }
-        public NotEscalatedViewModel(ServiceRequest c, DbInterfaceContainer dbInterfaces)
+        public NotEscalatedViewModel(ServiceRequest c, DbInterfaceContainer dbInterfaces, RequestViewModel rVM)
         {
+            RequestViewModel = rVM;
             CurrentState = c.History.ActiveStatus.State;
             CurrentImpact = c.Impact;
             CurrentSubcategory = c.Category;
@@ -80,7 +91,13 @@ namespace DCGServiceDesk.ViewModels
             Topic = c.Topic;
             Description = c.Description;
             Solution = c.History.Solution;
+            _designation = "C";
+            UpdateRequestCommand = new UpdateRequestCommand(_requestQueue, this);
+            EscalateRequestCommand = new EscalateRequestCommand(RequestViewModel, _requestQueue);
+            _requestId = c.RequestId;
         }
+        public ICommand EscalateRequestCommand { get; }
+        public ICommand UpdateRequestCommand { get; }
         public ICommand CloseRequestCommand { get; }
         public ICommand FindUserCommand { get; }
         private readonly IRequestQueue _requestQueue;
@@ -93,6 +110,8 @@ namespace DCGServiceDesk.ViewModels
         public List<CloserDue> CloserDues { get; private set; }
         public string AdminUsername { get; set; }
 
+        private readonly int _requestId;
+        private readonly string _designation;
         private State _state;
         private Urgency _urgency;
         private Categorization _subcategory;
@@ -114,7 +133,27 @@ namespace DCGServiceDesk.ViewModels
         private string _topic;
         private string _desc;
         private string _solution;
+        private bool _buttonsVisible;
+        private bool _assignBtnVisible;
 
+        public bool AssignBtnVisibile
+        {
+            get { return _assignBtnVisible; }
+            set
+            {
+                _assignBtnVisible = value;
+                OnPropertyChanged("AssignBtnVisibile");
+            }
+        }
+        public bool ButtonsVisibile
+        {
+            get { return _buttonsVisible; }
+            set
+            {
+                _buttonsVisible = value;
+                OnPropertyChanged("ButtonsVisibile");
+            }
+        }
         public bool FindUserEventArea
         {
             get { return _findUserEvenArea; }
@@ -125,7 +164,6 @@ namespace DCGServiceDesk.ViewModels
             }
 
         }
-
         public Brush ContactValid
         {
             get { return _cBorderBrush; }
@@ -356,17 +394,41 @@ namespace DCGServiceDesk.ViewModels
         public async Task Initialize()
         {
             States = await _requestQueue.GetAllStates();
-            Categorizations = await _requestQueue.GetSubcategories();
+            Categorizations = await _requestQueue.GetSubcategories(_designation);
             Urgencies = await _requestQueue.GetUrgencies();
             Impacts = await _requestQueue.GetImpacts();
             Priorities = await _requestQueue.GetPriority();
             CloserDues = await _requestQueue.GetCloserDues();
-            CUsername = RequestViewModel.WorkspaceInfo[0].CommunicationInfo.RequestedPerson;
-            RUsername = RequestViewModel.WorkspaceInfo[0].CommunicationInfo.ContactPerson;
+            CUsername = RequestViewModel.WorkspaceInfo.FirstOrDefault().CommunicationInfo.RequestedPerson;
+            RUsername = RequestViewModel.WorkspaceInfo.FirstOrDefault().CommunicationInfo.ContactPerson;
             ContactValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
             RecipientValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
             AdminUsername = RequestViewModel.GetUsername();
+            AssignBtnVisibile = true;
             SetPriority();
+        }
+        public async Task CheckIfRequestAssigned()
+        {
+            string assignee = null;
+            switch (_designation)
+            {
+                case "C":
+                    assignee = await _requestQueue.GetChangeAssignee(_requestId);
+                    break;
+                case "T":
+                    assignee = await _requestQueue.GetTaskAssignee(_requestId);
+                    break;
+                case "IM":
+                    assignee = await _requestQueue.GetIncidentAssignee(_requestId);
+                    break;
+            }
+
+            if (AdminUsername == assignee)
+            {
+                ButtonsVisibile = true;
+                AssignBtnVisibile = false;
+            }
+                 
         }
         public void SetInitialColors()
         {

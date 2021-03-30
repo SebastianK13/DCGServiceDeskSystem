@@ -34,14 +34,20 @@ namespace DCGServiceDesk.Commands
                 case "FindRecipient":
                      id = await _userInfo.GetUserId(_nEVM.RUsername);
                     _nEVM.RecipientValid = await GenerateProperColorAsync(id);
-                    _nEVM.Recipient = new AccountInfo(_user, superiorUsername);
-                    _nEVM.FindUserEventArea = true;
+                    if(_user != null)
+                    {
+                        _nEVM.Recipient = new AccountInfo(_user, superiorUsername);
+                        _nEVM.FindUserEventArea = true;
+                    }
                     break;
                 case "FindContact":
                      id = await _userInfo.GetUserId(_nEVM.CUsername);
                     _nEVM.ContactValid = await GenerateProperColorAsync(id);
-                    _nEVM.Contact = new AccountInfo(_user, superiorUsername);
-                    _nEVM.FindUserEventArea = true;
+                    if(_user != null)
+                    {
+                        _nEVM.Contact = new AccountInfo(_user, superiorUsername);
+                        _nEVM.FindUserEventArea = true;
+                    }
                     break;
                 case "CloseUserInfo":
                     CloseOpened();
