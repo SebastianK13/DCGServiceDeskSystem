@@ -7,5 +7,5 @@
     <DataTemplate DataType="{x:Type vm:AccountInfo}">
         <vw:UserInfo />
     </DataTemplate>
-     
+    
 </ResourceDictionary>

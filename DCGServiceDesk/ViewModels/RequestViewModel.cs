@@ -28,7 +28,10 @@ namespace DCGServiceDesk.ViewModels
             wi.RequestType = singleRequest.Request.GetType().Name;
             NotEscalated = new NotEscalatedViewModel(RequestService.ConvertRequest(singleRequest.Request),
                 interfaceContainer, this);
-            Escalation = new EscalationViewModel() { AssigmentGroups = singleRequest.Groups };
+            Escalation = new EscalationViewModel(this, interfaceContainer.RequestQueue)
+            {
+                AssigmentGroups = singleRequest.Groups,
+            };
             CurrentMode = NotEscalated;
         }
         public async Task InitializeNEVMModel()
@@ -451,8 +454,29 @@ namespace DCGServiceDesk.ViewModels
             }
         }
     }
-    public class EscalationViewModel
+    public class EscalationViewModel:ViewModelBase
     {
+        public EscalationViewModel(RequestViewModel rVM, IRequestQueue requestQueue)
+        {
+            RequestViewModel = rVM;
+            designation = rVM.WorkspaceInfo.FirstOrDefault().ServiceRequests.GetType().Name;
+            EscalateRequestCommand = new EscalateRequestCommand(rVM, requestQueue);
+            ForwardOrDropCommand = new ForwardOrDropCommand(requestQueue, this);
+        }
+        private AssigmentGroup _chosenGroup;
+        public string designation;
+        public AssigmentGroup ChoosenGroup
+        {
+            get { return _chosenGroup; }
+            set
+            {
+                _chosenGroup = value;
+                OnPropertyChanged("ChoosenGroup");
+            }
+        }
+
+        public ICommand ForwardOrDropCommand { get; set; }
+        public ICommand EscalateRequestCommand { get; }
         public List<AssigmentGroup> AssigmentGroups { get; set; }
         public RequestViewModel RequestViewModel { get; set; }
     }

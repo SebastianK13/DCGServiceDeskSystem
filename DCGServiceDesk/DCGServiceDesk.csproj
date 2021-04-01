@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\backIcon.png" />
     <None Remove="Images\closeBlackIcon.png" />
     <None Remove="Images\connectionWhiteImg.png" />
     <None Remove="Images\escalationIcon.bmp" />
@@ -55,6 +56,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\backIcon.png" />
     <Resource Include="Images\closeBlackIcon.png" />
     <Resource Include="Images\connectionWhiteImg.png" />
     <Resource Include="Images\escalationIcon.bmp" />

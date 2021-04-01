@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:DCGServiceDesk.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock/>
+    <Grid >
+        <TextBlock Panel.ZIndex="2">empty</TextBlock>
     </Grid>
 </UserControl>

@@ -29,6 +29,24 @@ namespace DCGServiceDesk.Services
 
             }
         }
+        public static TaskRequest SetAssigmentGroupT(TaskRequest task, AssigmentGroup group)
+        {
+            task.Group = group;
+            return task;
+        }
+
+        public static Incident SetAssigmentGroupIM(Incident incident, AssigmentGroup group)
+        {
+            incident.Group = group;
+            return incident;
+        }
+
+        public static ServiceRequest SetAssigmentGroupC(ServiceRequest change, AssigmentGroup group)
+        {
+            change.Group = group;
+            return change;
+        }
+
         public static dynamic GetId(object request)
         {
             switch (request.GetType().Name)
@@ -149,4 +167,5 @@ namespace DCGServiceDesk.Services
         public string QueueName { get; set; }
         public string QueueType { get; set; }
     }
+
 }

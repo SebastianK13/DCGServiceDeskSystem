@@ -1,14 +1,16 @@
 ﻿using DCGServiceDesk.Controls.Tab.Model;
+using DCGServiceDesk.Data.Models;
 using DCGServiceDesk.Session.DataGetter;
 using DCGServiceDesk.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace DCGServiceDesk.Commands
 {
-    public class EscalateRequestCommand : AsyncCommandBase
+    public class EscalateRequestCommand : ICommand
     {
         private readonly IRequestQueue _requestQueue;
         private readonly RequestViewModel _rVM;
@@ -17,23 +19,24 @@ namespace DCGServiceDesk.Commands
             _requestQueue = requestQueue;
             _rVM = rVM;
         }
-        public async override Task ExecuteAsync(object parameter)
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter) => true;
+
+        public void Execute(object parameter)
         {
             try
             {
-                string option = parameter.GetType().Name;
-                if (option == "string")
-                    option = parameter.ToString();
+                string option = parameter.ToString();
 
                 switch (option)
                 {
-                    case "NotEscalatedViewModel":
-                        NotEscalatedViewModel notEscalated = ((NotEscalatedViewModel)parameter);
-                        notEscalated.RequestViewModel.CurrentMode = notEscalated.RequestViewModel.Escalation;
-                        notEscalated.RequestViewModel.Escalation.RequestViewModel = notEscalated.RequestViewModel;
+                    case "Escalation":
+                        _rVM.CurrentMode = _rVM.Escalation;
                         break;
-                    case "EscalationViewModel":
-                        
+                    case "NotEscalated":
+                        _rVM.CurrentMode = _rVM.NotEscalated;
                         break;
                 }
             }
