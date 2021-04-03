@@ -33,7 +33,7 @@ namespace DCGServiceDesk.Commands
                 switch (option)
                 {
                     case "Escalation":
-                        _rVM.CurrentMode = _rVM.Escalation;
+                        
                         break;
                     case "NotEscalated":
                         _rVM.CurrentMode = _rVM.NotEscalated;

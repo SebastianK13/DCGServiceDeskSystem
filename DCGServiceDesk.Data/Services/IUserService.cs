@@ -4,7 +4,7 @@ using DCGServiceDesk.Data.Models;
 
 namespace DCGServiceDesk.Data.Services
 {
-    public interface IUserService : ICrud<User>
+    public interface IUserService
     {
         Task<User> GetByName(string username);
         Task<List<CommunicationInfo>> GetUserName(List<string> eIdContact, List<string> eIdRequested);

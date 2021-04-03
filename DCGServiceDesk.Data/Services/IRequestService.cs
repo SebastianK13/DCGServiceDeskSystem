@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DCGServiceDesk.Data.Services
 {
-    public interface IRequestService: ICrud<ServiceRequest>
+    public interface IRequestService
     {
         Task<List<ServiceRequest>> GetAll();
         Task<List<object>> GetAllRequests();
@@ -27,11 +27,13 @@ namespace DCGServiceDesk.Data.Services
         Task<List<Categorization>> GetAllSubcategories(string designation);
         Task<List<Priority>> GetPriorityByLevel();
         Task<List<CloserDue>> GetClosureCodes();
-        Task UpdateC(ServiceRequest request);
-        Task UpdateT(TaskRequest task);
-        Task UpdateIM(Incident incident);
+        Task UpdateC(ServiceRequest request, string username, string stateName = "New");
+        Task UpdateT(TaskRequest task, string username, string stateName = "New");
+        Task UpdateIM(Incident incident, string username, string stateName="New");
         Task<string> GetChangeAssignee(int requestId);
         Task<string> GetTaskAssignee(int requestId);
         Task<string> GetIncidentAssignee(int requestId);
+        Task<List<Incident>> GetOpenIncidentsList();
+        Task AddAssociatedIncident(Incident request, string username, Incident choosenIncident);
     }
 }

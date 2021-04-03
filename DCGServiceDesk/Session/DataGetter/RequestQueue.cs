@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DCGServiceDesk.Data.Models;
 using DCGServiceDesk.Data.Services;
+using DCGServiceDesk.ViewModels;
 
 namespace DCGServiceDesk.Session.DataGetter
 {
@@ -72,14 +73,14 @@ namespace DCGServiceDesk.Session.DataGetter
         public async Task<List<CloserDue>> GetCloserDues() =>
             await _requestService.GetClosureCodes();
 
-        public async Task UpdateServiceRequest(ServiceRequest request) =>
-            await _requestService.UpdateC(request);
+        public async Task UpdateServiceRequest(ServiceRequest request, string username, string stateName = "New") =>
+            await _requestService.UpdateC(request, username,stateName);
 
-        public async Task UpdateTaskRequest(TaskRequest task) =>
-            await _requestService.UpdateT(task);
+        public async Task UpdateTaskRequest(TaskRequest task, string username, string stateName = "New") =>
+            await _requestService.UpdateT(task, username, stateName);
 
-        public async Task UpdateIncident(Incident incident) =>
-            await _requestService.UpdateIM(incident);
+        public async Task UpdateIncident(Incident incident, string username, string stateName="New") =>
+            await _requestService.UpdateIM(incident, username, stateName);
 
         public async Task<string> GetChangeAssignee(int requestId) =>
             await _requestService.GetChangeAssignee(requestId);
@@ -89,5 +90,11 @@ namespace DCGServiceDesk.Session.DataGetter
 
         public async Task<string> GetIncidentAssignee(int requestId) =>
             await _requestService.GetIncidentAssignee(requestId);
+
+        public async Task<List<Incident>> GetOpenIncidents() =>
+            await _requestService.GetOpenIncidentsList();
+
+        public async Task AddAssociatedIM(Incident request, string username, OpenIncidentContainer choosenIncident) =>
+            await _requestService.AddAssociatedIncident(request, username, choosenIncident.Incident);
     }
 }

@@ -14,6 +14,7 @@ namespace DCGServiceDesk.Commands
     {
         private readonly IRequestQueue _requestQueue;
         private readonly EscalationViewModel _eVM;
+        private string _username;
         public ForwardOrDropCommand(IRequestQueue requestQueue, EscalationViewModel eVM)
         {
             _eVM = eVM;
@@ -24,6 +25,8 @@ namespace DCGServiceDesk.Commands
         {
             try
             {
+                _requestQueue.RefreshData();
+                _username = _eVM.RequestViewModel.GetUsername();
                 switch (parameter.ToString())
                 {
                     case "Forward":
@@ -46,15 +49,22 @@ namespace DCGServiceDesk.Commands
             {
                 case "TaskRequestProxy":
                     TaskRequest t = RequestService.SetAssigmentGroupT((TaskRequest)request, _eVM.ChoosenGroup);
-                    await _requestQueue.UpdateTaskRequest(t);
+                    await _requestQueue.UpdateTaskRequest(t, _username);
                     break;
                 case "IncidentProxy":
-                    Incident im = RequestService.SetAssigmentGroupIM((Incident)request, _eVM.ChoosenGroup);
-                    await _requestQueue.UpdateIncident(im);
+                    if (_eVM.IsAssociated)
+                    {
+                        await _requestQueue.AddAssociatedIM((Incident)request, _username, _eVM.ChoosenIncident);
+                    }
+                    else
+                    {
+                        Incident im = RequestService.SetAssigmentGroupIM((Incident)request, _eVM.ChoosenGroup);
+                        await _requestQueue.UpdateIncident((Incident)request, _username);
+                    }
                     break;
                 case "ServiceRequestProxy":
                     ServiceRequest c = RequestService.SetAssigmentGroupC((ServiceRequest)request, _eVM.ChoosenGroup);
-                    await _requestQueue.UpdateServiceRequest(c);
+                    await _requestQueue.UpdateServiceRequest(c, _username);
                     break;
 
             }

@@ -11,7 +11,7 @@ using DCGServiceDesk.ViewModels;
 
 namespace DCGServiceDesk.Commands
 {
-    public class CloseRequestCommand : AsyncCommandBase
+    public class CloseOrEscalateCommand : AsyncCommandBase
     {
         private readonly IRequestQueue _requestQueue;
         private readonly IUserInfo _userInfo;
@@ -22,7 +22,7 @@ namespace DCGServiceDesk.Commands
         private List<bool> isFormValid = new List<bool>();
         private object request;
 
-        public CloseRequestCommand(DbInterfaceContainer dbInterfaces, NotEscalatedViewModel nEVM)
+        public CloseOrEscalateCommand(DbInterfaceContainer dbInterfaces, NotEscalatedViewModel nEVM)
         {
             this.nEVM = nEVM;
             _requestQueue = dbInterfaces.RequestQueue;
@@ -32,10 +32,123 @@ namespace DCGServiceDesk.Commands
 
         public async override Task ExecuteAsync(object parameter)
         {
+            try
+            {
+                _requestQueue.RefreshData();
+                switch (parameter.ToString())
+                {
+                    case "Close":
+                        await CloseRequest();
+                        break;
+                    case "Escalate":
+                        await EscalateRequest();
+                        break;
+                    case "Refresh":
+                        await RefreshRequest();
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+        private async Task RefreshRequest()
+        {
+            request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
+            string requestType = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().RequestType;
+            switch (requestType)
+            {
+                case "TaskRequestProxy":
+                    TaskRequest t = (TaskRequest)request;
+                    TaskRequest updatedT = await _requestQueue.GetTask(t.TaskId);
+                    UpdateTModel(updatedT);
+                    break;
+                case "IncidentProxy":
+                    Incident im = (Incident)request;
+                    Incident updatedIM = await _requestQueue.GetIncident(im.IncidentId);
+                    UpdateIMModel(updatedIM);
+                    break;
+                case "ServiceRequestProxy":
+                    ServiceRequest c = (ServiceRequest)request;
+                    ServiceRequest updatedChange = await _requestQueue.GetChange(c.RequestId);
+                    UpdateCModel(updatedChange);
+                    break;
+
+            }
+        }
+        private void UpdateIMModel(Incident im)
+        {
+            nEVM.CurrentState = im.History.ActiveStatus.State;
+            nEVM.CurrentImpact = im.Impact;
+            nEVM.CurrentSubcategory = im.Category;
+            nEVM.CurrentUrgency = im.Urgency;
+            nEVM.Topic = im.Topic;
+            nEVM.Description = im.Description;
+            nEVM.Solution = im.History.Solution;
+        }
+        private void UpdateCModel(ServiceRequest c)
+        {
+            nEVM.CurrentState = c.History.ActiveStatus.State;
+            nEVM.CurrentImpact = c.Impact;
+            nEVM.CurrentSubcategory = c.Category;
+            nEVM.CurrentUrgency = c.Urgency;
+            nEVM.Topic = c.Topic;
+            nEVM.Description = c.Description;
+            nEVM.Solution = c.History.Solution;
+        }
+        private void UpdateTModel(TaskRequest t)
+        {
+            nEVM.CurrentState = t.History.ActiveStatus.State;
+            nEVM.CurrentImpact = t.Impact;
+            nEVM.CurrentSubcategory = t.Category;
+            nEVM.CurrentUrgency = t.Urgency;
+            nEVM.Topic = t.Topic;
+            nEVM.Description = t.Description;
+            nEVM.Solution = t.History.Solution;
+
+        }
+        private async Task EscalateRequest()
+        {
             string contactId = await _userInfo.GetUserId(nEVM.CUsername);
             string recipientId = await _userInfo.GetUserId(nEVM.RUsername);
             request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
-            CheckStatus();
+            CheckStatusForEscalate();
+            CheckContactField(contactId);
+            CheckRecipientField(recipientId);
+            CheckTopicField();
+            CheckDescField();
+            if (!isFormValid.Contains(false))
+            {
+                string requestType = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().RequestType;
+                switch (requestType)
+                {
+                    case "TaskRequestProxy":
+                        TaskRequest task = await UpdateT();
+                        nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests = task;
+                        break;
+                    case "IncidentProxy":
+                        Incident incident = await UpdateIM();
+                        nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests = incident;
+                        break;
+                    case "ServiceRequestProxy":
+                        ServiceRequest change = await UpdateC();
+                        nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests = change;
+                        break;
+
+                }
+                nEVM.RequestViewModel.CurrentMode = nEVM.RequestViewModel.Escalation;
+                nEVM.RequestViewModel.RemoveCurrentTab();
+            }
+            else
+                isFormValid.Clear();
+        }
+        private async Task CloseRequest()
+        {
+            string contactId = await _userInfo.GetUserId(nEVM.CUsername);
+            string recipientId = await _userInfo.GetUserId(nEVM.RUsername);
+            request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
+            CheckStatusForClose();
             CheckContactField(contactId);
             CheckRecipientField(recipientId);
             CheckTopicField();
@@ -49,23 +162,24 @@ namespace DCGServiceDesk.Commands
                 {
                     case "TaskRequestProxy":
                         TaskRequest task = await UpdateT();
-                        await _requestQueue.UpdateTaskRequest(task);
+                        await _requestQueue.UpdateTaskRequest(task, nEVM.AdminUsername, "Closed");
                         break;
                     case "IncidentProxy":
                         Incident incident = await UpdateIM();
-                        await _requestQueue.UpdateIncident(incident); 
+                        await _requestQueue.UpdateIncident(incident, nEVM.AdminUsername, "Closed");
                         break;
                     case "ServiceRequestProxy":
                         ServiceRequest change = await UpdateC();
-                        await _requestQueue.UpdateServiceRequest(change);
+                        await _requestQueue.UpdateServiceRequest(change, nEVM.AdminUsername, "Closed");
                         break;
 
                 }
+                nEVM.RequestViewModel.RemoveCurrentTab();
             }
             else
                 isFormValid.Clear();
         }
-        private void CheckStatus()
+        private void CheckStatusForClose()
         {
             if (nEVM.CurrentState != nEVM.States.Where(s => s.StateName == "Closed").FirstOrDefault())
             {
@@ -79,8 +193,22 @@ namespace DCGServiceDesk.Commands
             }
 
         }
+        private void CheckStatusForEscalate()
+        {
+            if (nEVM.CurrentState != nEVM.States.Where(s => s.StateName == "New").FirstOrDefault())
+            {
+                nEVM.StatusValid = Invalid;
+                isFormValid.Add(false);
+            }
+            else
+            {
+                isFormValid.Add(true);
+                nEVM.StatusValid = Valid;
+            }
+
+        }
         private void CheckContactField(string contactId)
-        {           
+        {
             if (contactId != "" && contactId != null)
             {
                 nEVM.ContactValid = Valid;

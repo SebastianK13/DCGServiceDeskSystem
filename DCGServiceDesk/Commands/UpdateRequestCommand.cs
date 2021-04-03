@@ -26,6 +26,7 @@ namespace DCGServiceDesk.Commands
         {
             try
             {
+                _requestQueue.RefreshData();
                 string option = parameter.GetType().Name;
                 _username = _nEVM.RequestViewModel.GetUsername();
 

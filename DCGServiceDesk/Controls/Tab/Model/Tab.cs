@@ -52,6 +52,9 @@ namespace DCGServiceDesk.Controls.Tab.Model
             HVM.loggedUser.ActiveUser;
         public void RemoveAssignedRequest(object request) =>
             HVM.RemoveFromQueue(request);
+        public void RemoveCurrentTab() =>
+            HVM.Tabs.Remove(this);
+
     }
     public class TabContainer
     {

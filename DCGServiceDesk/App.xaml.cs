@@ -79,12 +79,10 @@ namespace DCGServiceDesk
 
                 services.AddSingleton<IServiceDeskViewModelFactory, ServiceDeskViewModelFactory>();
                 services.AddSingleton<IViewForwarding, ViewForwarding>();
-                services.AddSingleton<ICrud<User>, IdentityDataServices>();
                 services.AddSingleton<IUserService, IdentityDataServices>();
                 services.AddSingleton<IAuthorization, Authorization>();
                 services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
                 services.AddSingleton<ILoggedUser, LoggedUser>();
-                services.AddSingleton<ICrud<ServiceRequest>, RequestsDataService>();
                 services.AddSingleton<IRequestService, RequestsDataService>();
                 services.AddSingleton<IRequestQueue, RequestQueue>();
                 services.AddSingleton<IUserInfo, UserInfo>();

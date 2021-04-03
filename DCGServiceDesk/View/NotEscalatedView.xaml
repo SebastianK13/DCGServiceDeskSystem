@@ -32,7 +32,9 @@
         <Border Grid.Row="0" BorderBrush="#FFACACAC" BorderThickness="0,0,0,1">
             <StackPanel Background="#D6D6CE" Orientation="Horizontal">
                 <Button Background="Transparent" Width="0"/>
-                <Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" BorderThickness="0" Margin="0,0,2,0">
+                <Button Command="{Binding CloseOrEscalateCommand}" BorderThickness="0" 
+                        CommandParameter="Refresh"
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Images/refreshIcon.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="0,0,0,0" />
                         <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Refresh</TextBlock>
@@ -47,7 +49,7 @@
                         <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Assign</TextBlock>
                     </StackPanel>
                 </Button>
-                <Button Command="{Binding EscalateRequestCommand}" CommandParameter="Escalation" BorderThickness="0" 
+                <Button Command="{Binding CloseOrEscalateCommand}" CommandParameter="Escalate" BorderThickness="0" 
                         Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
                         Visibility="{Binding ButtonsVisibile, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel Orientation="Horizontal">
@@ -55,7 +57,7 @@
                         <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Escalate</TextBlock>
                     </StackPanel>
                 </Button>
-                <Button Command="{Binding CloseRequestCommand}" CommandParameter="{Binding }" BorderThickness="0" 
+                <Button Command="{Binding CloseOrEscalateCommand}" CommandParameter="Close" BorderThickness="0" 
                         Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
                         Visibility="{Binding ButtonsVisibile, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel Orientation="Horizontal">

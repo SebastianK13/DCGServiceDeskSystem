@@ -95,6 +95,7 @@ namespace DCGServiceDesk.Data.Models
         public int CategoryId { get; set; }
         [ForeignKey("History")]
         public int HistoryId { get; set; }
+        public bool IsAssociated { get; set; }
         public virtual StatusHistory? History { get; set; }
         public virtual Impact? Impact { get; set; }
         public virtual Urgency? Urgency { get; set; }
@@ -199,6 +200,8 @@ namespace DCGServiceDesk.Data.Models
         public DateTime CreateDate { get; set; }
         public DateTime DueTime { get; set; }
         public bool Expired { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? Message { get; set; }
         public virtual State? State { get; set; }
     }
 

@@ -297,48 +297,40 @@ namespace DCGServiceDesk.EF.Services
         public async Task<List<CloserDue>> GetClosureCodes() =>
             await _dbContext.CloserDues.ToListAsync();
 
-        public async Task UpdateC(ServiceRequest request)
+        public async Task UpdateC(ServiceRequest request, string username, string stateName = "New")
         {
-            ServiceRequest c = await _dbContext.Applications
-                .Where(i => i.RequestId == request.RequestId)
-                .FirstOrDefaultAsync();
-
-            c = request;
+            Status newStatus = await CreateStatus(DateTime.Now, request.History.ActiveStatus.DueTime, stateName);
+            newStatus.CreatedBy = username;
+            request.History.Status.Add(newStatus);
+            request.History.ActiveStatus = newStatus;
+            _dbContext.Entry(request).State = EntityState.Modified;
 
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateT(TaskRequest task)
+        public async Task UpdateT(TaskRequest task, string username, string stateName = "New")
         {
-            TaskRequest t2 = await _dbContext.Tasks.Where(i => i.TaskId == 5).FirstOrDefaultAsync();
-            TaskRequest t = await _dbContext.Tasks
-                .Where(i => i.TaskId == task.TaskId)
-                .FirstOrDefaultAsync();
-
-            Status newStatus = await CreateStatus(DateTime.Now, task.History.ActiveStatus.DueTime);
-
-            t.History.Status.Add(newStatus);
-            t.History.ActiveStatus = task.History.ActiveStatus;
-            t.History.CloserDue = task.History.CloserDue;
-            t.History.Solution = task.History.Solution;
-            t.RequestedPerson = task.RequestedPerson;
-            t.ContactPerson = task.ContactPerson;
-            t.Category = task.Category;
-            t.Impact = task.Impact;
-            t.Urgency = task.Urgency;
-            t.Priority = task.Priority;
-            t.Topic = task.Topic;
-            t.Description = task.Description;
+            Status newStatus = await CreateStatus(DateTime.Now, task.History.ActiveStatus.DueTime, stateName);
+            newStatus.CreatedBy = username;
+            task.History.Status.Add(newStatus);
+            task.History.ActiveStatus = newStatus;
+            _dbContext.Entry(task).State = EntityState.Modified;
 
             await _dbContext.SaveChangesAsync();
         }
-        private async Task<Status> CreateStatus(DateTime createTime, DateTime dueTime)
+        public async Task UpdateIM(Incident incident, string username, string stateName = "New")
+        {
+            Status newStatus = await CreateStatus(DateTime.Now, incident.History.ActiveStatus.DueTime, stateName);
+            newStatus.CreatedBy = username;
+            incident.History.Status.Add(newStatus);
+            incident.History.ActiveStatus = newStatus;
+            _dbContext.Entry(incident).State = EntityState.Modified;
+
+            await _dbContext.SaveChangesAsync();
+        }
+        private async Task<Status> CreateStatus(DateTime createTime, DateTime dueTime, string stateName)
         {
             Status status = new Status();
-            status.StateId = await _dbContext.States
-                .Where(n => n.StateName == "New")
-                .Select(i => i.StateId)
-                .FirstOrDefaultAsync();
             status.CreateDate = createTime.ToUniversalTime();
 
             if (status.CreateDate > status.DueTime)
@@ -348,23 +340,13 @@ namespace DCGServiceDesk.EF.Services
 
             status.DueTime = dueTime;
             status.State = await _dbContext.States
-                .Where(n => n.StateName == "Closed")
+                .Where(n => n.StateName == stateName)
                 .FirstOrDefaultAsync();
 
             _dbContext.Statuses.Add(status);
             await _dbContext.SaveChangesAsync();
 
             return status;
-        }
-        public async Task UpdateIM(Incident incident)
-        {
-            Incident im = await _dbContext.Incidents
-                .Where(i => i.IncidentId == incident.IncidentId)
-                .FirstOrDefaultAsync();
-
-            im = incident;
-
-            await _dbContext.SaveChangesAsync();
         }
         public async Task<string> GetChangeAssignee(int requestId) =>
             await _dbContext.Applications
@@ -383,20 +365,19 @@ namespace DCGServiceDesk.EF.Services
             .Where(i => i.IncidentId == requestId)
             .Select(a => a.Assignee)
             .FirstOrDefaultAsync();
-        public Task<bool> Remove(int id)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<User> Update(int id, User entity)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<List<Incident>> GetOpenIncidentsList() =>
+            await _dbContext.Incidents.Where(o => (o.History.ActiveStatus.State.StateName == "New" ||
+            o.History.ActiveStatus.State.StateName == "Waiting") && o.GroupId != null).ToListAsync();
 
-        public Task<ServiceRequest> Update(int id, ServiceRequest entity)
+        public async Task AddAssociatedIncident(Incident request, string username, Incident choosenIncident)
         {
-            throw new NotImplementedException();
-        }
+            request.IsAssociated = true;
+            await UpdateIM(request, username);
+            choosenIncident.AffectedIncidents.Add(request);
+            _dbContext.Entry(choosenIncident).State = EntityState.Modified;
 
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

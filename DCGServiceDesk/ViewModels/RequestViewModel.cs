@@ -39,6 +39,10 @@ namespace DCGServiceDesk.ViewModels
             await NotEscalated.Initialize();
             NotEscalated.SetInitialColors();
         }
+        public async Task InitializeEVMModel()
+        {
+            await Escalation.Initialize();
+        }
     }
     public class NotEscalatedViewModel : ViewModelBase
     {
@@ -52,13 +56,12 @@ namespace DCGServiceDesk.ViewModels
             _requestQueue = dbInterfaces.RequestQueue;
             FindUserCommand = new FindUserCommand(dbInterfaces, this);
             FindUserEventArea = false;
-            CloseRequestCommand = new CloseRequestCommand(dbInterfaces, this);
+            CloseOrEscalateCommand = new CloseOrEscalateCommand(dbInterfaces, this);
             Topic = t.Topic;
             Description = t.Description;
             Solution = t.History.Solution;
             _designation = "T";
             UpdateRequestCommand = new UpdateRequestCommand(_requestQueue, this);
-            EscalateRequestCommand = new EscalateRequestCommand(RequestViewModel, _requestQueue);
             _requestId = t.TaskId;
         }
         public NotEscalatedViewModel(Incident i, DbInterfaceContainer dbInterfaces, RequestViewModel rVM)
@@ -71,13 +74,12 @@ namespace DCGServiceDesk.ViewModels
             _requestQueue = dbInterfaces.RequestQueue;
             FindUserCommand = new FindUserCommand(dbInterfaces, this);
             FindUserEventArea = false;
-            CloseRequestCommand = new CloseRequestCommand(dbInterfaces, this);
+            CloseOrEscalateCommand = new CloseOrEscalateCommand(dbInterfaces, this);
             Topic = i.Topic;
             Description = i.Description;
             Solution = i.History.Solution;
             _designation = "IM";
             UpdateRequestCommand = new UpdateRequestCommand(_requestQueue, this);
-            EscalateRequestCommand = new EscalateRequestCommand(RequestViewModel, _requestQueue);
             _requestId = i.IncidentId;
         }
         public NotEscalatedViewModel(ServiceRequest c, DbInterfaceContainer dbInterfaces, RequestViewModel rVM)
@@ -90,18 +92,16 @@ namespace DCGServiceDesk.ViewModels
             _requestQueue = dbInterfaces.RequestQueue;
             FindUserCommand = new FindUserCommand(dbInterfaces, this);
             FindUserEventArea = false;
-            CloseRequestCommand = new CloseRequestCommand(dbInterfaces, this);
+            CloseOrEscalateCommand = new CloseOrEscalateCommand(dbInterfaces, this);
             Topic = c.Topic;
             Description = c.Description;
             Solution = c.History.Solution;
             _designation = "C";
             UpdateRequestCommand = new UpdateRequestCommand(_requestQueue, this);
-            EscalateRequestCommand = new EscalateRequestCommand(RequestViewModel, _requestQueue);
             _requestId = c.RequestId;
         }
-        public ICommand EscalateRequestCommand { get; }
         public ICommand UpdateRequestCommand { get; }
-        public ICommand CloseRequestCommand { get; }
+        public ICommand CloseOrEscalateCommand { get; }
         public ICommand FindUserCommand { get; }
         private readonly IRequestQueue _requestQueue;
         public RequestViewModel RequestViewModel { get; set; }
@@ -431,7 +431,7 @@ namespace DCGServiceDesk.ViewModels
                 ButtonsVisibile = true;
                 AssignBtnVisibile = false;
             }
-                 
+
         }
         public void SetInitialColors()
         {
@@ -442,7 +442,7 @@ namespace DCGServiceDesk.ViewModels
             DescriptionValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
             CloserDueValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
             SolutionValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
-        } 
+        }
         private void SetPriority()
         {
             if (CurrentUrgency != null && CurrentImpact != null && Priorities != null)
@@ -454,17 +454,23 @@ namespace DCGServiceDesk.ViewModels
             }
         }
     }
-    public class EscalationViewModel:ViewModelBase
+    public class EscalationViewModel : ViewModelBase
     {
         public EscalationViewModel(RequestViewModel rVM, IRequestQueue requestQueue)
         {
             RequestViewModel = rVM;
+            _requestQueue = requestQueue;
             designation = rVM.WorkspaceInfo.FirstOrDefault().ServiceRequests.GetType().Name;
             EscalateRequestCommand = new EscalateRequestCommand(rVM, requestQueue);
             ForwardOrDropCommand = new ForwardOrDropCommand(requestQueue, this);
         }
+        private readonly IRequestQueue _requestQueue;
         private AssigmentGroup _chosenGroup;
         public string designation;
+        private bool _isAssociated;
+        private bool _openIncidentsVisibility;
+        private OpenIncidentContainer _choosenIncident;
+
         public AssigmentGroup ChoosenGroup
         {
             get { return _chosenGroup; }
@@ -474,11 +480,61 @@ namespace DCGServiceDesk.ViewModels
                 OnPropertyChanged("ChoosenGroup");
             }
         }
+        public bool IsAssociated
+        {
+            get { return _isAssociated; }
+            set
+            {
+                _isAssociated = value;
+                OnPropertyChanged("isAssociated");
+            }
+        }
+        public bool OpenIncidentsVisibility
+        {
+            get { return _openIncidentsVisibility; }
+            set
+            {
+                _openIncidentsVisibility = value;
+                OnPropertyChanged("OpenIncidentsVisibility");
+            }
+        }
 
+        public bool Visibility { get; set; }
         public ICommand ForwardOrDropCommand { get; set; }
         public ICommand EscalateRequestCommand { get; }
         public List<AssigmentGroup> AssigmentGroups { get; set; }
+        public List<OpenIncidentContainer> OpenIncidents { get; set; } = new List<OpenIncidentContainer>();
         public RequestViewModel RequestViewModel { get; set; }
+        public OpenIncidentContainer ChoosenIncident
+        {
+            get { return _choosenIncident; }
+            set
+            {
+                _choosenIncident = value;
+                OnPropertyChanged("ChoosenIncident");
+            }
+        }
+        public async Task Initialize()
+        {
+            if (designation == "IncidentProxy")
+            {
+                Visibility = true;
+                var incidents = await _requestQueue.GetOpenIncidents();
+
+                foreach (var i in incidents)
+                {
+                    OpenIncidents.Add(new OpenIncidentContainer
+                    {
+                        Incident = i,
+                        IncidentID = RequestService.SetRequestId(i.IncidentId, "IM")
+                    });
+                }
+            }
+            else
+            {
+                Visibility = false;
+            }
+        }
     }
 
     public class AccountInfo
@@ -506,5 +562,10 @@ namespace DCGServiceDesk.ViewModels
         public string SuperiorEmail { get; set; }
         public string Email { get; set; }
         public string DepartmentName { get; set; }
+    }
+    public class OpenIncidentContainer
+    {
+        public Incident Incident { get; set; }
+        public string IncidentID { get; set; } 
     }
 }

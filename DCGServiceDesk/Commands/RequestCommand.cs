@@ -112,6 +112,7 @@ namespace DCGServiceDesk.Commands
                     {
                         RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
                         await rVM.InitializeNEVMModel();
+                        await rVM.InitializeEVMModel();
                         _hVM.Tabs.Add(rVM);
                     }
                     else
@@ -131,6 +132,7 @@ namespace DCGServiceDesk.Commands
                     {
                         RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
                         await rVM.InitializeNEVMModel();
+                        await rVM.InitializeEVMModel();
                         _hVM.Tabs.Add(rVM);
                     }
                     else
@@ -149,6 +151,7 @@ namespace DCGServiceDesk.Commands
                     {
                         RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
                         await rVM.InitializeNEVMModel();
+                        await rVM.InitializeEVMModel();
                         _hVM.Tabs.Add(rVM);
                     }
                     else
