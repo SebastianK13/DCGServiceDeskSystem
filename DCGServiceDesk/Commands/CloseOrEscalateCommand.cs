@@ -79,34 +79,67 @@ namespace DCGServiceDesk.Commands
         }
         private void UpdateIMModel(Incident im)
         {
-            nEVM.CurrentState = im.History.ActiveStatus.State;
-            nEVM.CurrentImpact = im.Impact;
-            nEVM.CurrentSubcategory = im.Category;
-            nEVM.CurrentUrgency = im.Urgency;
+            nEVM.CurrentState = nEVM.States
+                .Where(n => n.StateId == im.History.ActiveStatus.State.StateId)
+                .FirstOrDefault();
+            nEVM.CurrentImpact = nEVM.Impacts
+                .Where(i => i.Id == im.Impact.Id)
+                .FirstOrDefault();
+            nEVM.CurrentSubcategory = nEVM.Categorizations
+                .Where(s => s.ServiceId == im.Category.ServiceId)
+                .FirstOrDefault();
+            nEVM.CurrentUrgency = nEVM.Urgencies
+                .Where(u => u.Id == im.Urgency.Id)
+                .FirstOrDefault();
             nEVM.Topic = im.Topic;
             nEVM.Description = im.Description;
             nEVM.Solution = im.History.Solution;
+            nEVM.CloserDue = nEVM.CloserDues
+                .Where(d => d.CloserId == im.History.CloserDue.CloserId)
+                .FirstOrDefault();
         }
         private void UpdateCModel(ServiceRequest c)
         {
-            nEVM.CurrentState = c.History.ActiveStatus.State;
-            nEVM.CurrentImpact = c.Impact;
-            nEVM.CurrentSubcategory = c.Category;
-            nEVM.CurrentUrgency = c.Urgency;
+
+            nEVM.CurrentState = nEVM.States
+                .Where(n => n.StateId == c.History.ActiveStatus.State.StateId)
+                .FirstOrDefault();
+            nEVM.CurrentImpact = nEVM.Impacts
+                .Where(i => i.Id == c.Impact.Id)
+                .FirstOrDefault();
+            nEVM.CurrentSubcategory = nEVM.Categorizations
+                .Where(s => s.ServiceId == c.Category.ServiceId)
+                .FirstOrDefault();
+            nEVM.CurrentUrgency = nEVM.Urgencies
+                .Where(u => u.Id == c.Urgency.Id)
+                .FirstOrDefault();
             nEVM.Topic = c.Topic;
             nEVM.Description = c.Description;
             nEVM.Solution = c.History.Solution;
+            nEVM.CloserDue = nEVM.CloserDues
+                .Where(d => d.CloserId == c.History.CloserDue.CloserId)
+                .FirstOrDefault();
         }
         private void UpdateTModel(TaskRequest t)
         {
-            nEVM.CurrentState = t.History.ActiveStatus.State;
-            nEVM.CurrentImpact = t.Impact;
-            nEVM.CurrentSubcategory = t.Category;
-            nEVM.CurrentUrgency = t.Urgency;
+            nEVM.CurrentState = nEVM.States
+                .Where(n => n.StateId == t.History.ActiveStatus.State.StateId)
+                .FirstOrDefault();
+            nEVM.CurrentImpact = nEVM.Impacts
+                .Where(i => i.Id == t.Impact.Id)
+                .FirstOrDefault();
+            nEVM.CurrentSubcategory = nEVM.Categorizations
+                .Where(s => s.ServiceId == t.Category.ServiceId)
+                .FirstOrDefault();
+            nEVM.CurrentUrgency = nEVM.Urgencies
+                .Where(u => u.Id == t.Urgency.Id)
+                .FirstOrDefault();
             nEVM.Topic = t.Topic;
             nEVM.Description = t.Description;
             nEVM.Solution = t.History.Solution;
-
+            nEVM.CloserDue = nEVM.CloserDues
+                .Where(d => d.CloserId == t.History.CloserDue.CloserId)
+                .FirstOrDefault();
         }
         private async Task EscalateRequest()
         {
