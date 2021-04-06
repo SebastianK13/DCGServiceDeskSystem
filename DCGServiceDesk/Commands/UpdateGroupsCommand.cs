@@ -9,18 +9,25 @@ namespace DCGServiceDesk.Commands
 {
     public class UpdateGroupsCommand : AsyncCommandBase
     {
-        private readonly HomeViewModel _homeViewModel;
+        private readonly HomeViewModel _hVM;
         private readonly IRequestQueue _requestQueue;
 
         public UpdateGroupsCommand(HomeViewModel homeViewModel, IRequestQueue requestQueue)
         {
-            _homeViewModel = homeViewModel;
+            _hVM = homeViewModel;
             _requestQueue = requestQueue;
         }
 
-        public override Task ExecuteAsync(object parameter)
+        public async override Task ExecuteAsync(object parameter)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _hVM.Groups = await _requestQueue.GetUserGroups(_hVM.loggedUser.ActiveUser);
+            }
+            catch(Exception e)
+            {
+
+            }
         }
     }
 }

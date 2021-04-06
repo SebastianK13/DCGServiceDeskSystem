@@ -14,7 +14,8 @@ namespace DCGServiceDesk.Data.Services
         Task<List<TaskRequest>> GetAllTasks();
         Task<bool> UpdateRequestAssignee(int requestId, string requestType, string username);
         Task<List<object>> GetRequestsFromGroup(int groupId);
-        List<AssigmentGroup> GetAllMemberingGroups(string activeUser);
+        Task<List<AssigmentGroup>> GetAllMemberingGroups(string activeUser);
+        List<AssigmentGroup> GetAllMemberingGroupsNotAsync(string activeUser);
         Task<List<object>> GetAssignedNotEscalated(string username);
         Task<List<State>> GetRequestStates();
         void RefreshDatabase();

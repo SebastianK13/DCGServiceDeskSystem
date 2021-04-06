@@ -198,7 +198,26 @@ namespace DCGServiceDesk.EF.Services
             return new List<object> { requests, contacts, requested, typeList, requestIds };
         }
 
-        public List<AssigmentGroup> GetAllMemberingGroups(string activeUser)
+        public async Task<List<AssigmentGroup>> GetAllMemberingGroups(string activeUser)
+        {
+            List<AssigmentGroup> groups = new List<AssigmentGroup>();
+
+            var groupsId = await _dbContext.Members
+                .Where(i => i.Username == activeUser)
+                .Select(g => g.GroupId)
+                .ToListAsync();
+
+            for (int i = 0; i < groupsId.Count; i++)
+            {
+                groups.Add( await _dbContext.AssigmentGroup
+                    .Where(g=>g.GroupId == groupsId[i])
+                    .FirstOrDefaultAsync());
+            }
+
+            return groups;
+        }
+
+        public List<AssigmentGroup> GetAllMemberingGroupsNotAsync(string activeUser)
         {
             List<AssigmentGroup> groups = new List<AssigmentGroup>();
 
@@ -209,8 +228,8 @@ namespace DCGServiceDesk.EF.Services
 
             for (int i = 0; i < groupsId.Count(); i++)
             {
-                groups.Add( _dbContext.AssigmentGroup
-                    .Where(g=>g.GroupId == groupsId[i])
+                groups.Add(_dbContext.AssigmentGroup
+                    .Where(g => g.GroupId == groupsId[i])
                     .FirstOrDefault());
             }
 

@@ -52,8 +52,11 @@ namespace DCGServiceDesk.Session.DataGetter
         public async Task<Incident> GetIncident(int incidentId) =>
             await _requestService.GetSingleIncident(incidentId);
 
-        public List<AssigmentGroup> GetUserGroups(string activeUser) =>
-             _requestService.GetAllMemberingGroups(activeUser);
+        public async Task<List<AssigmentGroup>> GetUserGroups(string activeUser) =>
+             await _requestService.GetAllMemberingGroups(activeUser);
+
+        public List<AssigmentGroup> GetUserGroupsNotAsync(string activeUser) =>
+             _requestService.GetAllMemberingGroupsNotAsync(activeUser);
 
         public async Task<List<AssigmentGroup>> GetGroups() =>
             await _requestService.GetAllGroups();

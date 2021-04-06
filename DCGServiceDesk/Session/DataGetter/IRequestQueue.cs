@@ -15,7 +15,8 @@ namespace DCGServiceDesk.Session.DataGetter
         Task<List<ServiceRequest>> GetChanges();
         Task<bool> ChangeRequestAsignee(int requestId, string requestType, string username);
         Task<List<object>> GetGroupRequests(int groupId);
-        List<AssigmentGroup> GetUserGroups(string activeUser);
+        Task<List<AssigmentGroup>> GetUserGroups(string activeUser);
+        List<AssigmentGroup> GetUserGroupsNotAsync(string activeUser);
         Task<List<AssigmentGroup>> GetGroups();
         Task<List<object>> GetAssignedRequests(string username);
         Task<List<State>> GetAllStates();

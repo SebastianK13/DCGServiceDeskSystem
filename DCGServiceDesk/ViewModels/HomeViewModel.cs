@@ -27,7 +27,7 @@ namespace DCGServiceDesk.ViewModels
         private readonly DbInterfaceContainer _interfaceContainer;
         private readonly ObservableCollection<ITab> _tabs;
         public IList<ITab> Tabs { get; }
-        public ICollection<AssigmentGroup> Groups { get; }
+        public ICollection<AssigmentGroup> Groups { get; set; }
 
         public HomeViewModel(ILoggedUser loggedUser, IRequestQueue requestQueue, IUserInfo userInfo, IEmployeeProfile employeeProfile)
         {
@@ -44,7 +44,7 @@ namespace DCGServiceDesk.ViewModels
 
             RequestCommand = new RequestCommand(_requestQueue, _userInfo, _employeeProfile, this);           
             UpdateGroupsCommand = new UpdateGroupsCommand(this, _requestQueue);
-            Groups = _requestQueue.GetUserGroups(loggedUser.ActiveUser);
+            Groups = _requestQueue.GetUserGroupsNotAsync(loggedUser.ActiveUser);
         }
         private void Tabs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
