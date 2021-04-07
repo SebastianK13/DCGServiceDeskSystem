@@ -34,7 +34,7 @@ namespace DCGServiceDesk.Commands
         public async override Task ExecuteAsync(object parameter)
         {
             try
-            {
+            {                
                 _requestQueue.RefreshData();
                 string choosen = parameter as string;
                 if (parameter.GetType().Name == "TabContainer")
@@ -108,7 +108,7 @@ namespace DCGServiceDesk.Commands
                     request.Request = updatedTask;
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
                     request.Label = labelT;
-                    if (t.Group == null)
+                    if (t.Group == null || t.Group.GroupName == "Service Desk")
                     {
                         RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
                         await rVM.InitializeNEVMModel();
@@ -128,7 +128,7 @@ namespace DCGServiceDesk.Commands
                     request.Request = updatedIncident;
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
                     request.Label = labelIM;
-                    if (im.Group == null)
+                    if (im.Group == null || im.Group.GroupName == "Service Desk")
                     {
                         RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
                         await rVM.InitializeNEVMModel();
@@ -147,7 +147,7 @@ namespace DCGServiceDesk.Commands
                     request.Request = updatedChange;
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
                     request.Label = labelC;
-                    if (c.Group == null)
+                    if (c.Group == null || c.Group.GroupName == "Service Desk")
                     {
                         RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
                         await rVM.InitializeNEVMModel();

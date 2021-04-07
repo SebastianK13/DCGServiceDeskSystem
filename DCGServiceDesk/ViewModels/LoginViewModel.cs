@@ -1,6 +1,7 @@
 ﻿using DCGServiceDesk.Commands;
 using DCGServiceDesk.Data.Services;
 using DCGServiceDesk.Services;
+using DCGServiceDesk.Session.DataGetter;
 using DCGServiceDesk.Session.Navigation;
 using DCGServiceDesk.ViewModels.Factory;
 using System;
@@ -32,14 +33,20 @@ namespace DCGServiceDesk.ViewModels
         public ICommand LoginCommand { get; }
         public ICommand UpdateViewModelCommand { get; }
 
-        public LoginViewModel(IViewForwarding forwarding, IServiceDeskViewModelFactory viewModelFactory, IAuthorization authenticator)
+        public LoginViewModel(IViewForwarding forwarding, 
+            IServiceDeskViewModelFactory viewModelFactory, LoginInterfaceContainer interfaceContainer)
         {
             _forwarding = forwarding;
             _viewModelFactory = viewModelFactory;
-            _authorization = authenticator;
+            _authorization = interfaceContainer.Authorization;
 
-            LoginCommand = new LoginCommand(this, _authorization, forwarding, viewModelFactory);
+            LoginCommand = new LoginCommand(this, interfaceContainer, forwarding, viewModelFactory);
         }
 
+    }
+    public class LoginInterfaceContainer
+    {
+        public IAuthorization Authorization { get; set; }
+        public IEmployeeProfile EmployeeProfile { get; set; }
     }
 }

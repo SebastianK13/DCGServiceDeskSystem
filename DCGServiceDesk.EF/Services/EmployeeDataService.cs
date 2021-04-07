@@ -47,6 +47,12 @@ namespace DCGServiceDesk.EF.Services
             await _dbContext.Employees
             .Where(i => i.UserId == id)
             .FirstOrDefaultAsync();
+
+        public async Task<TimeZoneInfo> GetUserTimeZone(string uId)
+        {
+            var user = await _dbContext.Employees.Where(e => e.UserId == uId).FirstOrDefaultAsync();
+            return TimeZoneInfo.FindSystemTimeZoneById(user.Zone.TimeZoneID);
+        }
     }
 
 

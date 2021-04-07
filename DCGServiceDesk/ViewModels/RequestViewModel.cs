@@ -37,6 +37,7 @@ namespace DCGServiceDesk.ViewModels
         public async Task InitializeNEVMModel()
         {
             await NotEscalated.Initialize();
+            await NotEscalated.CheckIfRequestAssigned();
             NotEscalated.SetInitialColors();
         }
         public async Task InitializeEVMModel()

@@ -120,6 +120,10 @@ namespace DCGServiceDesk.Services
     }
     public class DbInterfaceContainer
     {
+        public DbInterfaceContainer()
+        {
+        }
+
         public DbInterfaceContainer(IRequestQueue requestQueue, IUserInfo userInfo, IEmployeeProfile employeeProfile)
         {
             RequestQueue = requestQueue;

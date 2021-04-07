@@ -62,6 +62,8 @@ namespace DCGServiceDesk.Controls.Tab.Model
         public CommunicationInfo CommunicationInfo { get; set; }
         public bool RequestVisibility { get; set; }
         public string RequestType { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime DeadlineDate { get; set; }
     }
 
 }

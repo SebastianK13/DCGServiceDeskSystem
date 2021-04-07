@@ -10,5 +10,6 @@ namespace DCGServiceDesk.Data.Services
         Task<List<CommunicationInfo>> GetUserName(List<string> eIdContact, List<string> eIdRequested);
         Task<string> GetUserId(string username);
         Task<string> GetUserNameById(string userId);
+        //Task<TimeZonesModel> GetUserTimeZone(string UId);
     }
 }

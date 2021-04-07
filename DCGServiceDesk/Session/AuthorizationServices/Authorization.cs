@@ -1,6 +1,7 @@
 ﻿using DCGServiceDesk.Data.Models;
 using DCGServiceDesk.Data.Services;
 using DCGServiceDesk.Session.CurrentUser;
+using DCGServiceDesk.Session.DataGetter;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -54,13 +55,18 @@ namespace DCGServiceDesk.Services
                     else
                     {
                         _loggedUser.ActiveUser = user.Username;
+                        _loggedUser.UserID = user.UID;
                     }
 
                 }
 
             }
-
             return user;
+        }
+
+        public async Task SetTimeZone(IEmployeeProfile employeeProfile)
+        {
+            _loggedUser.ZoneInfo = await employeeProfile.GetTimeZoneByUId(_loggedUser.UserID);
         }
     }
 }

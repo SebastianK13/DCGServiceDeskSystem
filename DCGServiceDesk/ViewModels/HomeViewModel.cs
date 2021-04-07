@@ -18,7 +18,7 @@ namespace DCGServiceDesk.ViewModels
     public class HomeViewModel : ViewModelBase
     {
         public ILoggedUser loggedUser;
-
+        public TimeZoneInfo UserTimeZone { get; set; }
         public ICommand RequestCommand { get; }
         public ICommand UpdateGroupsCommand { get; }
         private readonly IRequestQueue _requestQueue;
@@ -29,7 +29,7 @@ namespace DCGServiceDesk.ViewModels
         public IList<ITab> Tabs { get; }
         public ICollection<AssigmentGroup> Groups { get; set; }
 
-        public HomeViewModel(ILoggedUser loggedUser, IRequestQueue requestQueue, IUserInfo userInfo, IEmployeeProfile employeeProfile)
+        public HomeViewModel(ILoggedUser loggedUser, DbInterfaceContainer interfaceContainer)
         {
             _tabs = new ObservableCollection<ITab>();
             _tabs.CollectionChanged += Tabs_CollectionChanged;
@@ -37,9 +37,9 @@ namespace DCGServiceDesk.ViewModels
             Tabs = _tabs;
 
             this.loggedUser = loggedUser;
-            _requestQueue = requestQueue;
-            _userInfo = userInfo;
-            _employeeProfile = employeeProfile;
+            _requestQueue = interfaceContainer.RequestQueue;
+            _userInfo = interfaceContainer.UserInfo;
+            _employeeProfile = interfaceContainer.EmployeeProfile;
             _interfaceContainer = new DbInterfaceContainer(_requestQueue,_userInfo, _employeeProfile);
 
             RequestCommand = new RequestCommand(_requestQueue, _userInfo, _employeeProfile, this);           

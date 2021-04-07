@@ -16,5 +16,7 @@ namespace DCGServiceDesk.Data.Models
 
         public string Username { get; set; }
         public string Password { get; set; }
+        public string UID { get; set; }
+        public TimeZoneInfo ZoneInfo { get; set; }
     }
 }

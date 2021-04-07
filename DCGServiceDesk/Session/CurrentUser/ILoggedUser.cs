@@ -8,5 +8,7 @@ namespace DCGServiceDesk.Session.CurrentUser
     public interface ILoggedUser
     {
         string ActiveUser { get; set; }
+        string UserID { get; set; }
+        TimeZoneInfo ZoneInfo { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DCGServiceDesk.Data.Models;
+using DCGServiceDesk.Session.DataGetter;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,5 +12,6 @@ namespace DCGServiceDesk.Services
         bool IsLogged { get;}
 
         Task<User> Login(string username, string password);
+        Task SetTimeZone(IEmployeeProfile employeeProfile);
     }
 }

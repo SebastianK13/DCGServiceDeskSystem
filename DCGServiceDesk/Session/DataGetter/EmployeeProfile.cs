@@ -22,5 +22,8 @@ namespace DCGServiceDesk.Session.DataGetter
 
         public async Task<List<string>> GetUserId(List<int> employeesId) =>
             await _employeeService.GetUserIdFromEmployee(employeesId);
+
+        public async Task<TimeZoneInfo> GetTimeZoneByUId(string uId) =>
+            await _employeeService.GetUserTimeZone(uId);
     }
 }

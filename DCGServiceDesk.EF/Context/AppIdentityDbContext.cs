@@ -17,18 +17,15 @@ namespace DCGServiceDesk.EF.Context
         }
 
         public DbSet<AspNetUsers> AspNetUsers { get; set; }
-
-        //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //        {
-        //            if (!optionsBuilder.IsConfigured)
-        //            {
-        //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-        //                optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=DCTEIdentity;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-        //            }
-        //        }
+        public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
+        public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
+        public virtual DbSet<AspNetUserRole> AspNetUserRoles { get; set; }
+        public virtual DbSet<TimeZonesModel> Zones { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
             modelBuilder.Entity<AspNetUsers>(entity =>
             {
                 entity.HasIndex(e => e.NormalizedEmail)
@@ -46,6 +43,49 @@ namespace DCGServiceDesk.EF.Context
                 entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
 
                 entity.Property(e => e.UserName).HasMaxLength(256);
+            });
+
+            modelBuilder.Entity<AspNetRole>(entity =>
+            {
+                entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
+                    .IsUnique()
+                    .HasFilter("([NormalizedName] IS NOT NULL)");
+
+                entity.Property(e => e.Name).HasMaxLength(256);
+
+                entity.Property(e => e.NormalizedName).HasMaxLength(256);
+            });
+
+            modelBuilder.Entity<AspNetRoleClaim>(entity =>
+            {
+                entity.HasIndex(e => e.RoleId, "IX_AspNetRoleClaims_RoleId");
+
+                entity.Property(e => e.RoleId).IsRequired();
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.AspNetRoleClaims)
+                    .HasForeignKey(d => d.RoleId);
+            });
+
+            modelBuilder.Entity<AspNetUserRole>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.RoleId });
+
+                entity.HasIndex(e => e.RoleId, "IX_AspNetUserRoles_RoleId");
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.AspNetUserRoles)
+                    .HasForeignKey(d => d.RoleId);
+
+            });
+
+            modelBuilder.Entity<TimeZonesModel>(entity =>
+            {
+                entity.HasKey(e => e.ZonId);
+
+                entity.ToTable("Zone");
+
+                entity.Property(e => e.TimeZoneID).HasColumnName("TimeZoneID");
             });
 
             OnModelCreatingPartial(modelBuilder);

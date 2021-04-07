@@ -26,7 +26,7 @@
     <DataTemplate x:Key="CreateDateCellTemplateStyle">
         <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3.2,-2,-8,-2">
             <StackPanel Margin="6,2,6,2">
-                <TextBlock TextAlignment="Center" Text="{Binding ServiceRequests.Status.CreateDate}" Width="{Binding ActualWidth, ElementName=cDateColumn}"/>
+                <TextBlock TextAlignment="Center" Text="{Binding StartDate}" Width="{Binding ActualWidth, ElementName=cDateColumn}"/>
             </StackPanel>
         </Border>
     </DataTemplate>
@@ -50,7 +50,7 @@
     <DataTemplate x:Key="DueDateCellTemplateStyle">
         <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3.2,-2,-8,-2">
             <StackPanel Margin="6,2,6,2">
-                <TextBlock Margin="-6,0,0,0" TextAlignment="Center" Text="{Binding ServiceRequests.Status.DueTime}" Width="{Binding ActualWidth, ElementName=dueDateColumn}"/>
+                <TextBlock Margin="-6,0,0,0" TextAlignment="Center" Text="{Binding DeadlineDate}" Width="{Binding ActualWidth, ElementName=dueDateColumn}"/>
             </StackPanel>
         </Border>
     </DataTemplate>

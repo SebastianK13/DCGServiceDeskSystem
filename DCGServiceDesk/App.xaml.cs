@@ -49,34 +49,6 @@ namespace DCGServiceDesk
                 new DCGServiceDeskContextFactory(context.Configuration));
                 services.AddSingleton<IDatabaseContextFactory, DCGServiceDeskContextFactory>();
 
-                //services.AddDbContext<AppIdentityDbContext>(options =>
-                //{
-                //    options.UseSqlServer(context.Configuration["Data:DCTEIdentity:ConnectionString"]);
-                //    options.UseLazyLoadingProxies(true);
-                //});
-
-
-                //services.AddDbContext<AppServiceDeskDbContext>(options =>
-                //{
-
-                //    options.UseSqlServer(
-                //        context.Configuration["Data:DCTEServiceDesk:ConnectionString"]);
-                //    options.UseLazyLoadingProxies(true);
-                //});
-
-                //services.AddDbContext<AppCustomersDbContext>(options =>
-                //{
-                //    options.UseSqlServer(context.Configuration["Data:DCTECustomers:ConnectionString"]);
-                //    options.UseLazyLoadingProxies(true);
-                //});
-
-                //services.AddTransient<IEmployeeService, EmployeeDataService>();
-                //services.AddTransient<IRequestService, RequestsDataService>();
-                //services.AddTransient<IUserService, IdentityDataServices>();
-
-                //ViewModels Factory
-                //Not at this moment
-
                 services.AddSingleton<IServiceDeskViewModelFactory, ServiceDeskViewModelFactory>();
                 services.AddSingleton<IViewForwarding, ViewForwarding>();
                 services.AddSingleton<IUserService, IdentityDataServices>();
@@ -91,19 +63,29 @@ namespace DCGServiceDesk
 
                 services.AddSingleton<CreateViewModel<LoginViewModel>>(service =>
                 {
+                    LoginInterfaceContainer interfaceContainer = new LoginInterfaceContainer()
+                    {
+                        EmployeeProfile = service.GetRequiredService<IEmployeeProfile>(),
+                        Authorization = service.GetRequiredService<IAuthorization>()
+                    };
+
                     return () => new LoginViewModel(
                         service.GetRequiredService<IViewForwarding>(),
                         service.GetRequiredService<IServiceDeskViewModelFactory>(),
-                        service.GetRequiredService<IAuthorization>());
+                        interfaceContainer);
                 });
 
                 services.AddSingleton<CreateViewModel<HomeViewModel>>(service => 
                 {
+                    DbInterfaceContainer interfaceContainer = new DbInterfaceContainer()
+                    { 
+                        EmployeeProfile = service.GetRequiredService<IEmployeeProfile>(), 
+                        RequestQueue = service.GetRequiredService<IRequestQueue>(),
+                        UserInfo = service.GetRequiredService<IUserInfo>()
+                    };
                     return () => new HomeViewModel(
                         service.GetRequiredService<ILoggedUser>(),
-                        service.GetRequiredService<IRequestQueue>(),
-                        service.GetRequiredService<IUserInfo>(),
-                        service.GetRequiredService<IEmployeeProfile>());
+                        interfaceContainer);
                 });
 
                 //MainWindow initializer

@@ -26,7 +26,7 @@ namespace DCGServiceDesk.EF.Services
         {
             
             var user = await _dbContext.AspNetUsers
-             .Select(u => new User{ Username = u.UserName, Password = u.PasswordHash })
+             .Select(u => new User{ Username = u.UserName, Password = u.PasswordHash, UID = u.Id})
              .FirstOrDefaultAsync(u => u.Username == username);
 
             return user;
@@ -65,23 +65,7 @@ namespace DCGServiceDesk.EF.Services
             .Select(u=>u.UserName)
             .FirstOrDefaultAsync();
 
-        public Task<bool> Remove(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> Update(int id, User entity)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<User> Get(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<User>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
+        //public async Task<TimeZonesModel> GetUserTimeZone(string UId) =>
+        //    await _dbContext.
     }
 }
