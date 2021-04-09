@@ -28,9 +28,9 @@ namespace DCGServiceDesk.Data.Services
         Task<List<Categorization>> GetAllSubcategories(string designation);
         Task<List<Priority>> GetPriorityByLevel();
         Task<List<CloserDue>> GetClosureCodes();
-        Task UpdateC(ServiceRequest request, string username, string stateName = "New");
-        Task UpdateT(TaskRequest task, string username, string stateName = "New");
-        Task UpdateIM(Incident incident, string username, string stateName="New");
+        Task UpdateC(ServiceRequest request, string username, string stateName = "Open");
+        Task UpdateT(TaskRequest task, string username, string stateName = "Open");
+        Task UpdateIM(Incident incident, string username, string stateName="Open");
         Task<string> GetChangeAssignee(int requestId);
         Task<string> GetTaskAssignee(int requestId);
         Task<string> GetIncidentAssignee(int requestId);

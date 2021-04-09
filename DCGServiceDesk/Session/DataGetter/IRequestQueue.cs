@@ -29,9 +29,9 @@ namespace DCGServiceDesk.Session.DataGetter
         Task<List<Impact>> GetImpacts();
         Task<List<Priority>> GetPriority();
         Task<List<CloserDue>> GetCloserDues();
-        Task UpdateServiceRequest(ServiceRequest request, string username, string stateName = "New");
-        Task UpdateTaskRequest(TaskRequest task, string username, string stateName = "New");
-        Task UpdateIncident(Incident incident, string username, string stateName="New");
+        Task UpdateServiceRequest(ServiceRequest request, string username, string stateName = "Open");
+        Task UpdateTaskRequest(TaskRequest task, string username, string stateName = "Open");
+        Task UpdateIncident(Incident incident, string username, string stateName="Open");
         Task<string> GetChangeAssignee(int requestId);
         Task<string> GetTaskAssignee(int requestId);
         Task<string> GetIncidentAssignee(int requestId);

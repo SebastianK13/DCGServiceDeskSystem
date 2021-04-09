@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DCGServiceDesk.EF.Services
 {
-    public class RequestsDataService:IRequestService
+    public class RequestsDataService : IRequestService
     {
         private string _username;
         private readonly IDatabaseContextFactory _databaseContextFactory;
@@ -31,13 +31,13 @@ namespace DCGServiceDesk.EF.Services
         }
 
         public async Task<List<ServiceRequest>> GetAll() =>
-            await _dbContext.Applications.Where(a=>a.Group == null).ToListAsync();
+            await _dbContext.Applications.Where(a => a.Group == null).ToListAsync();
 
-        public async Task<List<Incident>> GetAllIncidents() => 
-            await _dbContext.Incidents.Where(i=>i.Group == null).ToListAsync();
+        public async Task<List<Incident>> GetAllIncidents() =>
+            await _dbContext.Incidents.Where(i => i.Group == null).ToListAsync();
 
-        public async Task<List<TaskRequest>> GetAllTasks() => 
-            await _dbContext.Tasks.Where(t=>t.Group == null).ToListAsync();
+        public async Task<List<TaskRequest>> GetAllTasks() =>
+            await _dbContext.Tasks.Where(t => t.Group == null).ToListAsync();
 
         public async Task<List<object>> GetAllRequests()
         {
@@ -51,7 +51,7 @@ namespace DCGServiceDesk.EF.Services
 
             List<int> contacts = (List<int>)(changes.Select(c => c.ContactPerson).ToList())
                 .Concat(incidents.Select(i => i.ContactPerson).ToList())
-                .Concat(tasks.Select(t=>t.ContactPerson).ToList())
+                .Concat(tasks.Select(t => t.ContactPerson).ToList())
                 .ToList();
 
             List<int> requested = (List<int>)(changes.Select(c => c.RequestedPerson).ToList())
@@ -74,7 +74,7 @@ namespace DCGServiceDesk.EF.Services
         }
         public List<string> CreateTypeList(string type, int amount, List<string> typeList)
         {
-            for(int i = 0; i < amount; i++)
+            for (int i = 0; i < amount; i++)
             {
                 typeList.Add(type);
             }
@@ -161,7 +161,7 @@ namespace DCGServiceDesk.EF.Services
             List<int> requestIds = new List<int>();
             List<object> requests = new List<object>();
             var changes = await _dbContext.Applications
-                .Where(i=>i.GroupId == groupId)
+                .Where(i => i.GroupId == groupId)
                 .ToListAsync();
 
             var incidents = await _dbContext.Incidents
@@ -209,8 +209,8 @@ namespace DCGServiceDesk.EF.Services
 
             for (int i = 0; i < groupsId.Count; i++)
             {
-                groups.Add( await _dbContext.AssigmentGroup
-                    .Where(g=>g.GroupId == groupsId[i])
+                groups.Add(await _dbContext.AssigmentGroup
+                    .Where(g => g.GroupId == groupsId[i])
                     .FirstOrDefaultAsync());
             }
 
@@ -242,7 +242,7 @@ namespace DCGServiceDesk.EF.Services
             List<object> requests = new List<object>();
             var changes = await _dbContext.Applications
                 .Where(i => i.Group.GroupName == "Service Desk" &&
-                i.History.ActiveStatus.StateId == 1 && 
+                i.History.ActiveStatus.StateId == 1 &&
                 i.Assignee == username)
                 .ToListAsync();
 
@@ -307,7 +307,7 @@ namespace DCGServiceDesk.EF.Services
 
         public async Task<List<Categorization>> GetAllSubcategories(string designation) =>
             await _dbContext.Categorizations
-            .Where(d=>d.Category.Designation == designation)
+            .Where(d => d.Category.Designation == designation)
             .ToListAsync();
 
         public async Task<List<Priority>> GetPriorityByLevel() =>
@@ -316,34 +316,49 @@ namespace DCGServiceDesk.EF.Services
         public async Task<List<CloserDue>> GetClosureCodes() =>
             await _dbContext.CloserDues.ToListAsync();
 
-        public async Task UpdateC(ServiceRequest request, string username, string stateName = "New")
+        public async Task UpdateC(ServiceRequest request, string username, string stateName = "Open")
         {
             Status newStatus = await CreateStatus(DateTime.Now, request.History.ActiveStatus.DueTime, stateName);
             newStatus.CreatedBy = username;
-            request.History.Status.Add(newStatus);
-            request.History.ActiveStatus = newStatus;
+            newStatus.HistoryId = request.HistoryId;
+            await UpdateHistory(request.History.ChangeId, newStatus.StatusId);
+            request.Assignee = null;
+            request.GroupId = request.Group.GroupId;
             _dbContext.Entry(request).State = EntityState.Modified;
 
             await _dbContext.SaveChangesAsync();
         }
-
-        public async Task UpdateT(TaskRequest task, string username, string stateName = "New")
+        public async Task UpdateT(TaskRequest task, string username, string stateName = "Open")
         {
             Status newStatus = await CreateStatus(DateTime.Now, task.History.ActiveStatus.DueTime, stateName);
             newStatus.CreatedBy = username;
-            task.History.Status.Add(newStatus);
-            task.History.ActiveStatus = newStatus;
+            newStatus.HistoryId = task.HistoryId;
+            await UpdateHistory(task.History.ChangeId, newStatus.StatusId);
+            task.Assignee = null;
+            task.GroupId = task.Group.GroupId;
             _dbContext.Entry(task).State = EntityState.Modified;
 
             await _dbContext.SaveChangesAsync();
         }
-        public async Task UpdateIM(Incident incident, string username, string stateName = "New")
+        public async Task UpdateIM(Incident incident, string username, string stateName = "Open")
         {
             Status newStatus = await CreateStatus(DateTime.Now, incident.History.ActiveStatus.DueTime, stateName);
             newStatus.CreatedBy = username;
-            incident.History.Status.Add(newStatus);
-            incident.History.ActiveStatus = newStatus;
+            newStatus.HistoryId = incident.HistoryId;
+            await UpdateHistory(incident.History.ChangeId, newStatus.StatusId);
+            incident.Assignee = null;
+            incident.GroupId = incident.Group.GroupId;
             _dbContext.Entry(incident).State = EntityState.Modified;
+
+            await _dbContext.SaveChangesAsync();
+        }
+        private async Task UpdateHistory(int historyId, int statusId)
+        {
+            var history = await _dbContext.StatusHistory
+                 .Where(i => i.ChangeId == historyId)
+                 .FirstOrDefaultAsync();
+
+            history.StatusId = statusId;
 
             await _dbContext.SaveChangesAsync();
         }
@@ -370,7 +385,7 @@ namespace DCGServiceDesk.EF.Services
         public async Task<string> GetChangeAssignee(int requestId) =>
             await _dbContext.Applications
             .Where(i => i.RequestId == requestId)
-            .Select(a=>a.Assignee)
+            .Select(a => a.Assignee)
             .FirstOrDefaultAsync();
 
         public async Task<string> GetTaskAssignee(int requestId) =>
@@ -386,7 +401,7 @@ namespace DCGServiceDesk.EF.Services
             .FirstOrDefaultAsync();
 
         public async Task<List<Incident>> GetOpenIncidentsList() =>
-            await _dbContext.Incidents.Where(o => (o.History.ActiveStatus.State.StateName == "New" ||
+            await _dbContext.Incidents.Where(o => (o.History.ActiveStatus.State.StateName == "Open" ||
             o.History.ActiveStatus.State.StateName == "Waiting") && o.GroupId != null).ToListAsync();
 
         public async Task AddAssociatedIncident(Incident request, string username, Incident choosenIncident)

@@ -146,7 +146,6 @@ namespace DCGServiceDesk.Commands
             string contactId = await _userInfo.GetUserId(nEVM.CUsername);
             string recipientId = await _userInfo.GetUserId(nEVM.RUsername);
             request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
-            CheckStatusForEscalate();
             CheckContactField(contactId);
             CheckRecipientField(recipientId);
             CheckTopicField();
@@ -157,21 +156,20 @@ namespace DCGServiceDesk.Commands
                 switch (requestType)
                 {
                     case "TaskRequestProxy":
-                        TaskRequest task = await UpdateT();
+                        TaskRequest task = await UpdateT(false);
                         nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests = task;
                         break;
                     case "IncidentProxy":
-                        Incident incident = await UpdateIM();
+                        Incident incident = await UpdateIM(false);
                         nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests = incident;
                         break;
                     case "ServiceRequestProxy":
-                        ServiceRequest change = await UpdateC();
+                        ServiceRequest change = await UpdateC(false);
                         nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests = change;
                         break;
 
                 }
                 nEVM.RequestViewModel.CurrentMode = nEVM.RequestViewModel.Escalation;
-                nEVM.RequestViewModel.RemoveCurrentTab();
             }
             else
                 isFormValid.Clear();
@@ -181,7 +179,6 @@ namespace DCGServiceDesk.Commands
             string contactId = await _userInfo.GetUserId(nEVM.CUsername);
             string recipientId = await _userInfo.GetUserId(nEVM.RUsername);
             request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
-            CheckStatusForClose();
             CheckContactField(contactId);
             CheckRecipientField(recipientId);
             CheckTopicField();
@@ -194,15 +191,15 @@ namespace DCGServiceDesk.Commands
                 switch (requestType)
                 {
                     case "TaskRequestProxy":
-                        TaskRequest task = await UpdateT();
+                        TaskRequest task = await UpdateT(true);
                         await _requestQueue.UpdateTaskRequest(task, nEVM.AdminUsername, "Closed");
                         break;
                     case "IncidentProxy":
-                        Incident incident = await UpdateIM();
+                        Incident incident = await UpdateIM(true);
                         await _requestQueue.UpdateIncident(incident, nEVM.AdminUsername, "Closed");
                         break;
                     case "ServiceRequestProxy":
-                        ServiceRequest change = await UpdateC();
+                        ServiceRequest change = await UpdateC(true);
                         await _requestQueue.UpdateServiceRequest(change, nEVM.AdminUsername, "Closed");
                         break;
 
@@ -211,34 +208,6 @@ namespace DCGServiceDesk.Commands
             }
             else
                 isFormValid.Clear();
-        }
-        private void CheckStatusForClose()
-        {
-            if (nEVM.CurrentState != nEVM.States.Where(s => s.StateName == "Closed").FirstOrDefault())
-            {
-                nEVM.StatusValid = Invalid;
-                isFormValid.Add(false);
-            }
-            else
-            {
-                isFormValid.Add(true);
-                nEVM.StatusValid = Valid;
-            }
-
-        }
-        private void CheckStatusForEscalate()
-        {
-            if (nEVM.CurrentState != nEVM.States.Where(s => s.StateName == "New").FirstOrDefault())
-            {
-                nEVM.StatusValid = Invalid;
-                isFormValid.Add(false);
-            }
-            else
-            {
-                isFormValid.Add(true);
-                nEVM.StatusValid = Valid;
-            }
-
         }
         private void CheckContactField(string contactId)
         {
@@ -318,11 +287,11 @@ namespace DCGServiceDesk.Commands
                 isFormValid.Add(false);
             }
         }
-        private async Task<Incident> UpdateIM()
+        private async Task<Incident> UpdateIM(bool toClosed)
         {
             Incident im = RequestService.ConvertRequest(request);
             Status newStatus = im.History.ActiveStatus;
-            newStatus.State = nEVM.CurrentState;
+            newStatus.State = SetState(toClosed);
             im.History.Status.Add(newStatus);
             im.History.ActiveStatus = newStatus;
             im.History.CloserDue = nEVM.CloserDue;
@@ -338,11 +307,11 @@ namespace DCGServiceDesk.Commands
 
             return im;
         }
-        private async Task<TaskRequest> UpdateT()
+        private async Task<TaskRequest> UpdateT(bool toClosed)
         {
             TaskRequest t = RequestService.ConvertRequest(request);
             Status newStatus = t.History.ActiveStatus;
-            newStatus.State = nEVM.CurrentState;
+            newStatus.State = SetState(toClosed);
             t.History.Status.Add(newStatus);
             t.History.ActiveStatus = newStatus;
             t.History.CloserDue = nEVM.CloserDue;
@@ -358,11 +327,11 @@ namespace DCGServiceDesk.Commands
 
             return t;
         }
-        private async Task<ServiceRequest> UpdateC()
+        private async Task<ServiceRequest> UpdateC(bool toClosed)
         {
             ServiceRequest c = RequestService.ConvertRequest(request);
             Status newStatus = c.History.ActiveStatus;
-            newStatus.State = nEVM.CurrentState;
+            newStatus.State = SetState(toClosed);
             c.History.Status.Add(newStatus);
             c.History.ActiveStatus = newStatus;
             c.History.CloserDue = nEVM.CloserDue;
@@ -383,5 +352,44 @@ namespace DCGServiceDesk.Commands
             string userId = await _userInfo.GetUserId(userName);
             return await _employeeProfile.GetEmployeeIdByUId(userId);
         }
+        private State SetState(bool isClosed)
+        {
+            if (isClosed)
+               return nEVM.States.Where(n => n.StateName == "Closed").FirstOrDefault();
+            else
+               return nEVM.States.Where(n => n.StateName == "Open").FirstOrDefault();
+        }
     }
 }
+
+
+//Will be usefull in escalated view
+
+//private void CheckStatusForClose()
+//{
+//    if (nEVM.CurrentState != nEVM.States.Where(s => s.StateName == "Closed").FirstOrDefault())
+//    {
+//        nEVM.StatusValid = Invalid;
+//        isFormValid.Add(false);
+//    }
+//    else
+//    {
+//        isFormValid.Add(true);
+//        nEVM.StatusValid = Valid;
+//    }
+
+//}
+//private void CheckStatusForEscalate()
+//{
+//    if (nEVM.CurrentState != nEVM.States.Where(s => s.StateName == "New").FirstOrDefault())
+//    {
+//        nEVM.StatusValid = Invalid;
+//        isFormValid.Add(false);
+//    }
+//    else
+//    {
+//        isFormValid.Add(true);
+//        nEVM.StatusValid = Valid;
+//    }
+
+//}

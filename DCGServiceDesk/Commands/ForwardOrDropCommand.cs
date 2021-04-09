@@ -31,6 +31,7 @@ namespace DCGServiceDesk.Commands
                 {
                     case "Forward":
                         await CheckAndForward();
+                        _eVM.RequestViewModel.RemoveCurrentTab();
                         break;
                     case "Abandon":
                         _eVM.RequestViewModel.CurrentMode = _eVM.RequestViewModel.NotEscalated;

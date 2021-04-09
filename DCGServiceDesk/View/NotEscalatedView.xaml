@@ -142,7 +142,9 @@
                               IsSynchronizedWithCurrentItem="True"
                               SelectedItem="{Binding StateName}"
                               SelectedValue="{Binding CurrentState}"
-                              BorderBrush="{Binding StatusValid}">
+                              BorderBrush="{Binding StatusValid}"
+                              Background="#DCDCDC"
+                              IsEditable="False" IsHitTestVisible="False" Focusable="False">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Margin="0,-1,0,0" Text="{Binding StateName}"/>
@@ -210,7 +212,8 @@
                                       ItemsSource="{Binding Categorizations}"                             
                                       IsSynchronizedWithCurrentItem="True"                              
                                       SelectedItem="{Binding ServiceName}"
-                                      SelectedValue="{Binding CurrentSubcategory}">
+                                      SelectedValue="{Binding CurrentSubcategory}"
+                                      Background="White">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Margin="0,-1,0,0" Text="{Binding ServiceName}"/>
@@ -223,7 +226,8 @@
                                       ItemsSource="{Binding Impacts}"
                                       IsSynchronizedWithCurrentItem="True"                             
                                       SelectedItem="{Binding Name}"                             
-                                      SelectedValue="{Binding CurrentImpact}">
+                                      SelectedValue="{Binding CurrentImpact}"
+                                      Background="White">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Margin="0,-1,0,0" Text="{Binding Name}"/>
@@ -236,7 +240,8 @@
                                       ItemsSource="{Binding Urgencies}"
                                       IsSynchronizedWithCurrentItem="True"                              
                                       SelectedItem="{Binding Name}"                             
-                                      SelectedValue="{Binding CurrentUrgency}">
+                                      SelectedValue="{Binding CurrentUrgency}"
+                                      Background="White">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Margin="0,-1,0,0" Text="{Binding Name}"/>
@@ -301,7 +306,8 @@
                                       IsSynchronizedWithCurrentItem="True"                              
                                       SelectedItem="{Binding Due}"                              
                                       SelectedValue="{Binding CloserDue}"
-                                      BorderBrush="{Binding CloserDueValid}">
+                                      BorderBrush="{Binding CloserDueValid}"
+                                      Background="White">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Margin="0,-1,0,0" Text="{Binding Due}"/>

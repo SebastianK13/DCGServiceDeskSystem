@@ -202,6 +202,7 @@ namespace DCGServiceDesk.Data.Models
         public bool Expired { get; set; }
         public string? CreatedBy { get; set; }
         public string? Message { get; set; }
+        public int? HistoryId { get; set; }
         public virtual State? State { get; set; }
     }
 
@@ -221,7 +222,7 @@ namespace DCGServiceDesk.Data.Models
         [ForeignKey("ActiveStatus")]
         public int? StatusId { get; set; }
         public virtual Status? ActiveStatus { get; set; }
-        [ForeignKey("Status")]
+        [ForeignKey("HistoryId")]
         public virtual ICollection<Status>? Status { get; set; }
     }
     public class CloserDue
