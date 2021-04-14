@@ -64,6 +64,7 @@ namespace DCGServiceDesk.ViewModels
             _designation = "T";
             UpdateRequestCommand = new UpdateRequestCommand(_requestQueue, this);
             _requestId = t.TaskId;
+            TaskInfo = t.AccountForm;
         }
         public NotEscalatedViewModel(Incident i, DbInterfaceContainer dbInterfaces, RequestViewModel rVM)
         {
@@ -113,6 +114,7 @@ namespace DCGServiceDesk.ViewModels
         public List<Priority> Priorities { get; private set; }
         public List<CloserDue> CloserDues { get; private set; }
         public string AdminUsername { get; set; }
+        public NewAccountForm TaskInfo { get; set; }
 
         private readonly int _requestId;
         private readonly string _designation;
@@ -139,6 +141,7 @@ namespace DCGServiceDesk.ViewModels
         private string _solution;
         private bool _buttonsVisible;
         private bool _assignBtnVisible;
+        private bool _taskInfoVisibility;
 
         public bool AssignBtnVisibile
         {
@@ -156,6 +159,15 @@ namespace DCGServiceDesk.ViewModels
             {
                 _buttonsVisible = value;
                 OnPropertyChanged("ButtonsVisibile");
+            }
+        }
+        public bool TaskInfoVisibility
+        {
+            get { return _taskInfoVisibility; }
+            set
+            {
+                _taskInfoVisibility = value;
+                OnPropertyChanged("TaskInfoVisibility");
             }
         }
         public bool FindUserEventArea
@@ -410,6 +422,7 @@ namespace DCGServiceDesk.ViewModels
             AdminUsername = RequestViewModel.GetUsername();
             AssignBtnVisibile = true;
             SetPriority();
+            TaskInfoVisibility = CheckIsTaskRequest();
         }
         public async Task CheckIfRequestAssigned()
         {
@@ -454,6 +467,9 @@ namespace DCGServiceDesk.ViewModels
                     .FirstOrDefault();
             }
         }
+        private bool CheckIsTaskRequest() =>
+            TaskInfo != null ? true : false;
+
     }
     public class EscalationViewModel : ViewModelBase
     {
@@ -567,6 +583,6 @@ namespace DCGServiceDesk.ViewModels
     public class OpenIncidentContainer
     {
         public Incident Incident { get; set; }
-        public string IncidentID { get; set; } 
+        public string IncidentID { get; set; }
     }
 }
