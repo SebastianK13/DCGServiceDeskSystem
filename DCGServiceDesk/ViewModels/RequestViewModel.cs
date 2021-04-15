@@ -16,7 +16,7 @@ namespace DCGServiceDesk.ViewModels
     public class RequestViewModel : Tab
     {
         public RequestViewModel(SingleRequestInfo singleRequest,
-            DbInterfaceContainer interfaceContainer, HomeViewModel hVM)
+            DbInterfaceContainer interfaceContainer, HomeViewModel hVM, bool isEscalated)
             : base(interfaceContainer, hVM)
         {
             TabContainer wi = new TabContainer();
@@ -32,7 +32,15 @@ namespace DCGServiceDesk.ViewModels
             {
                 AssigmentGroups = singleRequest.Groups,
             };
-            CurrentMode = NotEscalated;
+            if(isEscalated)
+            {
+                Escalated = new EscalatedRequestViewModel(this, NotEscalated);
+                CurrentMode = Escalated;
+            }
+            else
+            {
+                CurrentMode = NotEscalated;
+            }
         }
         public async Task InitializeNEVMModel()
         {
@@ -44,6 +52,18 @@ namespace DCGServiceDesk.ViewModels
         {
             await Escalation.Initialize();
         }
+    }
+    public class EscalatedRequestViewModel : ViewModelBase
+    {
+        public EscalatedRequestViewModel(RequestViewModel requestViewModel, NotEscalatedViewModel notEscalated)
+        {
+            RequestViewModel = requestViewModel;
+            NotEscalated = notEscalated;
+        }
+
+        public NotEscalatedViewModel NotEscalated { get; set; }
+        public RequestViewModel RequestViewModel { get; set; }
+
     }
     public class NotEscalatedViewModel : ViewModelBase
     {

@@ -35,6 +35,7 @@ namespace DCGServiceDesk.Controls.Tab.Model
         public event EventHandler CloseTabRequested;
         public NotEscalatedViewModel NotEscalated { get; set; }
         public EscalationViewModel Escalation { get; set; }
+        public EscalatedRequestViewModel Escalated { get; set; }
         private object _currentMode;
         public object CurrentMode
         {

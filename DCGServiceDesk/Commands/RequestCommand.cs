@@ -98,6 +98,7 @@ namespace DCGServiceDesk.Commands
         {
             var groups = await _requestQueue.GetGroups();
             SingleRequestInfo request = new SingleRequestInfo {Groups = groups};
+            bool isEscalated = false;
 
             switch (requestType)
             {
@@ -110,14 +111,19 @@ namespace DCGServiceDesk.Commands
                     request.Label = labelT;
                     if (t.Group == null || t.Group.GroupName == "Service Desk")
                     {
-                        RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
+                        RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM, isEscalated);
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
                         _hVM.Tabs.Add(rVM);
                     }
                     else
                     {
-                        _hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
+                        isEscalated = true;
+                        RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM, isEscalated);
+                        await rVM.InitializeNEVMModel();
+                        await rVM.InitializeEVMModel();
+                        _hVM.Tabs.Add(rVM);
+                        //_hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
                     }
 
                     break;
@@ -130,14 +136,19 @@ namespace DCGServiceDesk.Commands
                     request.Label = labelIM;
                     if (im.Group == null || im.Group.GroupName == "Service Desk")
                     {
-                        RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
+                        RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM, isEscalated);
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
                         _hVM.Tabs.Add(rVM);
                     }
                     else
                     {
-                        _hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
+                        isEscalated = true;
+                        RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM, isEscalated);
+                        await rVM.InitializeNEVMModel();
+                        await rVM.InitializeEVMModel();
+                        _hVM.Tabs.Add(rVM);
+                        //_hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
                     }
                     break;
                 case "C":
@@ -149,14 +160,19 @@ namespace DCGServiceDesk.Commands
                     request.Label = labelC;
                     if (c.Group == null || c.Group.GroupName == "Service Desk")
                     {
-                        RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM);
+                        RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM, isEscalated);
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
                         _hVM.Tabs.Add(rVM);
                     }
                     else
                     {
-                        _hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
+                        isEscalated = true;
+                        RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM, isEscalated);
+                        await rVM.InitializeNEVMModel();
+                        await rVM.InitializeEVMModel();
+                        _hVM.Tabs.Add(rVM);
+                        //_hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
                     }
                     break;
             }

@@ -5,8 +5,431 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DCGServiceDesk.View"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid >
-        <TextBlock Panel.ZIndex="2">empty</TextBlock>
+             d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:behaviours="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="AdditionalResources/ComboBoxResources.xaml"/>
+                <ResourceDictionary Source="EscalatedViewResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Height="auto" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" BorderBrush="#FFACACAC" BorderThickness="0,0,0,1">
+            <StackPanel Background="#D6D6CE" Orientation="Horizontal">
+                <Button Background="Transparent" Width="0"/>
+                <Button Command="{Binding NotEscalated.CloseOrEscalateCommand}" BorderThickness="0" 
+                        CommandParameter="Refresh"
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="../Images/refreshIcon.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="0,0,0,0" />
+                        <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Refresh</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding NotEscalated.CloseOrEscalateCommand}" CommandParameter="Close" BorderThickness="0" 
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                        Visibility="{Binding NotEscalated.ButtonsVisibile, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="../Images/redCross.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="6,0,4,0" />
+                        <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Close request</TextBlock>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Border>
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+            <Grid x:Name="form" Margin="25,40,0,0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="400"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Panel.ZIndex="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition MinWidth="200" Width="*"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition MinWidth="200"  Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <Style TargetType="Label">
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="MaxWidth" Value="80"/>
+                                <Setter Property="Margin" Value="50,-2,0,0"/>
+                                <Setter Property="Height" Value="26"/>
+                            </Style>
+                        </Grid.Resources>
+                        <Label Grid.Row="0">ID:</Label>
+                        <Label Grid.Row="1">Phase:</Label>
+                        <Label Grid.Row="3">Contact:</Label>
+                        <Label Grid.Row="4">Recipient:</Label>
+                    </Grid>
+                    <StackPanel HorizontalAlignment="Left" Grid.Column="1"
+                                Margin="0,145,0,0" 
+                                Panel.ZIndex="1">
+                        <ContentPresenter Content="{Binding NotEscalated.Contact}"/>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Panel.ZIndex="-1" Height="329"
+                            Width="305" Background="Transparent" Grid.Column="1" Margin="-50,73,0,0"
+                                Visibility="{Binding NotEscalated.FindUserEventArea, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel.Style>
+                            <Style>
+                                <Setter Property="behaviours:CommandBehavior.Event"
+                                     Value="MouseEnter" />
+                                <Setter Property="behaviours:CommandBehavior.Command"
+                                     Value="{Binding NotEscalated.FindUserCommand}" />
+                                <Setter Property="behaviours:CommandBehavior.CommandParameter"
+                                     Value="CloseUserInfo" />
+                            </Style>
+                        </StackPanel.Style>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Grid.Column="1"
+                                Margin="0,175,0,0" 
+                                Panel.ZIndex="1">
+                        <ContentPresenter Content="{Binding NotEscalated.Recipient}"/>
+                    </StackPanel>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding RequestViewModel.WorkspaceInfo[0].CommunicationInfo.RequestId}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <ComboBox Template="{DynamicResource ComboBoxTemplate1}" 
+                              ItemsSource="{Binding NotEscalated.States}" Width="200" Height="22"
+                              IsSynchronizedWithCurrentItem="True"
+                              SelectedItem="{Binding StateName}"
+                              SelectedValue="{Binding NotEscalated.CurrentState}"
+                              BorderBrush="{Binding StatusValid}"
+                              Background="#DCDCDC"
+                              IsEditable="False" IsHitTestVisible="False" Focusable="False">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="0,-1,0,0" Text="{Binding StateName}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox BorderBrush="{Binding NotEscalated.ContactValid}" Height="22" Width="178" VerticalAlignment="Stretch" 
+                                     VerticalContentAlignment="Center" Text="{Binding NotEscalated.CUsername}"/>
+                            <Button BorderThickness="0,.8,.8,.8" BorderBrush="Gray" Command="{Binding NotEscalated.FindUserCommand}"
+                                    CommandParameter="FindContact"
+                                    Background="WhiteSmoke" VerticalAlignment="Center" Height="22" Width="22">
+                                <Image VerticalAlignment="Center" Source="../Images/loupeGray.png" Height="15" Width="auto" Margin="0,2,0,0" />
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox BorderBrush="{Binding NotEscalated.RecipientValid}" Height="22" Width="178" VerticalAlignment="Stretch" 
+                                     VerticalContentAlignment="Center" Text="{Binding NotEscalated.RUsername}"/>
+                            <Button BorderThickness="0,.8,.8,.8" BorderBrush="Gray" Command="{Binding NotEscalated.FindUserCommand}"
+                                    CommandParameter="FindRecipient"
+                                    Background="WhiteSmoke" VerticalAlignment="Center" Height="22" Width="22">
+                                <Image VerticalAlignment="Center" Source="../Images/loupeGray.png" Height="15" Width="auto" Margin="0,2,0,0" />
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <Style TargetType="Label">
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="MaxWidth" Value="80"/>
+                                <Setter Property="Margin" Value="50,-2,0,0"/>
+                                <Setter Property="Height" Value="26"/>
+                            </Style>
+                        </Grid.Resources>
+                        <Label Grid.Row="0">Category:</Label>
+                        <Label Grid.Row="1">Subcategory:</Label>
+                        <Label Grid.Row="3">Impact:</Label>
+                        <Label Grid.Row="4">Urgency:</Label>
+                        <Label Grid.Row="5">Priority:</Label>
+                    </Grid>
+                    <Grid Grid.Column="3" Margin="0,0,10,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" 
+                                 VerticalAlignment="Stretch" VerticalContentAlignment="Center" 
+                                 Text="{Binding RequestViewModel.WorkspaceInfo[0].ServiceRequests.Category.Category.CategoryName}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <ComboBox Template="{DynamicResource ComboBoxTemplate1}" Width="200" Height="22"
+                                      ItemsSource="{Binding NotEscalated.Categorizations}"                             
+                                      IsSynchronizedWithCurrentItem="True"                              
+                                      SelectedItem="{Binding ServiceName}"
+                                      SelectedValue="{Binding NotEscalated.CurrentSubcategory}"
+                                      Background="White">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="0,-1,0,0" Text="{Binding ServiceName}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <ComboBox Template="{DynamicResource ComboBoxTemplate1}" Width="200" Height="22"
+                                      ItemsSource="{Binding NotEscalated.Impacts}"
+                                      IsSynchronizedWithCurrentItem="True"                             
+                                      SelectedItem="{Binding Name}"                             
+                                      SelectedValue="{Binding NotEscalated.CurrentImpact}"
+                                      Background="White">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="0,-1,0,0" Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <ComboBox Template="{DynamicResource ComboBoxTemplate1}" Width="200" Height="22"                             
+                                      ItemsSource="{Binding NotEscalated.Urgencies}"
+                                      IsSynchronizedWithCurrentItem="True"                              
+                                      SelectedItem="{Binding Name}"                             
+                                      SelectedValue="{Binding NotEscalated.CurrentUrgency}"
+                                      Background="White">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="0,-1,0,0" Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" 
+                                 VerticalAlignment="Stretch" VerticalContentAlignment="Center"                                     
+                                 Text="{Binding NotEscalated.CurrentPriority.Name, Mode=OneWay}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+                <Grid Margin="0,-150,0,0" Panel.ZIndex="0" Grid.Row="1" Height="300" Visibility="{Binding NotEscalated.TaskInfoVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition MinWidth="200" Width="*"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition MinWidth="200"  Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <Style TargetType="Label">
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="MaxWidth" Value="80"/>
+                                <Setter Property="Margin" Value="50,-2,0,0"/>
+                                <Setter Property="Height" Value="26"/>
+                            </Style>
+                        </Grid.Resources>
+                        <Label Grid.Row="0">Firstname:</Label>
+                        <Label Grid.Row="1">Surname:</Label>
+                        <Label Grid.Row="2">Email:</Label>
+                        <Label Grid.Row="4">Country:</Label>
+                        <Label Grid.Row="5">City:</Label>
+                        <Label Grid.Row="6">Address:</Label>
+                        <Label Grid.Row="7">ZipCode:</Label>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" 
+                                         Text="{Binding NotEscalated.TaskInfo.Firstname}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" 
+                                     Text="{Binding NotEscalated.TaskInfo.Surname}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" 
+                                     Text="{Binding NotEscalated.TaskInfo.Email}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" 
+                                     Text="{Binding NotEscalated.TaskInfo.Country}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" 
+                                     Text="{Binding NotEscalated.TaskInfo.City}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="6" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" 
+                                     Text="{Binding NotEscalated.TaskInfo.Address}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="7" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" 
+                                     Text="{Binding NotEscalated.TaskInfo.ZipCode}"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <Style TargetType="Label">
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="MaxWidth" Value="80"/>
+                                <Setter Property="Margin" Value="50,-2,0,0"/>
+                                <Setter Property="Height" Value="26"/>
+                            </Style>
+                        </Grid.Resources>
+                        <Label Grid.Row="0">Position ID:</Label>
+                        <Label Grid.Row="1">Dept. ID:</Label>
+                        <Label Grid.Row="2">Superior ID:</Label>
+                        <Label Grid.Row="3">TimeZone ID:</Label>
+                    </Grid>
+                    <Grid Grid.Column="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" 
+                                         Text="{Binding NotEscalated.TaskInfo.PositionId}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" 
+                                     Text="{Binding NotEscalated.TaskInfo.DepartmentId}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" 
+                                     Text="{Binding NotEscalated.TaskInfo.SuperiorId}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" 
+                                     Text="{Binding NotEscalated.TaskInfo.TimeZoneId}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="150"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="70"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <Style TargetType="Label">
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="MaxWidth" Value="80"/>
+                                <Setter Property="Margin" Value="50,-2,0,0"/>
+                                <Setter Property="Height" Value="26"/>
+                            </Style>
+                        </Grid.Resources>
+                        <Label Grid.Row="0">Title:</Label>
+                        <Label Grid.Row="1" VerticalAlignment="Top">Description:</Label>
+                        <Label Grid.Row="2">Closer due:</Label>
+                        <Label Grid.Row="3" VerticalAlignment="Top">Solution:</Label>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="150"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="70"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel HorizontalAlignment="Stretch" Grid.Row="0" Margin="0,0,10,0" VerticalAlignment="Center">
+                            <TextBox HorizontalAlignment="Stretch" Height="23" VerticalContentAlignment="Center"
+                                 Text="{Binding NotEscalated.Topic}" BorderBrush="{Binding NotEscalated.TitleValid}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Margin="0,0,10,0">
+                            <TextBox VerticalScrollBarVisibility="Visible" Padding="2,3,2,2" AcceptsReturn="True" 
+                                     TextWrapping="Wrap" Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                 Text="{Binding NotEscalated.Description}" BorderBrush="{Binding NotEscalated.DescriptionValid}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <ComboBox Template="{DynamicResource ComboBoxTemplate1}" Width="200" Height="22"
+                                      ItemsSource="{Binding NotEscalated.CloserDues}"
+                                      IsSynchronizedWithCurrentItem="True"                              
+                                      SelectedItem="{Binding Due}"                              
+                                      SelectedValue="{Binding NotEscalated.CloserDue}"
+                                      BorderBrush="{Binding NotEscalated.CloserDueValid}"
+                                      Background="White">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="0,-1,0,0" Text="{Binding Due}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Margin="0,0,10,0">
+                            <TextBox VerticalScrollBarVisibility="Visible" Padding="2,3,2,2" Height="70" AcceptsReturn="True" 
+                                     TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                     Text="{Binding NotEscalated.Solution}" BorderBrush="{Binding NotEscalated.SolutionValid}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
     </Grid>
+
 </UserControl>
