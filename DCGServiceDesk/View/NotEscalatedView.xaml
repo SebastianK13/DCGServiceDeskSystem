@@ -70,7 +70,8 @@
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
             <Grid x:Name="form" Margin="25,40,0,0" >
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="400"/>
+                    <RowDefinition Height="230"/>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
@@ -257,7 +258,11 @@
                         </StackPanel>
                     </Grid>
                 </Grid>
-                <Grid Margin="0,-150,0,0" Panel.ZIndex="0" Grid.Row="1" Height="300" Visibility="{Binding TaskInfoVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Margin="55,0,0,40" Grid.Row="1" Visibility="{Binding TaskInfoVisibility, 
+                    Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <CheckBox IsChecked="{Binding IsAccountInfoChecked}">Task additional information</CheckBox>
+                </StackPanel>
+                <Grid Margin="0,40,0,0" Panel.ZIndex="0" Grid.Row="1" Height="300" Visibility="{Binding IsAccountInfoChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="150"/>
                             <ColumnDefinition MinWidth="200" Width="*"/>
@@ -332,7 +337,7 @@
                                      Text="{Binding TaskInfo.ZipCode}"/>
                         </StackPanel>
                     </Grid>
-                    <Grid Grid.Column="2">
+                    <Grid Grid.Column="2" Margin="20,0,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"/>
                             <RowDefinition Height="30"/>
@@ -357,7 +362,7 @@
                         <Label Grid.Row="2">Superior ID:</Label>
                         <Label Grid.Row="3">TimeZone ID:</Label>
                     </Grid>
-                    <Grid Grid.Column="3">
+                    <Grid Grid.Column="3" Margin="22,0,10,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>

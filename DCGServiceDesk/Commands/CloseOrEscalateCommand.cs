@@ -185,6 +185,7 @@ namespace DCGServiceDesk.Commands
             CheckDescField();
             CheckSolutionField();
             CheckDueField();
+            CheckStatusIfEscalated();
             if (!isFormValid.Contains(false))
             {
                 string requestType = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().RequestType;
@@ -359,37 +360,24 @@ namespace DCGServiceDesk.Commands
             else
                return nEVM.States.Where(n => n.StateName == "Open").FirstOrDefault();
         }
+        private void CheckStatusIfEscalated()
+        {
+            if (nEVM.RequestViewModel.CurrentMode.GetType().Name == "EscalatedRequestViewModel")
+                CheckStatusForClose();
+        }
+        private void CheckStatusForClose()
+        {
+            if (nEVM.CurrentState != nEVM.States.Where(s => s.StateName == "Closed").FirstOrDefault())
+            {
+                nEVM.StatusValid = Invalid;
+                isFormValid.Add(false);
+            }
+            else
+            {
+                isFormValid.Add(true);
+                nEVM.StatusValid = Valid;
+            }
+        }
+
     }
 }
-
-
-//Will be usefull in escalated view
-
-//private void CheckStatusForClose()
-//{
-//    if (nEVM.CurrentState != nEVM.States.Where(s => s.StateName == "Closed").FirstOrDefault())
-//    {
-//        nEVM.StatusValid = Invalid;
-//        isFormValid.Add(false);
-//    }
-//    else
-//    {
-//        isFormValid.Add(true);
-//        nEVM.StatusValid = Valid;
-//    }
-
-//}
-//private void CheckStatusForEscalate()
-//{
-//    if (nEVM.CurrentState != nEVM.States.Where(s => s.StateName == "New").FirstOrDefault())
-//    {
-//        nEVM.StatusValid = Invalid;
-//        isFormValid.Add(false);
-//    }
-//    else
-//    {
-//        isFormValid.Add(true);
-//        nEVM.StatusValid = Valid;
-//    }
-
-//}

@@ -59,6 +59,7 @@ namespace DCGServiceDesk.ViewModels
         {
             RequestViewModel = requestViewModel;
             NotEscalated = notEscalated;
+            NotEscalated.ButtonsVisibile = true;
         }
 
         public NotEscalatedViewModel NotEscalated { get; set; }
@@ -162,6 +163,7 @@ namespace DCGServiceDesk.ViewModels
         private bool _buttonsVisible;
         private bool _assignBtnVisible;
         private bool _taskInfoVisibility;
+        private bool _isAccountInfoChecked;
 
         public bool AssignBtnVisibile
         {
@@ -188,6 +190,15 @@ namespace DCGServiceDesk.ViewModels
             {
                 _taskInfoVisibility = value;
                 OnPropertyChanged("TaskInfoVisibility");
+            }
+        }
+        public bool IsAccountInfoChecked
+        {
+            get { return _isAccountInfoChecked; }
+            set
+            {
+                _isAccountInfoChecked = value;
+                OnPropertyChanged("IsAccountInfoChecked");
             }
         }
         public bool FindUserEventArea
@@ -464,6 +475,7 @@ namespace DCGServiceDesk.ViewModels
             {
                 ButtonsVisibile = true;
                 AssignBtnVisibile = false;
+                IsAccountInfoChecked = false;
             }
 
         }
