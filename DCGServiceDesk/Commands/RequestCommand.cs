@@ -122,6 +122,7 @@ namespace DCGServiceDesk.Commands
                         RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM, isEscalated);
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
+                        rVM.InitializeEscalatedModel();
                         _hVM.Tabs.Add(rVM);
                         //_hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
                     }
@@ -147,6 +148,7 @@ namespace DCGServiceDesk.Commands
                         RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM, isEscalated);
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
+                        rVM.InitializeEscalatedModel();
                         _hVM.Tabs.Add(rVM);
                         //_hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
                     }
@@ -171,6 +173,7 @@ namespace DCGServiceDesk.Commands
                         RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM, isEscalated);
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
+                        rVM.InitializeEscalatedModel();
                         _hVM.Tabs.Add(rVM);
                         //_hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
                     }

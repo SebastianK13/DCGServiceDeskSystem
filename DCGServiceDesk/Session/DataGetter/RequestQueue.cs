@@ -99,5 +99,8 @@ namespace DCGServiceDesk.Session.DataGetter
 
         public async Task AddAssociatedIM(Incident request, string username, OpenIncidentContainer choosenIncident) =>
             await _requestService.AddAssociatedIncident(request, username, choosenIncident.Incident);
+
+        public async Task<bool> IsGroupMember(string username, int id) =>
+            await _requestService.IsGroupMember(username, id);
     }
 }

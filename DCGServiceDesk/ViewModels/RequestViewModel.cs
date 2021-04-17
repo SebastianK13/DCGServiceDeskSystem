@@ -15,10 +15,12 @@ namespace DCGServiceDesk.ViewModels
 {
     public class RequestViewModel : Tab
     {
+        protected readonly TimeZoneInfo _timeZoneInfo;
         public RequestViewModel(SingleRequestInfo singleRequest,
             DbInterfaceContainer interfaceContainer, HomeViewModel hVM, bool isEscalated)
             : base(interfaceContainer, hVM)
         {
+            _timeZoneInfo = hVM.loggedUser.ZoneInfo;
             TabContainer wi = new TabContainer();
             wi.ServiceRequests = singleRequest.Request;
             wi.CommunicationInfo = singleRequest.Info;
@@ -30,11 +32,16 @@ namespace DCGServiceDesk.ViewModels
                 interfaceContainer, this);
             Escalation = new EscalationViewModel(this, interfaceContainer.RequestQueue)
             {
-                AssigmentGroups = singleRequest.Groups,
+                AssigmentGroups = singleRequest.Groups
             };
             if(isEscalated)
             {
                 Escalated = new EscalatedRequestViewModel(this, NotEscalated);
+                Escalated.SLA = DateTimeConversion.ConvertDate(
+                    RequestService.GetSLADate(singleRequest.Request), _timeZoneInfo);
+                Escalated.AssigmentGroups = singleRequest.Groups;
+                Escalated.AUsername = RequestService.GetAssignee(singleRequest.Request);
+                Escalated.ChoosenGroup = RequestService.GetGroup(singleRequest.Request);
                 CurrentMode = Escalated;
             }
             else
@@ -52,9 +59,12 @@ namespace DCGServiceDesk.ViewModels
         {
             await Escalation.Initialize();
         }
+        public void InitializeEscalatedModel() =>
+            Escalated.SetInitialColors();
     }
     public class EscalatedRequestViewModel : ViewModelBase
     {
+
         public EscalatedRequestViewModel(RequestViewModel requestViewModel, NotEscalatedViewModel notEscalated)
         {
             RequestViewModel = requestViewModel;
@@ -62,9 +72,76 @@ namespace DCGServiceDesk.ViewModels
             NotEscalated.ButtonsVisibile = true;
         }
 
+        private AssigmentGroup _chosenGroup;
+        private string _aUsername;
+        private DateTime _sla;
+        private AccountInfo _assignee;
+        private bool _assigneeArea;
+        private Brush _assigneeValid;
+
         public NotEscalatedViewModel NotEscalated { get; set; }
         public RequestViewModel RequestViewModel { get; set; }
 
+        public List<AssigmentGroup> AssigmentGroups { get; set; }
+        public AssigmentGroup ChoosenGroup
+        {
+            get { return _chosenGroup; }
+            set
+            {
+                _chosenGroup = value;
+                OnPropertyChanged("ChoosenGroup");
+            }
+        }
+        public string AUsername
+        {
+            get { return _aUsername; }
+            set
+            {
+                _aUsername = value;
+                OnPropertyChanged("AUsername");
+            }
+        }
+        public DateTime SLA 
+        {
+            get { return _sla; }
+            set
+            {
+                _sla = value;
+                OnPropertyChanged("SLA");
+            } 
+        }
+        public AccountInfo Assignee 
+        {
+            get { return _assignee; }
+            set 
+            {
+                _assignee = value;
+                OnPropertyChanged("Assignee");
+            }
+        }
+        public bool FindAssigneeEventArea
+        {
+            get { return _assigneeArea; }
+            set
+            {
+                _assigneeArea = value;
+                OnPropertyChanged("FindAssigneeEventArea");
+            }
+        }
+        public Brush AssigneeValid
+        {
+            get { return _assigneeValid; }
+            set
+            {
+                if (value != _assigneeValid)
+                {
+                    _assigneeValid = value;
+                    OnPropertyChanged("AssigneeValid");
+                }
+            }
+        }
+        public void SetInitialColors() =>
+            AssigneeValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
     }
     public class NotEscalatedViewModel : ViewModelBase
     {
@@ -588,6 +665,10 @@ namespace DCGServiceDesk.ViewModels
 
     public class AccountInfo
     {
+        public AccountInfo()
+        {
+        }
+
         public AccountInfo(Employee _user, string superiorUsername)
         {
             Firstname = _user.Firstname;

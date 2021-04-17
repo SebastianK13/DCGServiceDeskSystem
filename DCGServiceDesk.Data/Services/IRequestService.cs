@@ -36,5 +36,6 @@ namespace DCGServiceDesk.Data.Services
         Task<string> GetIncidentAssignee(int requestId);
         Task<List<Incident>> GetOpenIncidentsList();
         Task AddAssociatedIncident(Incident request, string username, Incident choosenIncident);
+        Task<bool> IsGroupMember(string username, int id);
     }
 }

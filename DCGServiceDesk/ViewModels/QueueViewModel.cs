@@ -44,11 +44,11 @@ namespace DCGServiceDesk.ViewModels
             switch (requestType)
             {
                 case "Incidents":
-                    return GetDateFromIM((Incident)request, phase);
+                    return DateTimeConversion.GetDateFromIM((Incident)request, phase, _timeZoneInfo);
                 case "Changes":
-                    return GetDateFromC((ServiceRequest)request, phase);
+                    return DateTimeConversion.GetDateFromC((ServiceRequest)request, phase, _timeZoneInfo);
                 case "Tasks":
-                    return GetDateFromT((TaskRequest)request, phase);
+                    return DateTimeConversion.GetDateFromT((TaskRequest)request, phase, _timeZoneInfo);
                 default:
                     return default;
             }
@@ -90,33 +90,6 @@ namespace DCGServiceDesk.ViewModels
             WorkspaceInfo = wi;
             Label = requestInfo.QueueName;
             QueueType = requestInfo.QueueType;
-        }
-        private DateTime GetDateFromIM(Incident im, string phase)
-        {
-            if (phase == "start")
-                return TimeZoneInfo.ConvertTime(im.History.ActiveStatus.CreateDate, _timeZoneInfo);
-            else if (phase == "end")
-                return TimeZoneInfo.ConvertTime(im.History.ActiveStatus.DueTime, _timeZoneInfo);
-            else
-                return default(DateTime);
-        }
-        private DateTime GetDateFromC(ServiceRequest c, string phase)
-        {
-            if (phase == "start")
-                return TimeZoneInfo.ConvertTime(c.History.ActiveStatus.CreateDate, _timeZoneInfo);
-            else if (phase == "end")
-                return TimeZoneInfo.ConvertTime(c.History.ActiveStatus.DueTime, _timeZoneInfo);
-            else
-                return default(DateTime);
-        }
-        private DateTime GetDateFromT(TaskRequest t, string phase)
-        {
-            if (phase == "start")
-                return TimeZoneInfo.ConvertTime(t.History.ActiveStatus.CreateDate, _timeZoneInfo);
-            else if (phase == "end")
-                return TimeZoneInfo.ConvertTime(t.History.ActiveStatus.DueTime, _timeZoneInfo);
-            else
-                return default(DateTime);
         }
     }
 }

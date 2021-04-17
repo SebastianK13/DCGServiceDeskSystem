@@ -413,5 +413,8 @@ namespace DCGServiceDesk.EF.Services
 
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<bool> IsGroupMember(string username, int id) =>
+            await _dbContext.Members.AnyAsync(i => i.GroupId == id && i.Username == username);
     }
 }

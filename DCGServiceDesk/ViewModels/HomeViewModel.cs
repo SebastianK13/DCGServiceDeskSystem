@@ -18,7 +18,6 @@ namespace DCGServiceDesk.ViewModels
     public class HomeViewModel : ViewModelBase
     {
         public ILoggedUser loggedUser;
-        public TimeZoneInfo UserTimeZone { get; set; }
         public ICommand RequestCommand { get; }
         public ICommand UpdateGroupsCommand { get; }
         private readonly IRequestQueue _requestQueue;

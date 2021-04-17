@@ -29,6 +29,55 @@ namespace DCGServiceDesk.Services
 
             }
         }
+        public static DateTime GetSLADate(object request)
+        {
+            string requestType = request.GetType().Name;
+            switch (requestType)
+            {
+                case "TaskRequestProxy":
+                    return ((TaskRequest)request).History.ActiveStatus.DueTime;
+                case "IncidentProxy":
+                    return ((Incident)request).History.ActiveStatus.DueTime;
+                case "ServiceRequestProxy":
+                    return ((ServiceRequest)request).History.ActiveStatus.DueTime;
+                default:
+                    return new DateTime();
+
+            }
+
+        }
+        public static string GetAssignee(object request) 
+        {
+            string requestType = request.GetType().Name;
+            switch (requestType)
+            {
+                case "TaskRequestProxy":
+                    return ((TaskRequest)request).Assignee;
+                case "IncidentProxy":
+                    return ((Incident)request).Assignee;
+                case "ServiceRequestProxy":
+                    return ((ServiceRequest)request).Assignee;
+                default:
+                    return null;
+
+            }
+        }
+        public static AssigmentGroup GetGroup(object request)
+        {
+            string requestType = request.GetType().Name;
+            switch (requestType)
+            {
+                case "TaskRequestProxy":
+                    return ((TaskRequest)request).Group;
+                case "IncidentProxy":
+                    return ((Incident)request).Group;
+                case "ServiceRequestProxy":
+                    return ((ServiceRequest)request).Group;
+                default:
+                    return null;
+
+            }
+        }
         public static TaskRequest SetAssigmentGroupT(TaskRequest task, AssigmentGroup group)
         {
             task.Group = group;
