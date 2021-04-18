@@ -34,7 +34,7 @@ namespace DCGServiceDesk.ViewModels
             {
                 AssigmentGroups = singleRequest.Groups
             };
-            if(isEscalated)
+            if (isEscalated)
             {
                 Escalated = new EscalatedRequestViewModel(this, NotEscalated);
                 Escalated.SLA = DateTimeConversion.ConvertDate(
@@ -70,19 +70,32 @@ namespace DCGServiceDesk.ViewModels
             RequestViewModel = requestViewModel;
             NotEscalated = notEscalated;
             NotEscalated.ButtonsVisibile = true;
+            PickMemberCommand = new PickMemberCommand(this);
         }
 
+        public ICommand PickMemberCommand { get; }
         private AssigmentGroup _chosenGroup;
         private string _aUsername;
         private DateTime _sla;
         private AccountInfo _assignee;
         private bool _assigneeArea;
         private Brush _assigneeValid;
+        private List<MemberInfo> _members;
+        private bool _membersVisibility;
 
         public NotEscalatedViewModel NotEscalated { get; set; }
         public RequestViewModel RequestViewModel { get; set; }
 
         public List<AssigmentGroup> AssigmentGroups { get; set; }
+        public List<MemberInfo> Members
+        {
+            get { return _members; }
+            set
+            {
+                _members = value;
+                OnPropertyChanged("Members");
+            }
+        }
         public AssigmentGroup ChoosenGroup
         {
             get { return _chosenGroup; }
@@ -101,19 +114,19 @@ namespace DCGServiceDesk.ViewModels
                 OnPropertyChanged("AUsername");
             }
         }
-        public DateTime SLA 
+        public DateTime SLA
         {
             get { return _sla; }
             set
             {
                 _sla = value;
                 OnPropertyChanged("SLA");
-            } 
+            }
         }
-        public AccountInfo Assignee 
+        public AccountInfo Assignee
         {
             get { return _assignee; }
-            set 
+            set
             {
                 _assignee = value;
                 OnPropertyChanged("Assignee");
@@ -126,6 +139,15 @@ namespace DCGServiceDesk.ViewModels
             {
                 _assigneeArea = value;
                 OnPropertyChanged("FindAssigneeEventArea");
+            }
+        }
+        public bool MembersVisibility
+        {
+            get { return _membersVisibility; }
+            set
+            {
+                _membersVisibility = value;
+                OnPropertyChanged("MembersVisibility");
             }
         }
         public Brush AssigneeValid
@@ -697,5 +719,11 @@ namespace DCGServiceDesk.ViewModels
     {
         public Incident Incident { get; set; }
         public string IncidentID { get; set; }
+    }
+    public class MemberInfo
+    {
+        public string Username { get; set; }
+        public string Firstname { get; set; }
+        public string Surname { get; set; }
     }
 }

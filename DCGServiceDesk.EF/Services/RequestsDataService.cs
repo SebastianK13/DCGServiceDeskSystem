@@ -416,5 +416,11 @@ namespace DCGServiceDesk.EF.Services
 
         public async Task<bool> IsGroupMember(string username, int id) =>
             await _dbContext.Members.AnyAsync(i => i.GroupId == id && i.Username == username);
+
+        public async Task<List<string>> GetMembers(int groupId) =>
+            await _dbContext.Members
+            .Where(g => g.GroupId == groupId)
+            .Select(u=>u.Username)
+            .ToListAsync();
     }
 }

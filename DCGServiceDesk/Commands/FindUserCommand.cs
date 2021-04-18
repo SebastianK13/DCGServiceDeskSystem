@@ -77,10 +77,34 @@ namespace DCGServiceDesk.Commands
                         _nEVM.RequestViewModel.Escalated.Assignee = null;
                     break;
                 case "ShowMembers":
-
+                    await CreateMembersList();
+                    _nEVM.RequestViewModel.Escalated.MembersVisibility = true;
+                    break;
+                case "HideMembers":
+                    _nEVM.RequestViewModel.Escalated.MembersVisibility = false;
                     break;
             }
         }
+        private async Task CreateMembersList()
+        {
+            List<MemberInfo> membersInfo = new List<MemberInfo>();
+            List<string> members = await _requestQueue
+                .GetMembers(_nEVM.RequestViewModel.Escalated.ChoosenGroup.GroupId);
+
+            foreach(var i in members)
+            {
+                string id = await _userInfo.GetUserId(i);
+                Employee e = await _employeeProfile.GetUser(id);
+                membersInfo.Add(new MemberInfo { 
+                     Username = i,
+                     Firstname = e.Firstname,
+                     Surname = e.Surname
+                });
+            }
+
+            _nEVM.RequestViewModel.Escalated.Members = membersInfo;
+        }
+
         private async Task<bool> CheckIsMember(string username) =>
             await _requestQueue.IsGroupMember(username, _nEVM.RequestViewModel.Escalated.ChoosenGroup.GroupId);
         private async Task<SolidColorBrush> GenerateAssigneeColor(string id, bool exist)

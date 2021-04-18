@@ -102,5 +102,8 @@ namespace DCGServiceDesk.Session.DataGetter
 
         public async Task<bool> IsGroupMember(string username, int id) =>
             await _requestService.IsGroupMember(username, id);
+
+        public async Task<List<string>> GetMembers(int groupId) =>
+            await _requestService.GetMembers(groupId);
     }
 }

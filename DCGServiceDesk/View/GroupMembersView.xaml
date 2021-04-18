@@ -5,47 +5,62 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DCGServiceDesk.View"
              xmlns:behaviours="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
+             xmlns:vw="clr-namespace:DCGServiceDesk.View"
+             xmlns:vm="clr-namespace:DCGServiceDesk.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
+    <UserControl.Resources>
+        <ResourceDictionary >
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="GroupMembersViewResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
-        <Border Padding="10,80,10,10">
-            <ListView ItemsSource="{Binding AssigmentGroups}" Background="LightGray" MaxWidth="1200"
-                      MinHeight="400" Height="400" MinWidth="200" ScrollViewer.VerticalScrollBarVisibility="Visible">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button HorizontalAlignment="Left" BorderThickness="0" Command="{Binding NotEscalated.FindUserCommand}"
+                            CommandParameter="HideMembers" Grid.Row="0"
+                            Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="../Images/backIcon.png" Height="25" Width="auto" HorizontalAlignment="Right" Margin="6,0,4,0" />
+                <TextBlock FontSize="16" Foreground="WhiteSmoke" VerticalAlignment="Center" Margin="0,0,0,0">Back to request</TextBlock>
+            </StackPanel>
+        </Button>
+        <Border Padding="10,0,10,10" Grid.Row="1">
+            <ListView ItemsSource="{Binding Members}" Background="LightGray" MaxWidth="800" 
+                      MinHeight="400" Height="400" MinWidth="200" ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                      SizeChanged="ListView_SizeChanged">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Setter Property="behaviours:CommandBehavior.Event"
                             Value="MouseDoubleClick" />
                         <Setter Property="behaviours:CommandBehavior.Command"
-                            Value="{Binding }" />
+                            Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type vw:EscalatedView}},
+                              Path=DataContext.(vm:EscalatedRequestViewModel.PickMemberCommand)}" />
                         <Setter Property="behaviours:CommandBehavior.CommandParameter"
-                            Value="{Binding}" />
+                            Value="{Binding Username}" />
                         <Setter Property="Height" Value="21"/>
                         <Setter Property="BorderThickness" Value="0,0,0,.2"/>
                         <Setter Property="Margin" Value="-4,0,0,0"/>
                         <Setter Property="BorderBrush" Value="Gray"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding RequestType}" Value="Tasks">
-                                <Setter Property="Foreground" Value="Green" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RequestType}" Value="Incidents">
-                                <Setter Property="Foreground" Value="Red" />
-                            </DataTrigger>
-                        </Style.Triggers>
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.View>
-                    <GridView x:Name="QueueList">
-                        <GridView.ColumnHeaderContainerStyle>
-                            <Style TargetType="GridViewColumnHeader">
-                                <Setter Property="RenderTransform">
-                                    <Setter.Value>
-                                        <TranslateTransform X="-2"></TranslateTransform>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </GridView.ColumnHeaderContainerStyle>
-                        <GridViewColumn x:Name="IdColumn" Header="ID" CellTemplate="{StaticResource IDCellTemplateStyle}"/>
+                    <GridView x:Name="MembersList">
+                        <GridViewColumn x:Name="UColumn" Header="Username" CellTemplate="{StaticResource UsernameCellTemplateStyle}">
+                            <GridViewColumn.HeaderContainerStyle>
+                                <Style TargetType="{x:Type GridViewColumnHeader}">
+                                    <Setter Property="Margin" Value="-6,0,0,0"/>
+                                </Style>
+                            </GridViewColumn.HeaderContainerStyle>
+                        </GridViewColumn>
+                        <GridViewColumn x:Name="FColumn" Header="Firstname" CellTemplate="{StaticResource FNameCellTemplateStyle}"/>
+                        <GridViewColumn x:Name="SColumn" Header="Surname" CellTemplate="{StaticResource SNameCellTemplateStyle}"/>
                     </GridView>
                 </ListView.View>
             </ListView>
