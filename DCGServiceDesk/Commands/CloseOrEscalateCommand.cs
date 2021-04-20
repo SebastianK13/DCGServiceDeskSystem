@@ -116,6 +116,8 @@ namespace DCGServiceDesk.Commands
             nEVM.Topic = c.Topic;
             nEVM.Description = c.Description;
             nEVM.Solution = c.History.Solution;
+            
+            //CloserDue Null reference on refresh in EscalatedView.xaml
             nEVM.CloserDue = nEVM.CloserDues
                 .Where(d => d.CloserId == c.History.CloserDue.CloserId)
                 .FirstOrDefault();

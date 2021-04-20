@@ -18,6 +18,7 @@
     <None Remove="Images\openSysNavIcon.png" />
     <None Remove="Images\redCross.png" />
     <None Remove="Images\refreshIcon.png" />
+    <None Remove="Images\SaveIcon.png" />
     <None Remove="Images\take2Icon.bmp" />
     <None Remove="Images\takeIcon.bmp" />
     <None Remove="Images\takIcon.png" />
@@ -73,6 +74,7 @@
     <Resource Include="Images\openSysNavIcon.png" />
     <Resource Include="Images\redCross.png" />
     <Resource Include="Images\refreshIcon.png" />
+    <Resource Include="Images\saveIcon.png" />
     <Resource Include="Images\take2Icon.bmp" />
     <Resource Include="Images\takeIcon.bmp" />
     <Resource Include="Images\takIcon.png" />
