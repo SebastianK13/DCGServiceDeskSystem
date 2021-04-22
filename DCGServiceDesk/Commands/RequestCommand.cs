@@ -99,16 +99,19 @@ namespace DCGServiceDesk.Commands
             var groups = await _requestQueue.GetGroups();
             SingleRequestInfo request = new SingleRequestInfo {Groups = groups};
             bool isEscalated = false;
+            Notification notification = new Notification();
 
             switch (requestType)
             {
                 case "T":
                     var t = RequestService.ExtractTask(parameter);
                     TaskRequest updatedTask = await _requestQueue.GetTask(t.TaskId);
+                    updatedTask.History.Status.OrderByDescending(d => d.CreateDate);
                     string labelT = RequestService.SetRequestId(t.TaskId, "T");
                     request.Request = updatedTask;
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
                     request.Label = labelT;
+
                     if (t.Group == null || t.Group.GroupName == "Service Desk")
                     {
                         RequestViewModel rVM = new RequestViewModel(request, _interfaceContainer, _hVM, isEscalated);
@@ -123,14 +126,15 @@ namespace DCGServiceDesk.Commands
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
                         rVM.InitializeEscalatedModel();
+                        rVM.Escalated.Notifications = notification.NotificationBuilder(rVM.Escalated.Statuses);
                         _hVM.Tabs.Add(rVM);
-                        //_hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
                     }
 
                     break;
                 case "IM":
                     var im = RequestService.ExtractIncident(parameter);
                     Incident updatedIncident = await _requestQueue.GetIncident(im.IncidentId);
+                    updatedIncident.History.Status.OrderByDescending(d => d.CreateDate);
                     string labelIM = RequestService.SetRequestId(im.IncidentId, "IM");
                     request.Request = updatedIncident;
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
@@ -149,13 +153,14 @@ namespace DCGServiceDesk.Commands
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
                         rVM.InitializeEscalatedModel();
+                        rVM.Escalated.Notifications = notification.NotificationBuilder(rVM.Escalated.Statuses);
                         _hVM.Tabs.Add(rVM);
-                        //_hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
                     }
                     break;
                 case "C":
                     var c = RequestService.ExtractChange(parameter);
                     ServiceRequest updatedChange = await _requestQueue.GetChange(c.RequestId);
+                    updatedChange.History.Status.OrderByDescending(d => d.CreateDate);
                     string labelC = RequestService.SetRequestId(c.RequestId, "C");
                     request.Request = updatedChange;
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
@@ -174,8 +179,8 @@ namespace DCGServiceDesk.Commands
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
                         rVM.InitializeEscalatedModel();
+                        rVM.Escalated.Notifications = notification.NotificationBuilder(rVM.Escalated.Statuses);
                         _hVM.Tabs.Add(rVM);
-                        //_hVM.Tabs.Add(new EscalatedViewModel(request, _interfaceContainer, _hVM));
                     }
                     break;
             }

@@ -518,7 +518,20 @@
                             </Grid>
                         </TabItem>
                         <TabItem Header="Notifications">
-                            
+                            <DockPanel MaxHeight="422" >
+                                <ScrollViewer>
+                                    <ItemsControl Padding="10" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Notifications}" BorderThickness="0">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding CreateDate}"/>
+                                                    <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </DockPanel>
                         </TabItem>
                         <TabItem Header="History">
                             <DockPanel MaxHeight="422" >

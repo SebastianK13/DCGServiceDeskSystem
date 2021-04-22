@@ -59,8 +59,12 @@ namespace DCGServiceDesk.ViewModels
         {
             await Escalation.Initialize();
         }
-        public void InitializeEscalatedModel() =>
+        public void InitializeEscalatedModel()
+        {
             Escalated.SetInitialColors();
+            Escalated.SetStatuses();
+        }
+
     }
     public class EscalatedRequestViewModel : ViewModelBase
     {
@@ -70,6 +74,11 @@ namespace DCGServiceDesk.ViewModels
             RequestViewModel = requestViewModel;
             NotEscalated = notEscalated;
             NotEscalated.ButtonsVisibile = true;
+            //NotEscalated.States
+            //    .Remove(NotEscalated.States
+            //    .Where(n => n.StateName == "New")
+            //    .FirstOrDefault());
+
             PickMemberCommand = new PickMemberCommand(this);
         }
 
@@ -162,8 +171,12 @@ namespace DCGServiceDesk.ViewModels
                 }
             }
         }
+        public List<Notification> Notifications { get; set; }
+        public List<Status> Statuses { get; set; }
         public void SetInitialColors() =>
             AssigneeValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
+        public void SetStatuses() =>
+            Statuses = RequestService.GetStatuses(RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests);
     }
     public class NotEscalatedViewModel : ViewModelBase
     {

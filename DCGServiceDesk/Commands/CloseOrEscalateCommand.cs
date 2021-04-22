@@ -94,9 +94,17 @@ namespace DCGServiceDesk.Commands
             nEVM.Topic = im.Topic;
             nEVM.Description = im.Description;
             nEVM.Solution = im.History.Solution;
-            nEVM.CloserDue = nEVM.CloserDues
-                .Where(d => d.CloserId == im.History.CloserDue.CloserId)
-                .FirstOrDefault();
+            if(im.History.CloserDue != null)
+            {
+                nEVM.CloserDue = nEVM.CloserDues
+                    .Where(d => d.CloserId == im.History.CloserDue.CloserId)
+                    .FirstOrDefault();
+            }
+            else
+            {
+                nEVM.CloserDue = null; 
+            }
+
         }
         private void UpdateCModel(ServiceRequest c)
         {
@@ -116,11 +124,18 @@ namespace DCGServiceDesk.Commands
             nEVM.Topic = c.Topic;
             nEVM.Description = c.Description;
             nEVM.Solution = c.History.Solution;
-            
-            //CloserDue Null reference on refresh in EscalatedView.xaml
-            nEVM.CloserDue = nEVM.CloserDues
-                .Where(d => d.CloserId == c.History.CloserDue.CloserId)
-                .FirstOrDefault();
+
+            if (c.History.CloserDue != null)
+            {
+                nEVM.CloserDue = nEVM.CloserDues
+                    .Where(d => d.CloserId == c.History.CloserDue.CloserId)
+                    .FirstOrDefault();
+            }
+            else
+            {
+                nEVM.CloserDue = null;
+            }
+
         }
         private void UpdateTModel(TaskRequest t)
         {
@@ -139,9 +154,17 @@ namespace DCGServiceDesk.Commands
             nEVM.Topic = t.Topic;
             nEVM.Description = t.Description;
             nEVM.Solution = t.History.Solution;
-            nEVM.CloserDue = nEVM.CloserDues
-                .Where(d => d.CloserId == t.History.CloserDue.CloserId)
-                .FirstOrDefault();
+
+            if (t.History.CloserDue != null)
+            {
+                nEVM.CloserDue = nEVM.CloserDues
+                    .Where(d => d.CloserId == t.History.CloserDue.CloserId)
+                    .FirstOrDefault();
+            }
+            else
+            {
+                nEVM.CloserDue = null;
+            }
         }
         private async Task EscalateRequest()
         {

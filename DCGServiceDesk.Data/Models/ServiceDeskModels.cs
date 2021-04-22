@@ -201,9 +201,13 @@ namespace DCGServiceDesk.Data.Models
         public DateTime DueTime { get; set; }
         public bool Expired { get; set; }
         public string? CreatedBy { get; set; }
+        public string? AssignedTo { get; set; }
         public string? Message { get; set; }
         public int? HistoryId { get; set; }
+        [ForeignKey("Group")]
+        public int? GroupId { get; set; }
         public virtual State? State { get; set; }
+        public virtual AssigmentGroup? Group { get; set; }
     }
 
     public class StatusHistory

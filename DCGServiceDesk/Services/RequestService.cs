@@ -78,6 +78,22 @@ namespace DCGServiceDesk.Services
 
             }
         }
+        public static List<Status> GetStatuses(object request)
+        {
+            string requestType = request.GetType().Name;
+            switch (requestType)
+            {
+                case "TaskRequestProxy":
+                    return ((TaskRequest)request).History.Status.ToList();
+                case "IncidentProxy":
+                    return ((Incident)request).History.Status.ToList();
+                case "ServiceRequestProxy":
+                    return ((ServiceRequest)request).History.Status.ToList();
+                default:
+                    return null;
+
+            }
+        }
         public static TaskRequest SetAssigmentGroupT(TaskRequest task, AssigmentGroup group)
         {
             task.Group = group;
@@ -216,5 +232,52 @@ namespace DCGServiceDesk.Services
         public string QueueName { get; set; }
         public string QueueType { get; set; }
     }
+    public class Notification
+    {
+        public DateTime CreateDate { get; set; }
+        public string Message { get; set; }
+        public string CreatedBy { get; set; }
+        public string AssignedTo { get; set; }
+        public string GroupName { get; set; }
 
+
+        public List<Notification> NotificationBuilder(List<Status> statuses)
+        {
+            List<Notification> notifications = new List<Notification>();
+
+            for(int i = 0; i < statuses.Count; i++)
+            {
+                string option = statuses[i].State.StateName;
+                Notification temp = new Notification();
+                temp.CreateDate = statuses[i].CreateDate;
+                temp.AssignedTo = statuses[i].AssignedTo;
+                temp.CreatedBy = statuses[i].CreatedBy;
+                temp.GroupName = statuses[i].Group.GroupName;
+
+                switch (option)
+                {
+                    case "New":
+                        temp.Message = "New request has been registered by " +
+                             CreatedBy + " and Escalated to " + GroupName;
+                        break;
+                    case "Open":
+                        if(CreatedBy == null)
+                            temp.Message = "Request has been opened automate";
+                        else
+                            temp.Message = "Request has been assigned to "+GroupName+" by "+ CreatedBy;
+                        break;
+                    case "Waiting":
+                        temp.Message = "Request is waiting for reply. Status has been changed by " + CreatedBy;
+                        break;
+                    case "Closed":
+                        temp.Message = "Request has been closed by " + CreatedBy;
+                        break;
+                }
+
+                notifications.Add(temp);
+            }
+
+            return notifications;
+        }
+    }
 }
