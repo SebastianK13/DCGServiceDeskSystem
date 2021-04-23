@@ -49,7 +49,7 @@
                             <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Close request</TextBlock>
                         </StackPanel>
                     </Button>
-                    <Button BorderThickness="0" 
+                    <Button BorderThickness="0" Command="{Binding NotEscalated.CloseOrEscalateCommand}" CommandParameter="Save"
                         Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
                         Visibility="{Binding NotEscalated.ButtonsVisibile, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel Orientation="Horizontal">
@@ -448,7 +448,7 @@
                             </StackPanel>
                         </Grid>
                     </Grid>
-                    <TabControl Grid.Row="3" BorderBrush="#87CEFA" BorderThickness="1" Margin="0,0,20,50">
+                    <TabControl TabIndex="{Binding SelectedTab}" Grid.Row="3" BorderBrush="#87CEFA" Margin="0,0,20,50">
                         <TabItem Header="General">
                             <Grid Margin="0,30,30,0">
                                 <Grid.ColumnDefinitions>
@@ -533,20 +533,55 @@
                                 </ScrollViewer>
                             </DockPanel>
                         </TabItem>
-                        <TabItem Header="History">
-                            <DockPanel MaxHeight="422" >
-                                <ScrollViewer>
-                                    <ItemsControl Padding="10" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding RequestViewModel.WorkspaceInfo[0].ServiceRequests.History.Status}" BorderThickness="0">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel>
-                                                    <TextBlock Text="{Binding CreateDate}"/>
-                                                    <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
+                        <TabItem Header="Conversation" BorderThickness="0">
+                            <DockPanel MaxHeight="422">
+                                <ScrollViewer MaxHeight="250" DockPanel.Dock="Top" BorderThickness="0,0,0,1">
+                                        <ItemsControl Padding="10" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding RequestViewModel.WorkspaceInfo[0].ServiceRequests.History.Status}" BorderThickness="0">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding CreateDate}"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                <Border DockPanel.Dock="Top" Height="190" Background="White" BorderBrush="#87CEFA" BorderThickness="0,1,0,0" Margin="-10,1,-10,-10" >
+                                    <StackPanel Margin="10,20,10,0">
+                                        <TextBox Height="100"/>
+                                    </StackPanel>
+                                </Border>
                             </DockPanel>
                         </TabItem>
                     </TabControl>

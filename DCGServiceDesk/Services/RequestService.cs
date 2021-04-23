@@ -252,25 +252,25 @@ namespace DCGServiceDesk.Services
                 temp.CreateDate = statuses[i].CreateDate;
                 temp.AssignedTo = statuses[i].AssignedTo;
                 temp.CreatedBy = statuses[i].CreatedBy;
-                temp.GroupName = statuses[i].Group.GroupName;
+                temp.GroupName = statuses[i].Group?.GroupName;
 
                 switch (option)
                 {
                     case "New":
                         temp.Message = "New request has been registered by " +
-                             CreatedBy + " and Escalated to " + GroupName;
+                             temp.CreatedBy + " and Escalated to " + temp.GroupName + "group";
                         break;
                     case "Open":
-                        if(CreatedBy == null)
+                        if(temp.CreatedBy == null)
                             temp.Message = "Request has been opened automate";
                         else
-                            temp.Message = "Request has been assigned to "+GroupName+" by "+ CreatedBy;
+                            temp.Message = "Request has been assigned to "+ temp.GroupName + " by "+ temp.CreatedBy;
                         break;
                     case "Waiting":
-                        temp.Message = "Request is waiting for reply. Status has been changed by " + CreatedBy;
+                        temp.Message = "Request is waiting for reply. Status has been changed by " + temp.CreatedBy;
                         break;
                     case "Closed":
-                        temp.Message = "Request has been closed by " + CreatedBy;
+                        temp.Message = "Request has been closed by " + temp.CreatedBy;
                         break;
                 }
 

@@ -46,6 +46,9 @@ namespace DCGServiceDesk.Commands
                     case "Refresh":
                         await RefreshRequest();
                         break;
+                    case "Save":
+                        //implementation
+                        break;
                 }
             }
             catch (Exception e)
@@ -57,22 +60,29 @@ namespace DCGServiceDesk.Commands
         {
             request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
             string requestType = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().RequestType;
+            Notification notification = new Notification();
             switch (requestType)
             {
                 case "TaskRequestProxy":
                     TaskRequest t = (TaskRequest)request;
                     TaskRequest updatedT = await _requestQueue.GetTask(t.TaskId);
                     UpdateTModel(updatedT);
+                    nEVM.RequestViewModel.Escalated.Notifications = 
+                        notification.NotificationBuilder(updatedT.History.Status.ToList());
                     break;
                 case "IncidentProxy":
                     Incident im = (Incident)request;
                     Incident updatedIM = await _requestQueue.GetIncident(im.IncidentId);
                     UpdateIMModel(updatedIM);
+                    nEVM.RequestViewModel.Escalated.Notifications = 
+                        notification.NotificationBuilder(updatedIM.History.Status.ToList());
                     break;
                 case "ServiceRequestProxy":
                     ServiceRequest c = (ServiceRequest)request;
                     ServiceRequest updatedChange = await _requestQueue.GetChange(c.RequestId);
                     UpdateCModel(updatedChange);
+                    nEVM.RequestViewModel.Escalated.Notifications = 
+                        notification.NotificationBuilder(updatedChange.History.Status.ToList());
                     break;
 
             }

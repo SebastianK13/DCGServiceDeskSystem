@@ -74,10 +74,10 @@ namespace DCGServiceDesk.ViewModels
             RequestViewModel = requestViewModel;
             NotEscalated = notEscalated;
             NotEscalated.ButtonsVisibile = true;
-            //NotEscalated.States
-            //    .Remove(NotEscalated.States
-            //    .Where(n => n.StateName == "New")
-            //    .FirstOrDefault());
+            NotEscalated.States?
+                .Remove(NotEscalated.States?
+                .Where(n => n.StateName == "New")
+                .FirstOrDefault());
 
             PickMemberCommand = new PickMemberCommand(this);
         }
@@ -91,6 +91,8 @@ namespace DCGServiceDesk.ViewModels
         private Brush _assigneeValid;
         private List<MemberInfo> _members;
         private bool _membersVisibility;
+        private List<Notification> _notifications;
+        private int _selectedTab;
 
         public NotEscalatedViewModel NotEscalated { get; set; }
         public RequestViewModel RequestViewModel { get; set; }
@@ -171,8 +173,25 @@ namespace DCGServiceDesk.ViewModels
                 }
             }
         }
-        public List<Notification> Notifications { get; set; }
+        public List<Notification> Notifications
+        {
+            get { return _notifications; }
+            set
+            {
+                _notifications = value;
+                OnPropertyChanged("Notifications");
+            }
+        }
         public List<Status> Statuses { get; set; }
+        public int SelectedTab 
+        {
+            get { return _selectedTab; }
+            set
+            {
+                _selectedTab = value;
+                OnPropertyChanged("SelectedTab");
+            }
+        }
         public void SetInitialColors() =>
             AssigneeValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
         public void SetStatuses() =>

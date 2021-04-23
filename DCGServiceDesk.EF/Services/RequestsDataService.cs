@@ -321,6 +321,7 @@ namespace DCGServiceDesk.EF.Services
             Status newStatus = await CreateStatus(DateTime.Now, request.History.ActiveStatus.DueTime, stateName);
             newStatus.CreatedBy = username;
             newStatus.HistoryId = request.HistoryId;
+            newStatus.GroupId = request.Group.GroupId;
             await UpdateHistory(request.History.ChangeId, newStatus.StatusId);
             request.Assignee = null;
             request.GroupId = request.Group.GroupId;
@@ -333,6 +334,7 @@ namespace DCGServiceDesk.EF.Services
             Status newStatus = await CreateStatus(DateTime.Now, task.History.ActiveStatus.DueTime, stateName);
             newStatus.CreatedBy = username;
             newStatus.HistoryId = task.HistoryId;
+            newStatus.GroupId = task.Group.GroupId;
             await UpdateHistory(task.History.ChangeId, newStatus.StatusId);
             task.Assignee = null;
             task.GroupId = task.Group.GroupId;
@@ -345,6 +347,7 @@ namespace DCGServiceDesk.EF.Services
             Status newStatus = await CreateStatus(DateTime.Now, incident.History.ActiveStatus.DueTime, stateName);
             newStatus.CreatedBy = username;
             newStatus.HistoryId = incident.HistoryId;
+            newStatus.GroupId = incident.Group.GroupId;
             await UpdateHistory(incident.History.ChangeId, newStatus.StatusId);
             incident.Assignee = null;
             incident.GroupId = incident.Group.GroupId;
