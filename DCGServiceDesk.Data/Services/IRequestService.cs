@@ -38,5 +38,6 @@ namespace DCGServiceDesk.Data.Services
         Task AddAssociatedIncident(Incident request, string username, Incident choosenIncident);
         Task<bool> IsGroupMember(string username, int id);
         Task<List<string>> GetMembers(int groupId);
+        Task InsertNewMessage(int historyId, string message, string username);
     }
 }

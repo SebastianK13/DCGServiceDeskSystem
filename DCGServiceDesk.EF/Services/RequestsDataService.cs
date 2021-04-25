@@ -425,5 +425,25 @@ namespace DCGServiceDesk.EF.Services
             .Where(g => g.GroupId == groupId)
             .Select(u=>u.Username)
             .ToListAsync();
+
+        public async Task InsertNewMessage(int historyId, string message, string username)
+        {
+            Status activeStatus = await _dbContext.StatusHistory
+                .Where(i => i.StatusId == historyId)
+                .Select(a=>a.ActiveStatus)
+                .FirstOrDefaultAsync();
+
+            Status status = new Status();
+            status.StateId = activeStatus.StateId;
+            status.CreateDate = DateTime.Now.ToUniversalTime();
+            status.DueTime = status.DueTime;
+            status.CreatedBy = username;
+            status.HistoryId = historyId;
+            status.Message = message;
+            status.NotNotification = true;
+
+            _dbContext.Statuses.Add(status);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

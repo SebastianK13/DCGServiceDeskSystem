@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -74,11 +75,6 @@ namespace DCGServiceDesk.ViewModels
             RequestViewModel = requestViewModel;
             NotEscalated = notEscalated;
             NotEscalated.ButtonsVisibile = true;
-            NotEscalated.States?
-                .Remove(NotEscalated.States?
-                .Where(n => n.StateName == "New")
-                .FirstOrDefault());
-
             PickMemberCommand = new PickMemberCommand(this);
         }
 
@@ -93,6 +89,9 @@ namespace DCGServiceDesk.ViewModels
         private bool _membersVisibility;
         private List<Notification> _notifications;
         private int _selectedTab;
+        private string _conversationMsg;
+        private Brush _convMsgValid;
+        private bool Forced = false;
 
         public NotEscalatedViewModel NotEscalated { get; set; }
         public RequestViewModel RequestViewModel { get; set; }
@@ -192,10 +191,55 @@ namespace DCGServiceDesk.ViewModels
                 OnPropertyChanged("SelectedTab");
             }
         }
-        public void SetInitialColors() =>
+        public bool IsMsgTyped { get; set; }
+        public string ConversationMessage
+        {
+            get { return _conversationMsg; }
+            set
+            {
+                if (value.Length > 0 || Forced)
+                {
+                    _conversationMsg = value;
+                    Forced = false;
+                }
+                
+                OnPropertyChanged("ConversationMessage");
+            }
+        }
+        public Brush ConvMsgValid 
+        {
+            get { return _convMsgValid; }
+            set
+            {
+                if (value != _convMsgValid)
+                {
+                    _convMsgValid = value;
+                    OnPropertyChanged("ConvMsgValid");
+                }
+            }
+        }
+
+        public void SetInitialColors()
+        {
             AssigneeValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
-        public void SetStatuses() =>
+            ConvMsgValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
+        }
+        public void SetStatuses()
+        {
+            NotEscalated.States?
+                .Remove(NotEscalated.States?
+                .Where(n => n.StateName == "New")
+                .FirstOrDefault());
+
             Statuses = RequestService.GetStatuses(RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests);
+        }
+        public void FrocedMessageRemove()
+        {
+            Forced = true;
+            ConversationMessage = "";
+        }
+            
+
     }
     public class NotEscalatedViewModel : ViewModelBase
     {
@@ -295,7 +339,33 @@ namespace DCGServiceDesk.ViewModels
         private bool _assignBtnVisible;
         private bool _taskInfoVisibility;
         private bool _isAccountInfoChecked;
+        private bool _waitingTimeVis;
+        private int _waitingTime;
+        private Brush _waitingTimeValid;
 
+        public bool WaitingTimeVisibility
+        {
+            get { return _waitingTimeVis; }
+            set
+            {
+                _waitingTimeVis = value;
+                OnPropertyChanged("WaitingTimeVisibility");
+            }
+        }
+        public int WaitingTime
+        {
+            get { return _waitingTime; }
+            set
+            {
+                if(value <= 0 || value > 72)
+                    WaitingTimeValid = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                else
+                    WaitingTimeValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
+
+                _waitingTime = value;
+                OnPropertyChanged("WaitingTime");
+            }
+        }
         public bool AssignBtnVisibile
         {
             get { return _assignBtnVisible; }
@@ -373,6 +443,11 @@ namespace DCGServiceDesk.ViewModels
             {
                 if (value != null)
                 {
+                    if(value.StateName == "Waiting")
+                        WaitingTimeVisibility = true;
+                    else
+                        WaitingTimeVisibility = false;
+
                     _state = value;
                     OnPropertyChanged("CurrentState");
                 }
@@ -435,6 +510,18 @@ namespace DCGServiceDesk.ViewModels
                 {
                     _solutionBrush = value;
                     OnPropertyChanged("SolutionValid");
+                }
+            }
+        }
+        public Brush WaitingTimeValid
+        {
+            get { return _waitingTimeValid; }
+            set
+            {
+                if (value != _waitingTimeValid)
+                {
+                    _waitingTimeValid = value;
+                    OnPropertyChanged("WaitingTimeValid");
                 }
             }
         }
@@ -619,6 +706,7 @@ namespace DCGServiceDesk.ViewModels
             DescriptionValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
             CloserDueValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
             SolutionValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
+            WaitingTimeValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
         }
         private void SetPriority()
         {
@@ -729,11 +817,11 @@ namespace DCGServiceDesk.ViewModels
             Surname = _user.Surname;
             Localization = _user.Location.City;
             Position = _user.Positions.PositionName;
-            SuperiorName = _user.Superior.Firstname;
-            SuperiorSurname = _user.Superior.Surname;
-            SuperiorEmail = _user.Superior.Email;
+            SuperiorName = _user.Superior?.Firstname;
+            SuperiorSurname = _user.Superior?.Surname;
+            SuperiorEmail = _user.Superior?.Email;
             SuperiorUsername = superiorUsername;
-            DepartmentName = _user.Department.DepartmentName;
+            DepartmentName = _user.Department?.DepartmentName;
             Email = _user.Email;
         }
         public string Firstname { get; set; }

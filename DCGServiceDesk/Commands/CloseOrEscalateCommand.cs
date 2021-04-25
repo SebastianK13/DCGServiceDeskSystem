@@ -39,15 +39,24 @@ namespace DCGServiceDesk.Commands
                 {
                     case "Close":
                         await CloseRequest();
+                        nEVM.RequestViewModel.RemoveAssignedRequest(request);
                         break;
                     case "Escalate":
                         await EscalateRequest();
+                        nEVM.RequestViewModel.RemoveAssignedRequest(request);
                         break;
                     case "Refresh":
                         await RefreshRequest();
                         break;
                     case "Save":
-                        //implementation
+                        await Save();
+                        break;
+                    case "SubmitMessage":
+                        if(nEVM.RequestViewModel.Escalated.ConversationMessage.Length > 0)
+                            await SubmitMessage();
+                        else
+                            nEVM.RequestViewModel.Escalated.ConvMsgValid = 
+                                new SolidColorBrush(Color.FromRgb(255, 0, 0));
                         break;
                 }
             }
@@ -55,6 +64,43 @@ namespace DCGServiceDesk.Commands
             {
 
             }
+        }
+        private async Task Save()
+        {
+            request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
+            string state = RequestService.GetStateName(request);
+
+            switch (state)
+            {
+                case "Waiting":
+                    await SaveWaiting();
+                    break;
+                case "Closed":
+                    await CloseRequest();
+                    break;
+                case "Open":
+                    await SaveOpen();
+                    break;
+            }
+        }
+        private async Task SaveWaiting()
+        {
+
+        }
+        private async Task SaveOpen()
+        {
+
+        }
+        private async Task SubmitMessage()
+        {
+            request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
+            string requestType = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().RequestType;
+            string message = nEVM.RequestViewModel.Escalated.ConversationMessage;
+            int historyId = RequestService.GetHistoryId(request);
+            await _requestQueue.AddNewMessage(historyId, message, 
+                nEVM.RequestViewModel.GetUsername());
+            nEVM.RequestViewModel.Escalated.FrocedMessageRemove();
+            await RefreshRequest();
         }
         private async Task RefreshRequest()
         {
@@ -68,21 +114,24 @@ namespace DCGServiceDesk.Commands
                     TaskRequest updatedT = await _requestQueue.GetTask(t.TaskId);
                     UpdateTModel(updatedT);
                     nEVM.RequestViewModel.Escalated.Notifications = 
-                        notification.NotificationBuilder(updatedT.History.Status.ToList());
+                        notification.NotificationBuilder(updatedT.History.Status
+                        .Where(n => n.NotNotification == false).ToList());
                     break;
                 case "IncidentProxy":
                     Incident im = (Incident)request;
                     Incident updatedIM = await _requestQueue.GetIncident(im.IncidentId);
                     UpdateIMModel(updatedIM);
                     nEVM.RequestViewModel.Escalated.Notifications = 
-                        notification.NotificationBuilder(updatedIM.History.Status.ToList());
+                        notification.NotificationBuilder(updatedIM.History.Status
+                        .Where(n => n.NotNotification == false).ToList());
                     break;
                 case "ServiceRequestProxy":
                     ServiceRequest c = (ServiceRequest)request;
                     ServiceRequest updatedChange = await _requestQueue.GetChange(c.RequestId);
                     UpdateCModel(updatedChange);
                     nEVM.RequestViewModel.Escalated.Notifications = 
-                        notification.NotificationBuilder(updatedChange.History.Status.ToList());
+                        notification.NotificationBuilder(updatedChange.History.Status
+                        .Where(n => n.NotNotification == false).ToList());
                     break;
 
             }
@@ -413,6 +462,5 @@ namespace DCGServiceDesk.Commands
                 nEVM.StatusValid = Valid;
             }
         }
-
     }
 }

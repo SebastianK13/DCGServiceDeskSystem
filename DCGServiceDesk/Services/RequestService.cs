@@ -94,6 +94,38 @@ namespace DCGServiceDesk.Services
 
             }
         }
+        public static string GetStateName(object request)
+        {
+            string requestType = request.GetType().Name;
+            switch (requestType)
+            {
+                case "TaskRequestProxy":
+                    return ((TaskRequest)request).History.ActiveStatus.State.StateName;
+                case "IncidentProxy":
+                    return ((Incident)request).History.ActiveStatus.State.StateName;
+                case "ServiceRequestProxy":
+                    return ((ServiceRequest)request).History.ActiveStatus.State.StateName;
+                default:
+                    return null;
+
+            }
+        }
+        public static int GetHistoryId(object request)
+        {
+            string requestType = request.GetType().Name;
+            switch (requestType)
+            {
+                case "TaskRequestProxy":
+                    return ((TaskRequest)request).HistoryId;
+                case "IncidentProxy":
+                    return ((Incident)request).HistoryId;
+                case "ServiceRequestProxy":
+                    return ((ServiceRequest)request).HistoryId;
+                default:
+                    return 0;
+
+            }
+        }
         public static TaskRequest SetAssigmentGroupT(TaskRequest task, AssigmentGroup group)
         {
             task.Group = group;

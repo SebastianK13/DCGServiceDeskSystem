@@ -73,7 +73,7 @@ namespace DCGServiceDesk.Commands
                     case "Group":
                         var groupRequests = await _requestQueue.GetGroupRequests(((AssigmentGroup)parameter).GroupId);
                         _hVM.SetRequestsQueue(
-                            await _viewRequestService.SetAllRequestQueue(groupRequests, ((AssigmentGroup)parameter).GroupName));
+                            await _viewRequestService.SetAllRequestQueue(groupRequests, ((AssigmentGroup)parameter).GroupName, true));
                         break;
                     case "IncidentProxy":
                         await EscalatedOrNot(parameter, "IM");

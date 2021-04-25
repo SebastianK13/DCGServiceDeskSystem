@@ -18,9 +18,10 @@ namespace DCGServiceDesk.Commands
         private readonly IRequestQueue _requestQueue;
 
         public RefreshTabCommand(Tab tab, IViewRequestService viewRequestService,
-            IRequestQueue requestQueue)
+            IRequestQueue requestQueue, HomeViewModel hVM)
         {
             this.tab = tab;
+            _hVM = hVM;
             _viewRequestService = viewRequestService;
             _requestQueue = requestQueue;
         }
@@ -29,7 +30,6 @@ namespace DCGServiceDesk.Commands
         {
             try
             {
-                _hVM = (HomeViewModel)parameter;
                 _requestQueue.RefreshData();
                 string choosen = tab.QueueType;
 

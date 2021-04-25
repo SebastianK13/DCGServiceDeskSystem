@@ -21,7 +21,7 @@ namespace DCGServiceDesk.Controls.Tab.Model
             CloseTabCommand = new CloseTabCommand(HVM);
             IViewRequestService vRS =
                 new ViewRequestService(interfaceContainer);
-            RefreshCommand = new RefreshTabCommand(this, vRS, _requestQueue);
+            RefreshCommand = new RefreshTabCommand(this, vRS, _requestQueue, HVM);
         }
         private HomeViewModel HVM { get; set; }
         public List<TabContainer> WorkspaceInfo { get; set; } = new List<TabContainer>();

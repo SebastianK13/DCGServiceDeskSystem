@@ -105,5 +105,8 @@ namespace DCGServiceDesk.Session.DataGetter
 
         public async Task<List<string>> GetMembers(int groupId) =>
             await _requestService.GetMembers(groupId);
+
+        public async Task AddNewMessage(int historyId, string message, string username) =>
+            await _requestService.InsertNewMessage(historyId, message, username);
     }
 }

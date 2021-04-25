@@ -27,18 +27,20 @@ namespace DCGServiceDesk.Services
             string queueType;
             if (isGroup)
                 queueType = "G";
-
-            switch (queueName)
+            else
             {
-                case "Service Requests":
-                    queueType = "SD";
-                    break;
-                case "Requests assigned":
-                    queueType = "AR";
-                    break;
-                default:
-                    queueType = "SD";
-                    break;
+                switch (queueName)
+                {
+                    case "Service Requests":
+                        queueType = "SD";
+                        break;
+                    case "Requests assigned":
+                        queueType = "AR";
+                        break;
+                    default:
+                        queueType = "SD";
+                        break;
+                }
             }
 
             List<int> contact = (List<int>)requests[1];

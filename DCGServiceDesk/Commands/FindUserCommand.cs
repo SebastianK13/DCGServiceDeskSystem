@@ -31,6 +31,7 @@ namespace DCGServiceDesk.Commands
         public async override Task ExecuteAsync(object parameter)
         {
             string id = "";
+            _user = null;
             switch (parameter.ToString())
             {
                 case "FindRecipient":
@@ -125,7 +126,7 @@ namespace DCGServiceDesk.Commands
             if (id != "" && id != null)
             {
                 _user = await _employeeProfile.GetUser(id);
-                superiorUsername = await _userInfo.GetUserNameById(_user.Superior.UserId);
+                superiorUsername = await _userInfo.GetUserNameById(_user.Superior?.UserId);
                 return new SolidColorBrush(Color.FromRgb(171, 173, 179));
             }
             else
