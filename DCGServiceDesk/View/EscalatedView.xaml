@@ -32,9 +32,8 @@
             </Grid.RowDefinitions>
             <Border Grid.Row="0" BorderBrush="#FFACACAC" BorderThickness="0,0,0,1">
                 <StackPanel Background="#D6D6CE" Orientation="Horizontal">
-                    <Button Background="Transparent" Width="0"/>
-                    <Button Command="{Binding NotEscalated.CloseOrEscalateCommand}" BorderThickness="0" 
-                        CommandParameter="Refresh"
+                    <Button Command="{Binding NotEscalated.CloseOrEscalateCommand}" BorderThickness="0" Focusable="False"
+                        CommandParameter="Refresh" HorizontalContentAlignment="Left" Background="Transparent"
                         Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="../Images/refreshIcon.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="0,0,0,0" />
@@ -42,7 +41,7 @@
                         </StackPanel>
                     </Button>
                     <Button Command="{Binding NotEscalated.CloseOrEscalateCommand}" CommandParameter="Close" BorderThickness="0" 
-                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"
                         Visibility="{Binding NotEscalated.ButtonsVisibile, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="../Images/redCross.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="6,0,4,0" />
@@ -50,7 +49,7 @@
                         </StackPanel>
                     </Button>
                     <Button BorderThickness="0" Command="{Binding NotEscalated.CloseOrEscalateCommand}" CommandParameter="Save"
-                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"
                         Visibility="{Binding NotEscalated.ButtonsVisibile, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="../Images/SaveIcon.png" Height="auto" Width="auto" HorizontalAlignment="Right" Margin="6,0,4,0" />
@@ -547,7 +546,7 @@
                         <TabItem Header="Conversation" BorderThickness="0">
                             <DockPanel MaxHeight="415">
                                 <ScrollViewer Height="245" DockPanel.Dock="Top" BorderThickness="0,0,0,1">
-                                        <ItemsControl Padding="10" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding RequestViewModel.WorkspaceInfo[0].ServiceRequests.History.Status}" BorderThickness="0">
+                                        <ItemsControl Padding="10" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Statuses}" BorderThickness="0">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <StackPanel>

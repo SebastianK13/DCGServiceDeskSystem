@@ -39,11 +39,9 @@ namespace DCGServiceDesk.Commands
                 {
                     case "Close":
                         await CloseRequest();
-                        nEVM.RequestViewModel.RemoveAssignedRequest(request);
                         break;
                     case "Escalate":
                         await EscalateRequest();
-                        nEVM.RequestViewModel.RemoveAssignedRequest(request);
                         break;
                     case "Refresh":
                         await RefreshRequest();
@@ -106,34 +104,42 @@ namespace DCGServiceDesk.Commands
         {
             request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
             string requestType = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().RequestType;
-            Notification notification = new Notification();
             switch (requestType)
             {
                 case "TaskRequestProxy":
                     TaskRequest t = (TaskRequest)request;
                     TaskRequest updatedT = await _requestQueue.GetTask(t.TaskId);
                     UpdateTModel(updatedT);
-                    nEVM.RequestViewModel.Escalated.Notifications = 
-                        notification.NotificationBuilder(updatedT.History.Status
-                        .Where(n => n.NotNotification == false).ToList());
+                    RefreshTypingSection(updatedT.History.Status.ToList());
                     break;
                 case "IncidentProxy":
                     Incident im = (Incident)request;
                     Incident updatedIM = await _requestQueue.GetIncident(im.IncidentId);
                     UpdateIMModel(updatedIM);
-                    nEVM.RequestViewModel.Escalated.Notifications = 
-                        notification.NotificationBuilder(updatedIM.History.Status
-                        .Where(n => n.NotNotification == false).ToList());
+                    RefreshTypingSection(updatedIM.History.Status.ToList());
                     break;
                 case "ServiceRequestProxy":
                     ServiceRequest c = (ServiceRequest)request;
                     ServiceRequest updatedChange = await _requestQueue.GetChange(c.RequestId);
                     UpdateCModel(updatedChange);
-                    nEVM.RequestViewModel.Escalated.Notifications = 
-                        notification.NotificationBuilder(updatedChange.History.Status
-                        .Where(n => n.NotNotification == false).ToList());
+                    RefreshTypingSection(updatedChange.History.Status.ToList());
                     break;
+            }
+        }
+        private void RefreshTypingSection(List<Status> statuses)
+        {
+            if(nEVM.RequestViewModel.Escalated != null)
+            {
+                Notification notification = new Notification();
 
+                nEVM.RequestViewModel.Escalated.Notifications =
+                    notification.NotificationBuilder(statuses
+                    .Where(n => n.NotNotification == false)
+                    .OrderBy(d => d.CreateDate)
+                    .ToList());
+
+                nEVM.RequestViewModel.Escalated.Statuses =
+                    statuses.OrderByDescending(d => d.CreateDate).ToList();
             }
         }
         private void UpdateIMModel(Incident im)
@@ -290,6 +296,7 @@ namespace DCGServiceDesk.Commands
 
                 }
                 nEVM.RequestViewModel.RemoveCurrentTab();
+                nEVM.RequestViewModel.RemoveAssignedRequest(request);
             }
             else
                 isFormValid.Clear();

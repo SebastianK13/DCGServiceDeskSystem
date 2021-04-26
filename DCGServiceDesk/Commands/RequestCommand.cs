@@ -106,7 +106,6 @@ namespace DCGServiceDesk.Commands
                 case "T":
                     var t = RequestService.ExtractTask(parameter);
                     TaskRequest updatedTask = await _requestQueue.GetTask(t.TaskId);
-                    updatedTask.History.Status.OrderByDescending(d => d.CreateDate);
                     string labelT = RequestService.SetRequestId(t.TaskId, "T");
                     request.Request = updatedTask;
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
@@ -126,7 +125,10 @@ namespace DCGServiceDesk.Commands
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
                         rVM.InitializeEscalatedModel();
-                        rVM.Escalated.Notifications = notification.NotificationBuilder(rVM.Escalated.Statuses);
+                        rVM.Escalated.Notifications = notification
+                            .NotificationBuilder(rVM.Escalated.Statuses.Where(n=>n.NotNotification == false)
+                            .OrderBy(d => d.CreateDate)
+                            .ToList());
                         _hVM.Tabs.Add(rVM);
                     }
 
@@ -134,7 +136,6 @@ namespace DCGServiceDesk.Commands
                 case "IM":
                     var im = RequestService.ExtractIncident(parameter);
                     Incident updatedIncident = await _requestQueue.GetIncident(im.IncidentId);
-                    updatedIncident.History.Status.OrderByDescending(d => d.CreateDate);
                     string labelIM = RequestService.SetRequestId(im.IncidentId, "IM");
                     request.Request = updatedIncident;
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
@@ -153,14 +154,16 @@ namespace DCGServiceDesk.Commands
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
                         rVM.InitializeEscalatedModel();
-                        rVM.Escalated.Notifications = notification.NotificationBuilder(rVM.Escalated.Statuses);
+                        rVM.Escalated.Notifications = notification
+                            .NotificationBuilder(rVM.Escalated.Statuses.Where(n => n.NotNotification == false)
+                            .OrderBy(d => d.CreateDate)
+                            .ToList());
                         _hVM.Tabs.Add(rVM);
                     }
                     break;
                 case "C":
                     var c = RequestService.ExtractChange(parameter);
                     ServiceRequest updatedChange = await _requestQueue.GetChange(c.RequestId);
-                    updatedChange.History.Status.OrderByDescending(d => d.CreateDate);
                     string labelC = RequestService.SetRequestId(c.RequestId, "C");
                     request.Request = updatedChange;
                     request.Info = RequestService.ExtractAdditionalInfo(parameter);
@@ -179,7 +182,10 @@ namespace DCGServiceDesk.Commands
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
                         rVM.InitializeEscalatedModel();
-                        rVM.Escalated.Notifications = notification.NotificationBuilder(rVM.Escalated.Statuses);
+                        rVM.Escalated.Notifications = notification
+                            .NotificationBuilder(rVM.Escalated.Statuses.Where(n => n.NotNotification == false)
+                            .OrderBy(d => d.CreateDate)
+                            .ToList());
                         _hVM.Tabs.Add(rVM);
                     }
                     break;

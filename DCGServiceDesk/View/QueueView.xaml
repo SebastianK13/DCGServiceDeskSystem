@@ -28,7 +28,6 @@
                 <Button BorderThickness="0" HorizontalContentAlignment="Left" Background="Transparent"
                     Command="{Binding RefreshCommand}" 
                         CommandParameter="{Binding WorkspaceInfo[0].ServiceRequests.Group}">
-
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Images/refreshIcon.png" Height="15" Width="auto" HorizontalAlignment="Right" Margin="2,2,5,0" />
                         <TextBlock VerticalAlignment="Center" Margin="0,0,0,0">Refresh</TextBlock>

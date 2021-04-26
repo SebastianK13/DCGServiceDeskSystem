@@ -92,6 +92,7 @@ namespace DCGServiceDesk.ViewModels
         private string _conversationMsg;
         private Brush _convMsgValid;
         private bool Forced = false;
+        private List<Status> _statuses;
 
         public NotEscalatedViewModel NotEscalated { get; set; }
         public RequestViewModel RequestViewModel { get; set; }
@@ -181,7 +182,15 @@ namespace DCGServiceDesk.ViewModels
                 OnPropertyChanged("Notifications");
             }
         }
-        public List<Status> Statuses { get; set; }
+        public List<Status> Statuses 
+        {
+            get { return _statuses; }
+            set 
+            {
+                _statuses = value;
+                OnPropertyChanged("Statuses");
+            } 
+        }
         public int SelectedTab 
         {
             get { return _selectedTab; }
@@ -231,7 +240,11 @@ namespace DCGServiceDesk.ViewModels
                 .Where(n => n.StateName == "New")
                 .FirstOrDefault());
 
-            Statuses = RequestService.GetStatuses(RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests);
+            Statuses = RequestService
+                .GetStatuses(RequestViewModel.WorkspaceInfo
+                .FirstOrDefault().ServiceRequests)
+                .OrderByDescending(d=>d.CreateDate)
+                .ToList();
         }
         public void FrocedMessageRemove()
         {

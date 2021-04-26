@@ -18,6 +18,9 @@ namespace DCGServiceDesk.ViewModels
     public class HomeViewModel : ViewModelBase
     {
         public ILoggedUser loggedUser;
+        private int _currentTab;
+        private bool locked = false;
+
         public ICommand RequestCommand { get; }
         public ICommand UpdateGroupsCommand { get; }
         private readonly IRequestQueue _requestQueue;
@@ -26,6 +29,20 @@ namespace DCGServiceDesk.ViewModels
         private readonly DbInterfaceContainer _interfaceContainer;
         private readonly ObservableCollection<ITab> _tabs;
         public IList<ITab> Tabs { get; }
+        public int CurrentTabIndex
+        {
+            get { return _currentTab; }
+            set
+            {
+                if (PreviousTabIndex != -1 && !locked)
+                    PreviousTabIndex = -1;
+
+                _currentTab = value;
+                locked = false;
+                OnPropertyChanged("CurrentTabIndex");
+            }
+        }
+        public int PreviousTabIndex { get; set; }
         public ICollection<AssigmentGroup> Groups { get; set; }
 
         public HomeViewModel(ILoggedUser loggedUser, DbInterfaceContainer interfaceContainer)
@@ -52,12 +69,20 @@ namespace DCGServiceDesk.ViewModels
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    int temp = CurrentTabIndex;
                     tab = (ITab)e.NewItems[0];
                     tab.CloseTabRequested += TabCloseRequested;
+                    CurrentTabIndex = Tabs.Count-1;
+                    PreviousTabIndex = temp;
+                    locked = true;
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     tab = (ITab)e.OldItems[0];
                     tab.CloseTabRequested -= TabCloseRequested;
+                    if (CurrentTabIndex == e.OldStartingIndex)
+                        CheckTabs();
+                    else if (PreviousTabIndex != -1)
+                        CurrentTabIndex = PreviousTabIndex;
                     break;
             }
         }
@@ -104,5 +129,16 @@ namespace DCGServiceDesk.ViewModels
                 }
             }
         }
+        private void CheckTabs()
+        {
+
+            if (Tabs.Count < CurrentTabIndex + 1)
+                CurrentTabIndex -= 1;
+            else
+            {
+                CurrentTabIndex = -1;
+                PreviousTabIndex = -1;
+            }
+        } 
     }
 }

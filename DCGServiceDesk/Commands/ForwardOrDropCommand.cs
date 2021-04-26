@@ -15,6 +15,7 @@ namespace DCGServiceDesk.Commands
         private readonly IRequestQueue _requestQueue;
         private readonly EscalationViewModel _eVM;
         private string _username;
+        private object request;
         public ForwardOrDropCommand(IRequestQueue requestQueue, EscalationViewModel eVM)
         {
             _eVM = eVM;
@@ -32,6 +33,7 @@ namespace DCGServiceDesk.Commands
                     case "Forward":
                         await CheckAndForward();
                         _eVM.RequestViewModel.RemoveCurrentTab();
+                        _eVM.RequestViewModel.RemoveAssignedRequest(request);
                         break;
                     case "Abandon":
                         _eVM.RequestViewModel.CurrentMode = _eVM.RequestViewModel.NotEscalated;
@@ -45,7 +47,7 @@ namespace DCGServiceDesk.Commands
         }
         private async Task CheckAndForward()
         {
-            object request = _eVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
+            request = _eVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
             switch (_eVM.designation)
             {
                 case "TaskRequestProxy":

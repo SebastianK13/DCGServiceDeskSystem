@@ -436,7 +436,7 @@ namespace DCGServiceDesk.EF.Services
             Status status = new Status();
             status.StateId = activeStatus.StateId;
             status.CreateDate = DateTime.Now.ToUniversalTime();
-            status.DueTime = status.DueTime;
+            status.DueTime = activeStatus.DueTime;
             status.CreatedBy = username;
             status.HistoryId = historyId;
             status.Message = message;
