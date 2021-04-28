@@ -3,19 +3,69 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Linq;
+using System.Collections;
 
 namespace DCGServiceDesk.View
 {
-    public partial class HomeResources:ResourceDictionary
+    public partial class HomeResources : ResourceDictionary
     {
+        private TabControl tabControl;
+        private ScrollViewer scrollViewer;
+        private double lastWidth = 0;
+        TabItem lastTabItem = null;
         public HomeResources()
         {
             InitializeComponent();
+
         }
-        public void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void HeaderPanel_Loaded(object sender, RoutedEventArgs e) =>
+            scrollViewer = sender as ScrollViewer;
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string g = "";
-            string gh = "";
+            tabControl = sender as TabControl;
+            if (tabControl != null)
+            {
+                var rootVisual = Application.Current.MainWindow;
+                object item = tabControl.SelectedItem;
+                var tabItems = tabControl.ItemsSource;
+                TabItem tabItem = (TabItem)tabControl.ItemContainerGenerator.ContainerFromItem(item);
+
+                if (tabItem != lastTabItem && tabItem != null)
+                {
+                    scrollViewer.ScrollToHorizontalOffset(CountScrollOffset(tabItems, item));
+                    lastTabItem = tabItem;
+                    lastTabItem?.Focus();
+                }
+            }
+        }
+
+        private double CountScrollOffset(IEnumerable tabItems, object choosenItem)
+        {
+            double scrollWidth = scrollViewer.ActualWidth;
+            List<object> tabItemsList = (tabItems as IEnumerable<object>).Cast<object>().ToList();
+            TabItem choosenTabItem = (TabItem)tabControl.ItemContainerGenerator
+                .ContainerFromItem(choosenItem);
+            double actualWidthTabItem = choosenTabItem.ActualWidth;
+            double offset = 0;
+            for (int i = 0; i < tabItemsList.Count(); i++)
+            {
+                TabItem tabItem = (TabItem)tabControl.ItemContainerGenerator
+                    .ContainerFromItem(tabItemsList[i]);
+
+                offset += tabItem.ActualWidth;
+
+                if (tabItemsList[i] == choosenItem)
+                    i = tabItemsList.Count();
+            }
+            if (lastWidth > offset)
+                offset -= actualWidthTabItem;
+
+            lastWidth = offset;
+
+            return offset;
         }
     }
 }

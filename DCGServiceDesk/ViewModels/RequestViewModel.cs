@@ -112,8 +112,11 @@ namespace DCGServiceDesk.ViewModels
             get { return _chosenGroup; }
             set
             {
-                _chosenGroup = value;
-                OnPropertyChanged("ChoosenGroup");
+                if(value != null)
+                {
+                    _chosenGroup = value;
+                    OnPropertyChanged("ChoosenGroup");
+                }
             }
         }
         public string AUsername

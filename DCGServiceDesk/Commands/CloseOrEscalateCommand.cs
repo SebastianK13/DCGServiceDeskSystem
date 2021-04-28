@@ -109,19 +109,19 @@ namespace DCGServiceDesk.Commands
                 case "TaskRequestProxy":
                     TaskRequest t = (TaskRequest)request;
                     TaskRequest updatedT = await _requestQueue.GetTask(t.TaskId);
-                    UpdateTModel(updatedT);
+                    await UpdateTModel(updatedT);
                     RefreshTypingSection(updatedT.History.Status.ToList());
                     break;
                 case "IncidentProxy":
                     Incident im = (Incident)request;
                     Incident updatedIM = await _requestQueue.GetIncident(im.IncidentId);
-                    UpdateIMModel(updatedIM);
+                    await UpdateIMModel(updatedIM);
                     RefreshTypingSection(updatedIM.History.Status.ToList());
                     break;
                 case "ServiceRequestProxy":
                     ServiceRequest c = (ServiceRequest)request;
                     ServiceRequest updatedChange = await _requestQueue.GetChange(c.RequestId);
-                    UpdateCModel(updatedChange);
+                    await UpdateCModel(updatedChange);
                     RefreshTypingSection(updatedChange.History.Status.ToList());
                     break;
             }
@@ -142,7 +142,7 @@ namespace DCGServiceDesk.Commands
                     statuses.OrderByDescending(d => d.CreateDate).ToList();
             }
         }
-        private void UpdateIMModel(Incident im)
+        private async Task UpdateIMModel(Incident im)
         {
             nEVM.CurrentState = nEVM.States
                 .Where(n => n.StateId == im.History.ActiveStatus.State.StateId)
@@ -159,7 +159,27 @@ namespace DCGServiceDesk.Commands
             nEVM.Topic = im.Topic;
             nEVM.Description = im.Description;
             nEVM.Solution = im.History.Solution;
-            if(im.History.CloserDue != null)
+
+            var contact = await _employeeProfile.GetUIdByIdAsync(im.RequestedPerson);
+            nEVM.CUsername = await _userInfo.GetUserNameById(contact);
+            nEVM.Contact = null;
+
+            var recipient = await _employeeProfile.GetUIdByIdAsync(im.ContactPerson);
+            nEVM.RUsername = await _userInfo.GetUserNameById(recipient);
+            nEVM.Recipient = null;
+
+            if (nEVM.RequestViewModel.Escalated != null)
+            {
+                nEVM.RequestViewModel.Escalated.AUsername = im.Assignee;
+                nEVM.RequestViewModel.Escalated.Assignee = null;
+
+                nEVM.RequestViewModel.Escalated.ChoosenGroup =
+                    nEVM.RequestViewModel.Escalated.AssigmentGroups
+                    .Where(i => i.GroupId == im.GroupId)
+                    .FirstOrDefault();
+            }
+
+            if (im.History.CloserDue != null)
             {
                 nEVM.CloserDue = nEVM.CloserDues
                     .Where(d => d.CloserId == im.History.CloserDue.CloserId)
@@ -171,7 +191,7 @@ namespace DCGServiceDesk.Commands
             }
 
         }
-        private void UpdateCModel(ServiceRequest c)
+        private async Task UpdateCModel(ServiceRequest c)
         {
 
             nEVM.CurrentState = nEVM.States
@@ -190,6 +210,25 @@ namespace DCGServiceDesk.Commands
             nEVM.Description = c.Description;
             nEVM.Solution = c.History.Solution;
 
+            var contact = await _employeeProfile.GetUIdByIdAsync(c.RequestedPerson);
+            nEVM.CUsername = await _userInfo.GetUserNameById(contact);
+            nEVM.Contact = null;
+
+            var recipient = await _employeeProfile.GetUIdByIdAsync(c.ContactPerson);
+            nEVM.RUsername = await _userInfo.GetUserNameById(recipient);
+            nEVM.Recipient = null;
+
+            if(nEVM.RequestViewModel.Escalated != null)
+            {
+                nEVM.RequestViewModel.Escalated.AUsername = c.Assignee;
+                nEVM.RequestViewModel.Escalated.Assignee = null;
+
+                nEVM.RequestViewModel.Escalated.ChoosenGroup =
+                    nEVM.RequestViewModel.Escalated.AssigmentGroups
+                    .Where(i => i.GroupId == c.GroupId)
+                    .FirstOrDefault();
+            }
+
             if (c.History.CloserDue != null)
             {
                 nEVM.CloserDue = nEVM.CloserDues
@@ -202,7 +241,7 @@ namespace DCGServiceDesk.Commands
             }
 
         }
-        private void UpdateTModel(TaskRequest t)
+        private async Task UpdateTModel(TaskRequest t)
         {
             nEVM.CurrentState = nEVM.States
                 .Where(n => n.StateId == t.History.ActiveStatus.State.StateId)
@@ -219,6 +258,25 @@ namespace DCGServiceDesk.Commands
             nEVM.Topic = t.Topic;
             nEVM.Description = t.Description;
             nEVM.Solution = t.History.Solution;
+
+            var contact = await _employeeProfile.GetUIdByIdAsync(t.RequestedPerson);
+            nEVM.CUsername = await _userInfo.GetUserNameById(contact);
+            nEVM.Contact = null;
+
+            var recipient = await _employeeProfile.GetUIdByIdAsync(t.ContactPerson);
+            nEVM.RUsername = await _userInfo.GetUserNameById(recipient);
+            nEVM.Recipient = null;
+
+            if (nEVM.RequestViewModel.Escalated != null)
+            {
+                nEVM.RequestViewModel.Escalated.AUsername = t.Assignee;
+                nEVM.RequestViewModel.Escalated.Assignee = null;
+
+                nEVM.RequestViewModel.Escalated.ChoosenGroup = 
+                    nEVM.RequestViewModel.Escalated.AssigmentGroups
+                    .Where(i => i.GroupId == t.GroupId)
+                    .FirstOrDefault();
+            }
 
             if (t.History.CloserDue != null)
             {

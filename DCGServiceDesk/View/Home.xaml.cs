@@ -27,7 +27,6 @@ namespace DCGServiceDesk.View
             try
             {
                 InitializeComponent();
-
             }
             catch (Exception ex)
             {
@@ -49,7 +48,7 @@ namespace DCGServiceDesk.View
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void TreeView_SelectedItemChanged(object sender, RoutedEventArgs e)

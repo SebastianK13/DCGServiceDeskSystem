@@ -49,15 +49,19 @@
                             <RowDefinition x:Name="RowDefinition0" Height="auto"/>
                             <RowDefinition x:Name="RowDefinition1" Height="*"/>
                         </Grid.RowDefinitions>
-                        <Border Grid.Row="2" Grid.Column="0" x:Name="ContentPanel" BorderBrush="#FFD0CEBF" BorderThickness="1,1,1,1" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local" KeyboardNavigation.DirectionalNavigation="Contained"
+                        <Border Grid.Row="2" Grid.Column="0" x:Name="ContentPanel" BorderBrush="#FFD0CEBF" BorderThickness="1,1,1,1" 
+                                KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local" 
+                                KeyboardNavigation.DirectionalNavigation="Contained"
                                 VerticalAlignment="Stretch">
                             <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0,1,0,0">
                                 <Border Background="{TemplateBinding Background}" x:Name="Border1" VerticalAlignment="Stretch" BorderThickness="0">
-                                    <ContentPresenter VerticalAlignment="Stretch" DataContext="{x:Null}" Margin="0,0,0,0" x:Name="PART_SelectedContentHost" Content="{TemplateBinding SelectedContent}" ContentTemplate="{TemplateBinding SelectedContentTemplate}" ContentTemplateSelector="{TemplateBinding SelectedContentTemplateSelector}" ContentSource="SelectedContent"/>
+                                    <ContentPresenter VerticalAlignment="Stretch" DataContext="{x:Null}" Margin="0,0,0,0" x:Name="PART_SelectedContentHost" 
+                                                      Content="{TemplateBinding SelectedContent}" ContentTemplate="{TemplateBinding SelectedContentTemplate}" 
+                                                      ContentTemplateSelector="{TemplateBinding SelectedContentTemplateSelector}" ContentSource="SelectedContent"/>
                                 </Border>
                             </Border>
                         </Border>
-                        <ScrollViewer x:Name="HeaderPanel" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                        <ScrollViewer Loaded="HeaderPanel_Loaded" x:Name="HeaderPanel" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
                             <ScrollViewer.Style>
                                 <Style TargetType="{x:Type ScrollViewer}">
                                     <Setter Property="Template">

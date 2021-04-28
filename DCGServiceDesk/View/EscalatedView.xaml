@@ -58,7 +58,7 @@
                     </Button>
                 </StackPanel>
             </Border>
-            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" Loaded="ScrollViewer_Loaded">
                 <Grid x:Name="form" Margin="25,40,0,0" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="350"/>
@@ -458,7 +458,7 @@
                             </StackPanel>
                         </Grid>
                     </Grid>
-                    <TabControl TabIndex="{Binding SelectedTab}" Grid.Row="3" BorderBrush="#87CEFA" Margin="0,0,20,50">
+                    <TabControl SelectedIndex="{Binding SelectedTab}" Grid.Row="3" BorderBrush="#87CEFA" Margin="0,0,20,50">
                         <TabItem Header="General">
                             <Grid Margin="0,30,30,0">
                                 <Grid.ColumnDefinitions>

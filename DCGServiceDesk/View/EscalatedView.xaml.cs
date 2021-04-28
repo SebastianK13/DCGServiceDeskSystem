@@ -22,5 +22,12 @@ namespace DCGServiceDesk.View
         {
             InitializeComponent();
         }
+
+        private void ScrollViewer_Loaded(object sender, RoutedEventArgs e)
+        {
+            ScrollViewer scrollViewer = sender as ScrollViewer;
+            scrollViewer.ScrollToVerticalOffset(0);
+            scrollViewer.ScrollToHorizontalOffset(0);
+        }
     }
 }

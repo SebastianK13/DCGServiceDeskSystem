@@ -30,7 +30,6 @@ namespace DCGServiceDesk.Commands
             _hVM = hVM;
             _viewRequestService = new ViewRequestService(_interfaceContainer);
         }
-
         public async override Task ExecuteAsync(object parameter)
         {
             try

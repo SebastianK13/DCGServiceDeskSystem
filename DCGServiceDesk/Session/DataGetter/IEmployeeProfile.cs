@@ -12,5 +12,6 @@ namespace DCGServiceDesk.Session.DataGetter
         Task<Employee> GetUser(string id);
         Task<int> GetEmployeeIdByUId(string id);
         Task<TimeZoneInfo> GetTimeZoneByUId(string uId);
+        Task<string> GetUIdByIdAsync(int id);
     }
 }
