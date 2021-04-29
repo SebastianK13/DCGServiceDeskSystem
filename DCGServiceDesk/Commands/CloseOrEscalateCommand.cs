@@ -21,6 +21,8 @@ namespace DCGServiceDesk.Commands
         private Brush Valid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
         private List<bool> isFormValid = new List<bool>();
         private object request;
+        private Employee _user;
+        private string superiorUsername;
 
         public CloseOrEscalateCommand(DbInterfaceContainer dbInterfaces, NotEscalatedViewModel nEVM)
         {
@@ -87,8 +89,68 @@ namespace DCGServiceDesk.Commands
         }
         private async Task SaveOpen()
         {
+            string contactId = await _userInfo.GetUserId(nEVM.CUsername);
+            string recipientId = await _userInfo.GetUserId(nEVM.RUsername);
+            request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
+            CheckContactField(contactId);
+            CheckRecipientField(recipientId);
+            CheckTopicField();
+            CheckDescField();
+            await CheckGroupMember();
+            if (!isFormValid.Contains(false))
+            {
+                string requestType = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().RequestType;
+                switch (requestType)
+                {
+                    case "TaskRequestProxy":
+                        TaskRequest task = await UpdateT(true);
+                        await _requestQueue.UpdateTForOpenStatus(task, nEVM.AdminUsername, "Open");
+                        break;
+                    case "IncidentProxy":
+                        Incident incident = await UpdateIM(true);
+                        await _requestQueue.UpdateIMForOpenStatus(incident, nEVM.AdminUsername, "Open");
+                        break;
+                    case "ServiceRequestProxy":
+                        ServiceRequest change = await UpdateC(true);
+                        await _requestQueue.UpdateCForOpenStatus(change, nEVM.AdminUsername, "Open");
+                        break;
 
+                }
+                nEVM.RequestViewModel.RemoveCurrentTab();
+                nEVM.RequestViewModel.RemoveAssignedRequest(request);
+            }
+            else
+                isFormValid.Clear();
         }
+        private async Task CheckGroupMember()
+        {
+            string id = await _userInfo.GetUserId(nEVM.RequestViewModel.Escalated.AUsername);
+            nEVM.RequestViewModel.Escalated.AssigneeValid =
+                await GenerateAssigneeColor(id,
+                await CheckIsMember(nEVM.RequestViewModel.Escalated.AUsername));
+            if (_user != null)
+            {
+                nEVM.RequestViewModel.Escalated.Assignee = new AccountInfo(_user, superiorUsername);
+                nEVM.RequestViewModel.Escalated.FindAssigneeEventArea = true;
+            }
+            else
+                nEVM.RequestViewModel.Escalated.Assignee = null;
+        }
+        private async Task<SolidColorBrush> GenerateAssigneeColor(string id, bool exist)
+        {
+            if (exist)
+            {
+                _user = await _employeeProfile.GetUser(id);
+                superiorUsername = await _userInfo.GetUserNameById(_user.Superior.UserId);
+                return new SolidColorBrush(Color.FromRgb(171, 173, 179));
+            }
+            else
+            {
+                return new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            }
+        }
+        private async Task<bool> CheckIsMember(string username) =>
+            await _requestQueue.IsGroupMember(username, nEVM.RequestViewModel.Escalated.ChoosenGroup.GroupId);
         private async Task SubmitMessage()
         {
             request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;

@@ -445,5 +445,20 @@ namespace DCGServiceDesk.EF.Services
             _dbContext.Statuses.Add(status);
             await _dbContext.SaveChangesAsync();
         }
+
+        public Task UpdateTForOpenStatus(TaskRequest task, string adminUsername, string statusName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateCForOpenStatus(ServiceRequest change, string adminUsername, string statusName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateIMForOpenStatus(Incident incident, string adminUsername, string statusName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

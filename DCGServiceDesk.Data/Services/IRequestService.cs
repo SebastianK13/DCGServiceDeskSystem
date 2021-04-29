@@ -39,5 +39,8 @@ namespace DCGServiceDesk.Data.Services
         Task<bool> IsGroupMember(string username, int id);
         Task<List<string>> GetMembers(int groupId);
         Task InsertNewMessage(int historyId, string message, string username);
+        Task UpdateTForOpenStatus(TaskRequest task, string adminUsername, string statusName);
+        Task UpdateCForOpenStatus(ServiceRequest change, string adminUsername, string statusName);
+        Task UpdateIMForOpenStatus(Incident incident, string adminUsername, string statusName);
     }
 }
