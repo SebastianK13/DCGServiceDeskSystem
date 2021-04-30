@@ -1,4 +1,5 @@
 ﻿using DCGServiceDesk.Data.Models;
+using DCGServiceDesk.Data.Services;
 using DCGServiceDesk.Services;
 using DCGServiceDesk.Session.DataGetter;
 using DCGServiceDesk.ViewModels;
@@ -48,11 +49,14 @@ namespace DCGServiceDesk.Commands
         private async Task CheckAndForward()
         {
             request = _eVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
+            AdditionalUpdateInfo additional = new AdditionalUpdateInfo();
+            additional.Username = _username;
             switch (_eVM.designation)
             {
                 case "TaskRequestProxy":
                     TaskRequest t = RequestService.SetAssigmentGroupT((TaskRequest)request, _eVM.ChoosenGroup);
-                    await _requestQueue.UpdateTaskRequest(t, _username);
+                    t.History.ActiveStatus.Notification = t.History.ActiveStatus.Notification + t.Group.GroupName;
+                    await _requestQueue.UpdateTaskRequest(t, additional);
                     break;
                 case "IncidentProxy":
                     if (_eVM.IsAssociated)
@@ -62,12 +66,14 @@ namespace DCGServiceDesk.Commands
                     else
                     {
                         Incident im = RequestService.SetAssigmentGroupIM((Incident)request, _eVM.ChoosenGroup);
-                        await _requestQueue.UpdateIncident((Incident)request, _username);
+                        im.History.ActiveStatus.Notification = im.History.ActiveStatus.Notification + im.Group.GroupName;
+                        await _requestQueue.UpdateIncident((Incident)request, additional);
                     }
                     break;
                 case "ServiceRequestProxy":
                     ServiceRequest c = RequestService.SetAssigmentGroupC((ServiceRequest)request, _eVM.ChoosenGroup);
-                    await _requestQueue.UpdateServiceRequest(c, _username);
+                    c.History.ActiveStatus.Notification = c.History.ActiveStatus.Notification + c.Group.GroupName;
+                    await _requestQueue.UpdateServiceRequest(c, additional);
                     break;
 
             }

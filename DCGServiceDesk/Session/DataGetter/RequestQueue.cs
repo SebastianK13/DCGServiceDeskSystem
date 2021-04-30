@@ -76,14 +76,14 @@ namespace DCGServiceDesk.Session.DataGetter
         public async Task<List<CloserDue>> GetCloserDues() =>
             await _requestService.GetClosureCodes();
 
-        public async Task UpdateServiceRequest(ServiceRequest request, string username, string stateName = "Open") =>
-            await _requestService.UpdateC(request, username,stateName);
+        public async Task UpdateServiceRequest(ServiceRequest request, AdditionalUpdateInfo additional) =>
+            await _requestService.UpdateC(request, additional);
 
-        public async Task UpdateTaskRequest(TaskRequest task, string username, string stateName = "Open") =>
-            await _requestService.UpdateT(task, username, stateName);
+        public async Task UpdateTaskRequest(TaskRequest task, AdditionalUpdateInfo additional) =>
+            await _requestService.UpdateT(task, additional);
 
-        public async Task UpdateIncident(Incident incident, string username, string stateName="Open") =>
-            await _requestService.UpdateIM(incident, username, stateName);
+        public async Task UpdateIncident(Incident incident, AdditionalUpdateInfo additional) =>
+            await _requestService.UpdateIM(incident, additional);
 
         public async Task<string> GetChangeAssignee(int requestId) =>
             await _requestService.GetChangeAssignee(requestId);

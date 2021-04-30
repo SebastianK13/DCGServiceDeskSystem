@@ -497,12 +497,13 @@
                                     </Grid.RowDefinitions>
                                     <StackPanel HorizontalAlignment="Stretch" Grid.Row="0" Margin="0,0,10,0" VerticalAlignment="Center">
                                         <TextBox HorizontalAlignment="Stretch" Height="23" VerticalContentAlignment="Center"
-                                 Text="{Binding NotEscalated.Topic}" BorderBrush="{Binding NotEscalated.TitleValid}"/>
+                                 Text="{Binding NotEscalated.Topic}" BorderBrush="{Binding NotEscalated.TitleValid}" IsReadOnly="True"/>
                                     </StackPanel>
                                     <StackPanel Grid.Row="1" Margin="0,0,10,0">
                                         <TextBox VerticalScrollBarVisibility="Visible" Padding="2,3,2,2" AcceptsReturn="True" 
-                                     TextWrapping="Wrap" Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                                 Text="{Binding NotEscalated.Description}" BorderBrush="{Binding NotEscalated.DescriptionValid}"/>
+                                        TextWrapping="Wrap" Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                        Text="{Binding NotEscalated.Description}" BorderBrush="{Binding NotEscalated.DescriptionValid}"
+                                        IsReadOnly="True"/>
                                     </StackPanel>
                                     <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
                                         <ComboBox Template="{DynamicResource ComboBoxTemplate1}" Width="200" Height="22"
@@ -530,12 +531,12 @@
                         <TabItem Header="Notifications">
                             <DockPanel MaxHeight="422" >
                                 <ScrollViewer>
-                                    <ItemsControl Padding="10" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Notifications}" BorderThickness="0">
+                                    <ItemsControl Padding="10" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Statuses}" BorderThickness="0">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
                                                     <TextBlock Text="{Binding CreateDate}"/>
-                                                    <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                    <TextBlock Text="{Binding Notification}" Margin="0,0,0,5"/>
                                                 </StackPanel>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
@@ -551,7 +552,7 @@
                                                 <DataTemplate>
                                                     <StackPanel>
                                                         <TextBlock Text="{Binding CreateDate}"/>
-                                                    <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
+                                                        <TextBlock Text="{Binding Message}" Margin="0,0,0,5"/>
                                                 </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>

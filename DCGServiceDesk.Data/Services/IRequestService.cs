@@ -28,9 +28,9 @@ namespace DCGServiceDesk.Data.Services
         Task<List<Categorization>> GetAllSubcategories(string designation);
         Task<List<Priority>> GetPriorityByLevel();
         Task<List<CloserDue>> GetClosureCodes();
-        Task UpdateC(ServiceRequest request, string username, string stateName = "Open");
-        Task UpdateT(TaskRequest task, string username, string stateName = "Open");
-        Task UpdateIM(Incident incident, string username, string stateName="Open");
+        Task UpdateC(ServiceRequest request, AdditionalUpdateInfo additional);
+        Task UpdateT(TaskRequest task, AdditionalUpdateInfo additional);
+        Task UpdateIM(Incident incident, AdditionalUpdateInfo additional);
         Task<string> GetChangeAssignee(int requestId);
         Task<string> GetTaskAssignee(int requestId);
         Task<string> GetIncidentAssignee(int requestId);
@@ -42,5 +42,15 @@ namespace DCGServiceDesk.Data.Services
         Task UpdateTForOpenStatus(TaskRequest task, string adminUsername, string statusName);
         Task UpdateCForOpenStatus(ServiceRequest change, string adminUsername, string statusName);
         Task UpdateIMForOpenStatus(Incident incident, string adminUsername, string statusName);
+    }
+    public class AdditionalUpdateInfo
+    {
+        public AdditionalUpdateInfo()
+        {
+            Phase = "Open";
+        }
+        public string? Username { get; set; }
+        public string Phase { get; set; }
+        public string? Notification { get; set; }
     }
 }

@@ -207,6 +207,7 @@ namespace DCGServiceDesk.Data.Models
         [ForeignKey("Group")]
         public int? GroupId { get; set; }
         public bool NotNotification { get; set; }
+        public string? Notification { get; set; }
         public virtual State? State { get; set; }
         public virtual AssigmentGroup? Group { get; set; }
     }

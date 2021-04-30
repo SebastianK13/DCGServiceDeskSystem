@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using DCGServiceDesk.Data.Models;
+using DCGServiceDesk.Data.Services;
 using DCGServiceDesk.Services;
 using DCGServiceDesk.Session.DataGetter;
 using DCGServiceDesk.ViewModels;
@@ -23,6 +24,7 @@ namespace DCGServiceDesk.Commands
         private object request;
         private Employee _user;
         private string superiorUsername;
+        private bool isEscalated = false;
 
         public CloseOrEscalateCommand(DbInterfaceContainer dbInterfaces, NotEscalatedViewModel nEVM)
         {
@@ -40,15 +42,21 @@ namespace DCGServiceDesk.Commands
                 switch (parameter.ToString())
                 {
                     case "Close":
+                        if (nEVM.RequestViewModel.Escalated != null)
+                            isEscalated = true;
+                        else
+                            isEscalated = false;
                         await CloseRequest();
                         break;
                     case "Escalate":
+                        isEscalated = false;
                         await EscalateRequest();
                         break;
                     case "Refresh":
                         await RefreshRequest();
                         break;
                     case "Save":
+                        isEscalated = true;
                         await Save();
                         break;
                     case "SubmitMessage":
@@ -92,10 +100,11 @@ namespace DCGServiceDesk.Commands
             string contactId = await _userInfo.GetUserId(nEVM.CUsername);
             string recipientId = await _userInfo.GetUserId(nEVM.RUsername);
             request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
+            AdditionalUpdateInfo additional = new AdditionalUpdateInfo();
+            additional.Username = nEVM.AdminUsername;
+            additional.Phase = "Open";
             CheckContactField(contactId);
             CheckRecipientField(recipientId);
-            CheckTopicField();
-            CheckDescField();
             await CheckGroupMember();
             if (!isFormValid.Contains(false))
             {
@@ -103,16 +112,16 @@ namespace DCGServiceDesk.Commands
                 switch (requestType)
                 {
                     case "TaskRequestProxy":
-                        TaskRequest task = await UpdateT(true);
-                        await _requestQueue.UpdateTForOpenStatus(task, nEVM.AdminUsername, "Open");
+                        TaskRequest task = await UpdateT("Open");
+                        await _requestQueue.UpdateTaskRequest(task, additional);
                         break;
                     case "IncidentProxy":
-                        Incident incident = await UpdateIM(true);
-                        await _requestQueue.UpdateIMForOpenStatus(incident, nEVM.AdminUsername, "Open");
+                        Incident incident = await UpdateIM("Open");
+                        await _requestQueue.UpdateIncident(incident, additional);
                         break;
                     case "ServiceRequestProxy":
-                        ServiceRequest change = await UpdateC(true);
-                        await _requestQueue.UpdateCForOpenStatus(change, nEVM.AdminUsername, "Open");
+                        ServiceRequest change = await UpdateC("Open");
+                        await _requestQueue.UpdateServiceRequest(change, additional);
                         break;
 
                 }
@@ -194,11 +203,11 @@ namespace DCGServiceDesk.Commands
             {
                 Notification notification = new Notification();
 
-                nEVM.RequestViewModel.Escalated.Notifications =
-                    notification.NotificationBuilder(statuses
-                    .Where(n => n.NotNotification == false)
-                    .OrderBy(d => d.CreateDate)
-                    .ToList());
+                //nEVM.RequestViewModel.Escalated.Notifications =
+                //    notification.NotificationBuilder(statuses
+                //    .Where(n => n.NotNotification == false)
+                //    .OrderBy(d => d.CreateDate)
+                //    .ToList());
 
                 nEVM.RequestViewModel.Escalated.Statuses =
                     statuses.OrderByDescending(d => d.CreateDate).ToList();
@@ -366,15 +375,15 @@ namespace DCGServiceDesk.Commands
                 switch (requestType)
                 {
                     case "TaskRequestProxy":
-                        TaskRequest task = await UpdateT(false);
+                        TaskRequest task = await UpdateT("Open");
                         nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests = task;
                         break;
                     case "IncidentProxy":
-                        Incident incident = await UpdateIM(false);
+                        Incident incident = await UpdateIM("Open");
                         nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests = incident;
                         break;
                     case "ServiceRequestProxy":
-                        ServiceRequest change = await UpdateC(false);
+                        ServiceRequest change = await UpdateC("Open");
                         nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests = change;
                         break;
 
@@ -399,19 +408,22 @@ namespace DCGServiceDesk.Commands
             if (!isFormValid.Contains(false))
             {
                 string requestType = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().RequestType;
+                AdditionalUpdateInfo additional = new AdditionalUpdateInfo();
+                additional.Username = nEVM.AdminUsername;
+                additional.Phase = "Closed";
                 switch (requestType)
                 {
                     case "TaskRequestProxy":
-                        TaskRequest task = await UpdateT(true);
-                        await _requestQueue.UpdateTaskRequest(task, nEVM.AdminUsername, "Closed");
+                        TaskRequest task = await UpdateT("Closed");
+                        await _requestQueue.UpdateTaskRequest(task, additional);
                         break;
                     case "IncidentProxy":
-                        Incident incident = await UpdateIM(true);
-                        await _requestQueue.UpdateIncident(incident, nEVM.AdminUsername, "Closed");
+                        Incident incident = await UpdateIM("Closed");
+                        await _requestQueue.UpdateIncident(incident, additional);
                         break;
                     case "ServiceRequestProxy":
-                        ServiceRequest change = await UpdateC(true);
-                        await _requestQueue.UpdateServiceRequest(change, nEVM.AdminUsername, "Closed");
+                        ServiceRequest change = await UpdateC("Closed");
+                        await _requestQueue.UpdateServiceRequest(change, additional);
                         break;
 
                 }
@@ -499,11 +511,13 @@ namespace DCGServiceDesk.Commands
                 isFormValid.Add(false);
             }
         }
-        private async Task<Incident> UpdateIM(bool toClosed)
+        private async Task<Incident> UpdateIM(string statusName)
         {
+            string coreNoti = "Request status was set to Closed \n";
             Incident im = RequestService.ConvertRequest(request);
+            Incident original = await _requestQueue.GetIncident(im.IncidentId);
             Status newStatus = im.History.ActiveStatus;
-            newStatus.State = SetState(toClosed);
+            newStatus.State = SetState(statusName);
             im.History.Status.Add(newStatus);
             im.History.ActiveStatus = newStatus;
             im.History.CloserDue = nEVM.CloserDue;
@@ -517,13 +531,32 @@ namespace DCGServiceDesk.Commands
             im.Topic = nEVM.Topic;
             im.Description = nEVM.Description;
 
+            if (isEscalated)
+            {
+                im.History.ActiveStatus.StateId = nEVM.CurrentState.StateId;
+                im.Assignee = nEVM.RequestViewModel.Escalated.AUsername;
+                im.GroupId = nEVM.RequestViewModel.Escalated.ChoosenGroup.GroupId;
+                coreNoti = "Request status was set to " + nEVM.CurrentState.StateName + "\n";
+            }
+            else if (!isEscalated && statusName == "Open")
+                coreNoti = "New request has been registered and escalted to ";
+
+            if (!(!isEscalated && statusName == "Open"))
+            {
+                var changes = RequestService.FindChanges(original, im);
+                Notification notification = new Notification();
+                im.History.ActiveStatus.Notification = coreNoti + notification.NotificationBuilder(changes);
+            }
+
             return im;
         }
-        private async Task<TaskRequest> UpdateT(bool toClosed)
+        private async Task<TaskRequest> UpdateT(string statusName)
         {
+            string coreNoti = "Request status was set to Closed \n";
             TaskRequest t = RequestService.ConvertRequest(request);
+            TaskRequest original = await _requestQueue.GetTask(t.TaskId);
             Status newStatus = t.History.ActiveStatus;
-            newStatus.State = SetState(toClosed);
+            newStatus.State = SetState(statusName);
             t.History.Status.Add(newStatus);
             t.History.ActiveStatus = newStatus;
             t.History.CloserDue = nEVM.CloserDue;
@@ -537,13 +570,32 @@ namespace DCGServiceDesk.Commands
             t.Topic = nEVM.Topic;
             t.Description = nEVM.Description;
 
+            if (isEscalated)
+            {
+                t.History.ActiveStatus.StateId = nEVM.CurrentState.StateId;
+                t.Assignee = nEVM.RequestViewModel.Escalated.AUsername;
+                t.GroupId = nEVM.RequestViewModel.Escalated.ChoosenGroup.GroupId;
+                coreNoti = "Request status was set to " + nEVM.CurrentState.StateName + "\n";
+            }
+            else if (!isEscalated && statusName == "Open")
+                coreNoti = "New request has been registered and escalted to ";
+
+            if (!(!isEscalated && statusName == "Open"))
+            {
+                var changes = RequestService.FindChanges(original, t);
+                Notification notification = new Notification();
+                t.History.ActiveStatus.Notification = coreNoti + notification.NotificationBuilder(changes);
+            }
+
             return t;
         }
-        private async Task<ServiceRequest> UpdateC(bool toClosed)
+        private async Task<ServiceRequest> UpdateC(string statusName)
         {
+            string coreNoti = "Request status was set to Closed \n";
             ServiceRequest c = RequestService.ConvertRequest(request);
+            ServiceRequest original = await _requestQueue.GetChange(c.RequestId);
             Status newStatus = c.History.ActiveStatus;
-            newStatus.State = SetState(toClosed);
+            newStatus.State = SetState(statusName);
             c.History.Status.Add(newStatus);
             c.History.ActiveStatus = newStatus;
             c.History.CloserDue = nEVM.CloserDue;
@@ -556,6 +608,23 @@ namespace DCGServiceDesk.Commands
             c.Priority = nEVM.CurrentPriority;
             c.Topic = nEVM.Topic;
             c.Description = nEVM.Description;
+            
+            if (isEscalated)
+            {
+                c.History.ActiveStatus.StateId = nEVM.CurrentState.StateId;
+                c.Assignee = nEVM.RequestViewModel.Escalated.AUsername;
+                c.GroupId = nEVM.RequestViewModel.Escalated.ChoosenGroup.GroupId;
+                coreNoti = "Request status was set to " + nEVM.CurrentState.StateName + "\n";
+            }
+            else if(!isEscalated && statusName == "Open")
+                coreNoti = "New request has been registered and escalted to ";
+
+            if(!(!isEscalated && statusName == "Open"))
+            {
+                var changes = RequestService.FindChanges(original, c);
+                Notification notification = new Notification();
+                c.History.ActiveStatus.Notification = coreNoti + notification.NotificationBuilder(changes);
+            }
 
             return c;
         }
@@ -564,12 +633,14 @@ namespace DCGServiceDesk.Commands
             string userId = await _userInfo.GetUserId(userName);
             return await _employeeProfile.GetEmployeeIdByUId(userId);
         }
-        private State SetState(bool isClosed)
+        private State SetState(string statusName)
         {
-            if (isClosed)
+            if (statusName == "Closed")
                return nEVM.States.Where(n => n.StateName == "Closed").FirstOrDefault();
-            else
+            else if(statusName == "Open")
                return nEVM.States.Where(n => n.StateName == "Open").FirstOrDefault();
+            else
+               return nEVM.States.Where(n => n.StateName == "Waiting").FirstOrDefault();
         }
         private void CheckStatusIfEscalated()
         {

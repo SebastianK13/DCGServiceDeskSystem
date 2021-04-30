@@ -316,10 +316,10 @@ namespace DCGServiceDesk.EF.Services
         public async Task<List<CloserDue>> GetClosureCodes() =>
             await _dbContext.CloserDues.ToListAsync();
 
-        public async Task UpdateC(ServiceRequest request, string username, string stateName = "Open")
+        public async Task UpdateC(ServiceRequest request, AdditionalUpdateInfo additional)
         {
-            Status newStatus = await CreateStatus(DateTime.Now, request.History.ActiveStatus.DueTime, stateName);
-            newStatus.CreatedBy = username;
+            Status newStatus = await CreateStatus(DateTime.Now, request.History.ActiveStatus.DueTime, additional.Phase);
+            newStatus.CreatedBy = additional.Username;
             newStatus.HistoryId = request.HistoryId;
             newStatus.GroupId = request.Group.GroupId;
             await UpdateHistory(request.History.ChangeId, newStatus.StatusId);
@@ -329,10 +329,10 @@ namespace DCGServiceDesk.EF.Services
 
             await _dbContext.SaveChangesAsync();
         }
-        public async Task UpdateT(TaskRequest task, string username, string stateName = "Open")
+        public async Task UpdateT(TaskRequest task, AdditionalUpdateInfo additional)
         {
-            Status newStatus = await CreateStatus(DateTime.Now, task.History.ActiveStatus.DueTime, stateName);
-            newStatus.CreatedBy = username;
+            Status newStatus = await CreateStatus(DateTime.Now, task.History.ActiveStatus.DueTime, additional.Phase);
+            newStatus.CreatedBy = additional.Username;
             newStatus.HistoryId = task.HistoryId;
             newStatus.GroupId = task.Group.GroupId;
             await UpdateHistory(task.History.ChangeId, newStatus.StatusId);
@@ -342,10 +342,10 @@ namespace DCGServiceDesk.EF.Services
 
             await _dbContext.SaveChangesAsync();
         }
-        public async Task UpdateIM(Incident incident, string username, string stateName = "Open")
+        public async Task UpdateIM(Incident incident, AdditionalUpdateInfo additional)
         {
-            Status newStatus = await CreateStatus(DateTime.Now, incident.History.ActiveStatus.DueTime, stateName);
-            newStatus.CreatedBy = username;
+            Status newStatus = await CreateStatus(DateTime.Now, incident.History.ActiveStatus.DueTime, additional.Phase);
+            newStatus.CreatedBy = additional.Username;
             newStatus.HistoryId = incident.HistoryId;
             newStatus.GroupId = incident.Group.GroupId;
             await UpdateHistory(incident.History.ChangeId, newStatus.StatusId);
@@ -409,8 +409,10 @@ namespace DCGServiceDesk.EF.Services
 
         public async Task AddAssociatedIncident(Incident request, string username, Incident choosenIncident)
         {
+            AdditionalUpdateInfo additional = new AdditionalUpdateInfo();
+            additional.Username = username;
             request.IsAssociated = true;
-            await UpdateIM(request, username);
+            await UpdateIM(request, additional);
             choosenIncident.AffectedIncidents.Add(request);
             _dbContext.Entry(choosenIncident).State = EntityState.Modified;
 
@@ -457,6 +459,21 @@ namespace DCGServiceDesk.EF.Services
         }
 
         public Task UpdateIMForOpenStatus(Incident incident, string adminUsername, string statusName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateC(ServiceRequest request, Data.Services.AdditionalUpdateInfo additional)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateT(TaskRequest task, Data.Services.AdditionalUpdateInfo additional)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateIM(Incident incident, Data.Services.AdditionalUpdateInfo additional)
         {
             throw new NotImplementedException();
         }

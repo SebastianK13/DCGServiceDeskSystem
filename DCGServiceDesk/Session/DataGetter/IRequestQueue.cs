@@ -1,4 +1,5 @@
 ﻿using DCGServiceDesk.Data.Models;
+using DCGServiceDesk.Data.Services;
 using DCGServiceDesk.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -29,9 +30,9 @@ namespace DCGServiceDesk.Session.DataGetter
         Task<List<Impact>> GetImpacts();
         Task<List<Priority>> GetPriority();
         Task<List<CloserDue>> GetCloserDues();
-        Task UpdateServiceRequest(ServiceRequest request, string username, string stateName = "Open");
-        Task UpdateTaskRequest(TaskRequest task, string username, string stateName = "Open");
-        Task UpdateIncident(Incident incident, string username, string stateName="Open");
+        Task UpdateServiceRequest(ServiceRequest request, AdditionalUpdateInfo additional);
+        Task UpdateTaskRequest(TaskRequest task, AdditionalUpdateInfo additional);
+        Task UpdateIncident(Incident incident, AdditionalUpdateInfo additional);
         Task<string> GetChangeAssignee(int requestId);
         Task<string> GetTaskAssignee(int requestId);
         Task<string> GetIncidentAssignee(int requestId);

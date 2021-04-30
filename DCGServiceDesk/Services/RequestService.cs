@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static DCGServiceDesk.Services.Notification;
 
 namespace DCGServiceDesk.Services
 {
@@ -12,7 +13,7 @@ namespace DCGServiceDesk.Services
         public static List<object> ConvertTotListObject(object list) =>
             (list as IEnumerable<object>).Cast<object>().ToList();
 
-        public static dynamic ConvertRequest(object request,string requestType = "")
+        public static dynamic ConvertRequest(object request, string requestType = "")
         {
             if (requestType == "")
                 requestType = request.GetType().Name;
@@ -46,7 +47,7 @@ namespace DCGServiceDesk.Services
             }
 
         }
-        public static string GetAssignee(object request) 
+        public static string GetAssignee(object request)
         {
             string requestType = request.GetType().Name;
             switch (requestType)
@@ -247,6 +248,168 @@ namespace DCGServiceDesk.Services
             }
             return 0;
         }
+        public static List<Change> FindChanges(object originalRequest, object currentRequest)
+        {
+            string requestType = originalRequest.GetType().Name;
+            List<Change> Changes = new List<Change>();
+            switch (requestType)
+            {
+                case "TaskRequestProxy":
+                    TaskRequest original = (TaskRequest)originalRequest;
+                    TaskRequest current = (TaskRequest)currentRequest;
+                    if (original.ContactPerson != current.ContactPerson)
+                        Changes.Add(new Change { PropertyName = "Recipient" });
+                    if (original.RequestedPerson != current.RequestedPerson)
+                        Changes.Add(new Change { PropertyName = "Contact" });
+                    if (original.GroupId != current.GroupId)
+                        Changes.Add(new Change
+                        {
+                            Original = original.Group.GroupName,
+                            Current = current.Group.GroupName,
+                            PropertyName = "Assigment group"
+                        });
+                    if (original.Assignee != current.Assignee)
+                        Changes.Add(new Change
+                        {
+                            Original = original.Assignee,
+                            Current = current.Assignee,
+                            PropertyName = "Assignee"
+                        });
+                    if (original.ImpactId != current.ImpactId)
+                        Changes.Add(new Change
+                        {
+                            Original = original.ImpactId.ToString(),
+                            Current = current.ImpactId.ToString(),
+                            PropertyName = "Impact"
+                        });
+                    if (original.UrgencyId != current.UrgencyId)
+                        Changes.Add(new Change
+                        {
+                            Original = original.UrgencyId.ToString(),
+                            Current = current.UrgencyId.ToString(),
+                            PropertyName = "Urgency"
+                        });
+                    if (original.Topic != current.Topic)
+                        Changes.Add(new Change
+                        {
+                            Original = original.Topic,
+                            Current = current.Topic,
+                            PropertyName = "Topic"
+                        });
+                    if (original.Description != current.Description)
+                        Changes.Add(new Change
+                        {
+                            Original = original.Description,
+                            Current = current.Description,
+                            PropertyName = "Description"
+                        });
+                    break;
+                case "IncidentProxy":
+                    TaskRequest originalIM = (TaskRequest)originalRequest;
+                    TaskRequest currentIM = (TaskRequest)currentRequest;
+                    if (originalIM.ContactPerson != currentIM.ContactPerson)
+                        Changes.Add(new Change { PropertyName = "Recipient" });
+                    if (originalIM.RequestedPerson != currentIM.RequestedPerson)
+                        Changes.Add(new Change { PropertyName = "Contact" });
+                    if (originalIM.GroupId != currentIM.GroupId)
+                        Changes.Add(new Change
+                        {
+                            Original = originalIM.Group.GroupName,
+                            Current = currentIM.Group.GroupName,
+                            PropertyName = "Assigment group"
+                        });
+                    if (originalIM.Assignee != currentIM.Assignee)
+                        Changes.Add(new Change
+                        {
+                            Original = originalIM.Assignee,
+                            Current = currentIM.Assignee,
+                            PropertyName = "Assignee"
+                        });
+                    if (originalIM.ImpactId != currentIM.ImpactId)
+                        Changes.Add(new Change
+                        {
+                            Original = originalIM.ImpactId.ToString(),
+                            Current = currentIM.ImpactId.ToString(),
+                            PropertyName = "Impact"
+                        });
+                    if (originalIM.UrgencyId != currentIM.UrgencyId)
+                        Changes.Add(new Change
+                        {
+                            Original = originalIM.UrgencyId.ToString(),
+                            Current = currentIM.UrgencyId.ToString(),
+                            PropertyName = "Urgency"
+                        });
+                    if (originalIM.Topic != currentIM.Topic)
+                        Changes.Add(new Change
+                        {
+                            Original = originalIM.Topic,
+                            Current = currentIM.Topic,
+                            PropertyName = "Topic"
+                        });
+                    if (originalIM.Description != currentIM.Description)
+                        Changes.Add(new Change
+                        {
+                            Original = originalIM.Description,
+                            Current = currentIM.Description,
+                            PropertyName = "Description"
+                        });
+                    break;
+                case "ServiceRequestProxy":
+                    TaskRequest originalC = (TaskRequest)originalRequest;
+                    TaskRequest currentC = (TaskRequest)currentRequest;
+                    if (originalC.ContactPerson != currentC.ContactPerson)
+                        Changes.Add(new Change { PropertyName = "Recipient" });
+                    if (originalC.RequestedPerson != currentC.RequestedPerson)
+                        Changes.Add(new Change { PropertyName = "Contact" });
+                    if (originalC.GroupId != currentC.GroupId)
+                        Changes.Add(new Change
+                        {
+                            Original = originalC.Group.GroupName,
+                            Current = currentC.Group.GroupName,
+                            PropertyName = "Assigment group"
+                        });
+                    if (originalC.Assignee != currentC.Assignee)
+                        Changes.Add(new Change
+                        {
+                            Original = originalC.Assignee,
+                            Current = currentC.Assignee,
+                            PropertyName = "Assignee"
+                        });
+                    if (originalC.ImpactId != currentC.ImpactId)
+                        Changes.Add(new Change
+                        {
+                            Original = originalC.ImpactId.ToString(),
+                            Current = currentC.ImpactId.ToString(),
+                            PropertyName = "Impact"
+                        });
+                    if (originalC.UrgencyId != currentC.UrgencyId)
+                        Changes.Add(new Change
+                        {
+                            Original = originalC.UrgencyId.ToString(),
+                            Current = currentC.UrgencyId.ToString(),
+                            PropertyName = "Urgency"
+                        });
+                    if (originalC.Topic != currentC.Topic)
+                        Changes.Add(new Change
+                        {
+                            Original = originalC.Topic,
+                            Current = currentC.Topic,
+                            PropertyName = "Topic"
+                        });
+                    if (originalC.Description != currentC.Description)
+                        Changes.Add(new Change
+                        {
+                            Original = originalC.Description,
+                            Current = currentC.Description,
+                            PropertyName = "Description"
+                        });
+                    break;
+                default:
+                    return null;
+
+            }
+            return Changes;
+        }
     }
     public class SingleRequestInfo
     {
@@ -273,43 +436,32 @@ namespace DCGServiceDesk.Services
         public string GroupName { get; set; }
 
 
-        public List<Notification> NotificationBuilder(List<Status> statuses)
+        public string NotificationBuilder(List<Change> changes)
         {
-            List<Notification> notifications = new List<Notification>();
-
-            for(int i = 0; i < statuses.Count; i++)
+            string notification="";
+            foreach(Change c in changes)
             {
-                string option = statuses[i].State.StateName;
-                Notification temp = new Notification();
-                temp.CreateDate = statuses[i].CreateDate;
-                temp.AssignedTo = statuses[i].AssignedTo;
-                temp.CreatedBy = statuses[i].CreatedBy;
-                temp.GroupName = statuses[i].Group?.GroupName;
-
-                switch (option)
-                {
-                    case "New":
-                        temp.Message = "New request has been registered by " +
-                             temp.CreatedBy + " and Escalated to " + temp.GroupName + "group";
-                        break;
-                    case "Open":
-                        if(temp.CreatedBy == null)
-                            temp.Message = "Request has been opened automate";
-                        else
-                            temp.Message = "Request has been assigned to "+ temp.GroupName + " by "+ temp.CreatedBy;
-                        break;
-                    case "Waiting":
-                        temp.Message = "Request is waiting for reply. Status has been changed by " + temp.CreatedBy;
-                        break;
-                    case "Closed":
-                        temp.Message = "Request has been closed by " + temp.CreatedBy;
-                        break;
-                }
-
-                notifications.Add(temp);
+                notification = "-" + c.PropertyName + " was changed from " +
+                    c.Original + " to " + c.Current + "\n";
             }
+            return notification;
+        }
 
-            return notifications;
+        public class AdditionalUpdateInfo
+        {
+            public AdditionalUpdateInfo()
+            {
+                Phase = "Open";
+            }
+            public string Username { get; set; }
+            public string Phase { get; set; }
+            public string Notification { get; set; }
+        }
+        public class Change
+        {
+            public string Original { get; set; }
+            public string Current { get; set; }
+            public string PropertyName { get; set; }
         }
     }
 }
