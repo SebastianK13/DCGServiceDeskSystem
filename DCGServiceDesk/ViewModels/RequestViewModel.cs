@@ -93,6 +93,7 @@ namespace DCGServiceDesk.ViewModels
         private Brush _convMsgValid;
         private bool Forced = false;
         private List<Status> _statuses;
+        private List<Status> _messages;
 
         public NotEscalatedViewModel NotEscalated { get; set; }
         public RequestViewModel RequestViewModel { get; set; }
@@ -230,6 +231,15 @@ namespace DCGServiceDesk.ViewModels
                 }
             }
         }
+        public List<Status> Messages
+        {
+            get { return _messages; }
+            set
+            {
+                _messages = value;
+                OnPropertyChanged("Messages");
+            }
+        }
 
         public void SetInitialColors()
         {
@@ -245,8 +255,12 @@ namespace DCGServiceDesk.ViewModels
 
             Statuses = RequestService
                 .GetStatuses(RequestViewModel.WorkspaceInfo
-                .FirstOrDefault().ServiceRequests)
+                .FirstOrDefault().ServiceRequests)                
                 .OrderByDescending(d=>d.CreateDate)
+                .ToList();
+
+            Messages = Statuses
+                .Where(m => m.Message != null)
                 .ToList();
         }
         public void FrocedMessageRemove()
@@ -359,6 +373,7 @@ namespace DCGServiceDesk.ViewModels
         private int _waitingTime;
         private Brush _waitingTimeValid;
 
+        public bool isTimeValid { get; set; }
         public bool WaitingTimeVisibility
         {
             get { return _waitingTimeVis; }
@@ -374,9 +389,15 @@ namespace DCGServiceDesk.ViewModels
             set
             {
                 if(value <= 0 || value > 72)
+                {
                     WaitingTimeValid = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                    isTimeValid = false;
+                }
                 else
+                {
                     WaitingTimeValid = new SolidColorBrush(Color.FromRgb(171, 173, 179));
+                    isTimeValid = true;
+                }
 
                 _waitingTime = value;
                 OnPropertyChanged("WaitingTime");

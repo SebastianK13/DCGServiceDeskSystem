@@ -118,7 +118,10 @@ namespace DCGServiceDesk.ViewModels
                         {
                             var currentRequest = RequestService.ConvertRequest(t.ServiceRequests, requestType);
 
-                            if (RequestService.GetId(choosenRequest) == RequestService.GetId(currentRequest))
+                            int toRemoveID = RequestService.GetId(choosenRequest);
+                            int currentID = RequestService.GetId(currentRequest);
+
+                            if (toRemoveID == currentID)
                             {
                                 r.WorkspaceInfo.Remove(t);
                                 y++;

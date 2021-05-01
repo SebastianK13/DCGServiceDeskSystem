@@ -25,6 +25,8 @@ namespace DCGServiceDesk.Commands
         private Employee _user;
         private string superiorUsername;
         private bool isEscalated = false;
+        private int hasGroupChanged = 0;
+        private List<string> usernames = new List<string>();
 
         public CloseOrEscalateCommand(DbInterfaceContainer dbInterfaces, NotEscalatedViewModel nEVM)
         {
@@ -39,6 +41,9 @@ namespace DCGServiceDesk.Commands
             try
             {
                 _requestQueue.RefreshData();
+                if(nEVM.RequestViewModel.Escalated != null)
+                    await CheckUsersField();
+                AdUsernames();
                 switch (parameter.ToString())
                 {
                     case "Close":
@@ -58,13 +63,17 @@ namespace DCGServiceDesk.Commands
                     case "Save":
                         isEscalated = true;
                         await Save();
+                        await RefreshRequest();
                         break;
                     case "SubmitMessage":
                         if(nEVM.RequestViewModel.Escalated.ConversationMessage.Length > 0)
                             await SubmitMessage();
                         else
-                            nEVM.RequestViewModel.Escalated.ConvMsgValid = 
+                        {
+                            nEVM.RequestViewModel.Escalated.ConvMsgValid =
                                 new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                            isFormValid.Add(false);
+                        }
                         break;
                 }
             }
@@ -73,36 +82,86 @@ namespace DCGServiceDesk.Commands
 
             }
         }
+        private void AdUsernames()
+        {
+            usernames.Add(nEVM.RUsername);
+            usernames.Add(nEVM.CUsername);
+        }
+        private async Task CheckUsersField()
+        {
+            await FindUser("FindAssignee");
+            await FindUser("FindContact");
+            await FindUser("FindRecipient");
+        }
+        private async Task FindUser(string parameter)
+        {
+            string id = "";
+            switch (parameter)
+            {
+                case "FindRecipient":
+                    id = await _userInfo.GetUserId(nEVM.RUsername);
+                    nEVM.RecipientValid = await GenerateProperColorAsync(id);
+                    if (_user != null)
+                        nEVM.Recipient = new AccountInfo(_user, superiorUsername);
+                    else
+                        nEVM.Recipient = null;
+                    break;
+                case "FindContact":
+                    id = await _userInfo.GetUserId(nEVM.CUsername);
+                    nEVM.ContactValid = await GenerateProperColorAsync(id);
+                    if (_user != null)
+                        nEVM.Contact = new AccountInfo(_user, superiorUsername);
+                    else
+                        nEVM.Contact = null;
+                    break;
+                case "FindAssignee":
+                    id = await _userInfo.GetUserId(nEVM.RequestViewModel.Escalated.AUsername);
+                    if (_user != null)
+                        nEVM.RequestViewModel.Escalated.Assignee = new AccountInfo(_user, superiorUsername);
+                    else
+                        nEVM.RequestViewModel.Escalated.Assignee = null;
+                    break;
+            }
+        }
+        private async Task<SolidColorBrush> GenerateProperColorAsync(string id)
+        {
+            if (id != "" && id != null)
+            {
+                _user = await _employeeProfile.GetUser(id);
+                superiorUsername = await _userInfo.GetUserNameById(_user.Superior?.UserId);
+                return new SolidColorBrush(Color.FromRgb(171, 173, 179));
+            }
+            else
+            {
+                return new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            }
+        }
         private async Task Save()
         {
             request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
-            string state = RequestService.GetStateName(request);
+            string state = nEVM.CurrentState.StateName;
 
             switch (state)
             {
                 case "Waiting":
-                    await SaveWaiting();
+                    await SaveChanges("Waiting");
                     break;
                 case "Closed":
                     await CloseRequest();
                     break;
                 case "Open":
-                    await SaveOpen();
+                    await SaveChanges("Open");
                     break;
             }
         }
-        private async Task SaveWaiting()
-        {
-
-        }
-        private async Task SaveOpen()
+        private async Task SaveChanges(string stateName)
         {
             string contactId = await _userInfo.GetUserId(nEVM.CUsername);
             string recipientId = await _userInfo.GetUserId(nEVM.RUsername);
             request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
             AdditionalUpdateInfo additional = new AdditionalUpdateInfo();
             additional.Username = nEVM.AdminUsername;
-            additional.Phase = "Open";
+            additional.Phase = stateName;
             CheckContactField(contactId);
             CheckRecipientField(recipientId);
             await CheckGroupMember();
@@ -112,38 +171,50 @@ namespace DCGServiceDesk.Commands
                 switch (requestType)
                 {
                     case "TaskRequestProxy":
-                        TaskRequest task = await UpdateT("Open");
+                        TaskRequest task = await UpdateT(stateName);
+                        additional.Notification = task.History.ActiveStatus.Notification;
                         await _requestQueue.UpdateTaskRequest(task, additional);
                         break;
                     case "IncidentProxy":
-                        Incident incident = await UpdateIM("Open");
+                        Incident incident = await UpdateIM(stateName);
+                        additional.Notification = incident.History.ActiveStatus.Notification;
                         await _requestQueue.UpdateIncident(incident, additional);
                         break;
                     case "ServiceRequestProxy":
-                        ServiceRequest change = await UpdateC("Open");
+                        ServiceRequest change = await UpdateC(stateName);
+                        additional.Notification = change.History.ActiveStatus.Notification;
                         await _requestQueue.UpdateServiceRequest(change, additional);
                         break;
 
                 }
-                nEVM.RequestViewModel.RemoveCurrentTab();
-                nEVM.RequestViewModel.RemoveAssignedRequest(request);
+                if(hasGroupChanged != 0)
+                    nEVM.RequestViewModel.RemoveAssignedRequest(request);
+
             }
             else
                 isFormValid.Clear();
         }
         private async Task CheckGroupMember()
         {
-            string id = await _userInfo.GetUserId(nEVM.RequestViewModel.Escalated.AUsername);
-            nEVM.RequestViewModel.Escalated.AssigneeValid =
-                await GenerateAssigneeColor(id,
-                await CheckIsMember(nEVM.RequestViewModel.Escalated.AUsername));
-            if (_user != null)
+            if(nEVM.RequestViewModel.Escalated.AUsername != "" &&
+                nEVM.RequestViewModel.Escalated.AUsername != null)
             {
-                nEVM.RequestViewModel.Escalated.Assignee = new AccountInfo(_user, superiorUsername);
-                nEVM.RequestViewModel.Escalated.FindAssigneeEventArea = true;
+                string id = await _userInfo.GetUserId(nEVM.RequestViewModel.Escalated.AUsername);
+                nEVM.RequestViewModel.Escalated.AssigneeValid =
+                    await GenerateAssigneeColor(id,
+                    await CheckIsMember(nEVM.RequestViewModel.Escalated.AUsername));
+                if (_user != null)
+                {
+                    nEVM.RequestViewModel.Escalated.Assignee = new AccountInfo(_user, superiorUsername);
+                    nEVM.RequestViewModel.Escalated.FindAssigneeEventArea = true;
+                }
+                else
+                {
+                    nEVM.RequestViewModel.Escalated.Assignee = null;
+                    isFormValid.Add(false);
+                }
             }
-            else
-                nEVM.RequestViewModel.Escalated.Assignee = null;
+
         }
         private async Task<SolidColorBrush> GenerateAssigneeColor(string id, bool exist)
         {
@@ -162,13 +233,15 @@ namespace DCGServiceDesk.Commands
             await _requestQueue.IsGroupMember(username, nEVM.RequestViewModel.Escalated.ChoosenGroup.GroupId);
         private async Task SubmitMessage()
         {
-            request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
-            string requestType = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().RequestType;
             string message = nEVM.RequestViewModel.Escalated.ConversationMessage;
+
+            request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
+            string requestType = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().RequestType;           
             int historyId = RequestService.GetHistoryId(request);
             await _requestQueue.AddNewMessage(historyId, message, 
                 nEVM.RequestViewModel.GetUsername());
             nEVM.RequestViewModel.Escalated.FrocedMessageRemove();
+            nEVM.RequestViewModel.Escalated.IsMsgTyped = true;
             await RefreshRequest();
         }
         private async Task RefreshRequest()
@@ -536,17 +609,30 @@ namespace DCGServiceDesk.Commands
                 im.History.ActiveStatus.StateId = nEVM.CurrentState.StateId;
                 im.Assignee = nEVM.RequestViewModel.Escalated.AUsername;
                 im.GroupId = nEVM.RequestViewModel.Escalated.ChoosenGroup.GroupId;
+                im.Group = nEVM.RequestViewModel.Escalated.ChoosenGroup;
                 coreNoti = "Request status was set to " + nEVM.CurrentState.StateName + "\n";
+                if(statusName == "Waiting")
+                {
+                    if(nEVM.isTimeValid)
+                    {
+                        if (!nEVM.RequestViewModel.Escalated.IsMsgTyped)
+                            await SubmitMessage();
+                    }
+                }
             }
             else if (!isEscalated && statusName == "Open")
                 coreNoti = "New request has been registered and escalted to ";
 
             if (!(!isEscalated && statusName == "Open"))
             {
-                var changes = RequestService.FindChanges(original, im);
+                usernames.Add(nEVM.RUsername);
+                usernames.Add(nEVM.CUsername);
+                var changes = RequestService.FindChanges(original, im, usernames);
                 Notification notification = new Notification();
                 im.History.ActiveStatus.Notification = coreNoti + notification.NotificationBuilder(changes);
             }
+
+            hasGroupChanged = String.Compare(original.GroupId.ToString(), im.GroupId.ToString());
 
             return im;
         }
@@ -575,17 +661,30 @@ namespace DCGServiceDesk.Commands
                 t.History.ActiveStatus.StateId = nEVM.CurrentState.StateId;
                 t.Assignee = nEVM.RequestViewModel.Escalated.AUsername;
                 t.GroupId = nEVM.RequestViewModel.Escalated.ChoosenGroup.GroupId;
+                t.Group = nEVM.RequestViewModel.Escalated.ChoosenGroup;
                 coreNoti = "Request status was set to " + nEVM.CurrentState.StateName + "\n";
+                if (statusName == "Waiting")
+                {
+                    if (nEVM.isTimeValid)
+                    {
+                        if (!nEVM.RequestViewModel.Escalated.IsMsgTyped)
+                            await SubmitMessage();
+                    }
+                }
             }
             else if (!isEscalated && statusName == "Open")
                 coreNoti = "New request has been registered and escalted to ";
 
             if (!(!isEscalated && statusName == "Open"))
             {
-                var changes = RequestService.FindChanges(original, t);
+                usernames.Add(nEVM.RUsername);
+                usernames.Add(nEVM.CUsername);
+                var changes = RequestService.FindChanges(original, t, usernames);
                 Notification notification = new Notification();
                 t.History.ActiveStatus.Notification = coreNoti + notification.NotificationBuilder(changes);
             }
+
+            hasGroupChanged = String.Compare(original.GroupId.ToString(), t.GroupId.ToString());
 
             return t;
         }
@@ -614,17 +713,30 @@ namespace DCGServiceDesk.Commands
                 c.History.ActiveStatus.StateId = nEVM.CurrentState.StateId;
                 c.Assignee = nEVM.RequestViewModel.Escalated.AUsername;
                 c.GroupId = nEVM.RequestViewModel.Escalated.ChoosenGroup.GroupId;
+                c.Group = nEVM.RequestViewModel.Escalated.ChoosenGroup;
                 coreNoti = "Request status was set to " + nEVM.CurrentState.StateName + "\n";
+                if (statusName == "Waiting")
+                {
+                    if (nEVM.isTimeValid)
+                    {
+                        if (!nEVM.RequestViewModel.Escalated.IsMsgTyped)
+                            await SubmitMessage();
+                    }
+                }
             }
             else if(!isEscalated && statusName == "Open")
                 coreNoti = "New request has been registered and escalted to ";
 
             if(!(!isEscalated && statusName == "Open"))
             {
-                var changes = RequestService.FindChanges(original, c);
+                usernames.Add(nEVM.RUsername);
+                usernames.Add(nEVM.CUsername);
+                var changes = RequestService.FindChanges(original, c, usernames);
                 Notification notification = new Notification();
                 c.History.ActiveStatus.Notification = coreNoti + notification.NotificationBuilder(changes);
             }
+
+            hasGroupChanged = String.Compare(original.GroupId.ToString(), c.GroupId.ToString());
 
             return c;
         }

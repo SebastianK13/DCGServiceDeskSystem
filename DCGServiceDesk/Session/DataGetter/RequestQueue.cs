@@ -109,13 +109,5 @@ namespace DCGServiceDesk.Session.DataGetter
         public async Task AddNewMessage(int historyId, string message, string username) =>
             await _requestService.InsertNewMessage(historyId, message, username);
 
-        public async Task UpdateTForOpenStatus(TaskRequest task, string adminUsername, string statusName) =>
-            await _requestService.UpdateTForOpenStatus(task, adminUsername, statusName);
-
-        public async Task UpdateIMForOpenStatus(Incident incident, string adminUsername, string statusName) =>
-            await _requestService.UpdateIMForOpenStatus(incident, adminUsername, statusName);
-
-        public async Task UpdateCForOpenStatus(ServiceRequest change, string adminUsername, string statusName) =>
-            await _requestService.UpdateCForOpenStatus(change, adminUsername, statusName);
     }
 }
