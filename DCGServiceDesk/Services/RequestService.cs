@@ -257,19 +257,19 @@ namespace DCGServiceDesk.Services
                 case "TaskRequestProxy":
                     TaskRequest original = (TaskRequest)originalRequest;
                     TaskRequest current = (TaskRequest)currentRequest;
+                    if (original.RequestedPerson != current.RequestedPerson)
+                        Changes.Add(new Change
+                        {
+                            PropertyName = "Contact",
+                            Original = usernames[3],
+                            Current = usernames[1]
+                        });
                     if (original.ContactPerson != current.ContactPerson)
                         Changes.Add(new Change
-                        { 
-                            PropertyName = "Recipient", 
-                            Original = usernames[0], 
-                            Current = usernames[2]
-                        });
-                    if (original.RequestedPerson != current.RequestedPerson)
-                        Changes.Add(new Change 
-                        { 
-                            PropertyName = "Contact", 
-                            Original = usernames[1], 
-                            Current = usernames[3] 
+                        {
+                            PropertyName = "Recipient",
+                            Original = usernames[2],
+                            Current = usernames[0]
                         });
                     if (original.GroupId != current.GroupId)
                         Changes.Add(new Change
@@ -317,19 +317,19 @@ namespace DCGServiceDesk.Services
                 case "IncidentProxy":
                     Incident originalIM = (Incident)originalRequest;
                     Incident currentIM = (Incident)currentRequest;
-                    if (originalIM.ContactPerson != currentIM.ContactPerson)
-                        Changes.Add(new Change
-                        {
-                            PropertyName = "Recipient",
-                            Original = usernames[0],
-                            Current = usernames[2]
-                        });
                     if (originalIM.RequestedPerson != currentIM.RequestedPerson)
                         Changes.Add(new Change
                         {
                             PropertyName = "Contact",
-                            Original = usernames[1],
-                            Current = usernames[3]
+                            Original = usernames[3],
+                            Current = usernames[1]
+                        });
+                    if (originalIM.ContactPerson != currentIM.ContactPerson)
+                        Changes.Add(new Change
+                        {
+                            PropertyName = "Recipient",
+                            Original = usernames[2],
+                            Current = usernames[0]
                         });
                     if (originalIM.GroupId != currentIM.GroupId)
                         Changes.Add(new Change
@@ -377,19 +377,19 @@ namespace DCGServiceDesk.Services
                 case "ServiceRequestProxy":
                     ServiceRequest originalC = (ServiceRequest)originalRequest;
                     ServiceRequest currentC = (ServiceRequest)currentRequest;
-                    if (originalC.ContactPerson != currentC.ContactPerson)
-                        Changes.Add(new Change
-                        {
-                            PropertyName = "Recipient",
-                            Original = usernames[0],
-                            Current = usernames[2]
-                        });
                     if (originalC.RequestedPerson != currentC.RequestedPerson)
                         Changes.Add(new Change
                         {
                             PropertyName = "Contact",
-                            Original = usernames[1],
-                            Current = usernames[3]
+                            Original = usernames[3],
+                            Current = usernames[1]
+                        });
+                    if (originalC.ContactPerson != currentC.ContactPerson)
+                        Changes.Add(new Change
+                        {
+                            PropertyName = "Recipient",
+                            Original = usernames[2],
+                            Current = usernames[0]
                         });
                     if (originalC.GroupId != currentC.GroupId)
                         Changes.Add(new Change
@@ -471,7 +471,7 @@ namespace DCGServiceDesk.Services
             string notification="";
             foreach(Change c in changes)
             {
-                notification = "-" + c.PropertyName + " was changed from " +
+                notification += "-" + c.PropertyName + " was changed from " +
                     c.Original + " to " + c.Current + "\n";
             }
             return notification;

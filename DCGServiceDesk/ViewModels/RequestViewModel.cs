@@ -91,9 +91,10 @@ namespace DCGServiceDesk.ViewModels
         private int _selectedTab;
         private string _conversationMsg;
         private Brush _convMsgValid;
-        private bool Forced = false;
         private List<Status> _statuses;
         private List<Status> _messages;
+        private DateTime _waitingTo;
+        private bool _waitingToVis;
 
         public NotEscalatedViewModel NotEscalated { get; set; }
         public RequestViewModel RequestViewModel { get; set; }
@@ -113,7 +114,7 @@ namespace DCGServiceDesk.ViewModels
             get { return _chosenGroup; }
             set
             {
-                if(value != null)
+                if (value != null)
                 {
                     _chosenGroup = value;
                     OnPropertyChanged("ChoosenGroup");
@@ -186,16 +187,16 @@ namespace DCGServiceDesk.ViewModels
                 OnPropertyChanged("Notifications");
             }
         }
-        public List<Status> Statuses 
+        public List<Status> Statuses
         {
             get { return _statuses; }
-            set 
+            set
             {
                 _statuses = value;
                 OnPropertyChanged("Statuses");
-            } 
+            }
         }
-        public int SelectedTab 
+        public int SelectedTab
         {
             get { return _selectedTab; }
             set
@@ -210,16 +211,11 @@ namespace DCGServiceDesk.ViewModels
             get { return _conversationMsg; }
             set
             {
-                if (value.Length > 0 || Forced)
-                {
-                    _conversationMsg = value;
-                    Forced = false;
-                }
-                
+                _conversationMsg = value;
                 OnPropertyChanged("ConversationMessage");
             }
         }
-        public Brush ConvMsgValid 
+        public Brush ConvMsgValid
         {
             get { return _convMsgValid; }
             set
@@ -240,6 +236,24 @@ namespace DCGServiceDesk.ViewModels
                 OnPropertyChanged("Messages");
             }
         }
+        public DateTime WaitingTo
+        {
+            get { return _waitingTo; }
+            set
+            {
+                _waitingTo = value;
+                OnPropertyChanged("WaitingTo");
+            }
+        }
+        public bool WaitingToVis
+        {
+            get { return _waitingToVis; }
+            set
+            {
+                _waitingToVis = value;
+                OnPropertyChanged("WaitingToVis");
+            }
+        }
 
         public void SetInitialColors()
         {
@@ -255,20 +269,15 @@ namespace DCGServiceDesk.ViewModels
 
             Statuses = RequestService
                 .GetStatuses(RequestViewModel.WorkspaceInfo
-                .FirstOrDefault().ServiceRequests)                
-                .OrderByDescending(d=>d.CreateDate)
+                .FirstOrDefault().ServiceRequests)
+                .OrderByDescending(d => d.CreateDate)
                 .ToList();
 
             Messages = Statuses
                 .Where(m => m.Message != null)
                 .ToList();
+
         }
-        public void FrocedMessageRemove()
-        {
-            Forced = true;
-            ConversationMessage = "";
-        }
-            
 
     }
     public class NotEscalatedViewModel : ViewModelBase
@@ -388,7 +397,7 @@ namespace DCGServiceDesk.ViewModels
             get { return _waitingTime; }
             set
             {
-                if(value <= 0 || value > 72)
+                if (value <= 0 || value > 72)
                 {
                     WaitingTimeValid = new SolidColorBrush(Color.FromRgb(255, 0, 0));
                     isTimeValid = false;
@@ -480,7 +489,7 @@ namespace DCGServiceDesk.ViewModels
             {
                 if (value != null)
                 {
-                    if(value.StateName == "Waiting")
+                    if (value.StateName == "Waiting")
                         WaitingTimeVisibility = true;
                     else
                         WaitingTimeVisibility = false;

@@ -41,7 +41,7 @@ namespace DCGServiceDesk.Commands
             try
             {
                 _requestQueue.RefreshData();
-                if(nEVM.RequestViewModel.Escalated != null)
+                if (nEVM.RequestViewModel.Escalated != null)
                     await CheckUsersField();
                 AdUsernames();
                 switch (parameter.ToString())
@@ -63,10 +63,9 @@ namespace DCGServiceDesk.Commands
                     case "Save":
                         isEscalated = true;
                         await Save();
-                        await RefreshRequest();
                         break;
                     case "SubmitMessage":
-                        if(nEVM.RequestViewModel.Escalated.ConversationMessage.Length > 0)
+                        if (nEVM.RequestViewModel.Escalated.ConversationMessage.Length > 0)
                             await SubmitMessage();
                         else
                         {
@@ -84,6 +83,7 @@ namespace DCGServiceDesk.Commands
         }
         private void AdUsernames()
         {
+            usernames.Clear();
             usernames.Add(nEVM.RUsername);
             usernames.Add(nEVM.CUsername);
         }
@@ -95,31 +95,26 @@ namespace DCGServiceDesk.Commands
         }
         private async Task FindUser(string parameter)
         {
+            request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
             string id = "";
             switch (parameter)
             {
                 case "FindRecipient":
                     id = await _userInfo.GetUserId(nEVM.RUsername);
                     nEVM.RecipientValid = await GenerateProperColorAsync(id);
-                    if (_user != null)
-                        nEVM.Recipient = new AccountInfo(_user, superiorUsername);
-                    else
-                        nEVM.Recipient = null;
+                    if (_user == null)
+                        isFormValid.Add(false);
                     break;
                 case "FindContact":
                     id = await _userInfo.GetUserId(nEVM.CUsername);
                     nEVM.ContactValid = await GenerateProperColorAsync(id);
-                    if (_user != null)
-                        nEVM.Contact = new AccountInfo(_user, superiorUsername);
-                    else
-                        nEVM.Contact = null;
+                    if (_user == null)
+                        isFormValid.Add(false);
                     break;
                 case "FindAssignee":
                     id = await _userInfo.GetUserId(nEVM.RequestViewModel.Escalated.AUsername);
-                    if (_user != null)
-                        nEVM.RequestViewModel.Escalated.Assignee = new AccountInfo(_user, superiorUsername);
-                    else
-                        nEVM.RequestViewModel.Escalated.Assignee = null;
+                    if (_user == null && (id != null && id != ""))
+                        isFormValid.Add(false);
                     break;
             }
         }
@@ -165,6 +160,9 @@ namespace DCGServiceDesk.Commands
             CheckContactField(contactId);
             CheckRecipientField(recipientId);
             await CheckGroupMember();
+            if (stateName == "Waiting")
+                await CheckTimeFields();
+
             if (!isFormValid.Contains(false))
             {
                 string requestType = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().RequestType;
@@ -187,16 +185,49 @@ namespace DCGServiceDesk.Commands
                         break;
 
                 }
-                if(hasGroupChanged != 0)
+                if (hasGroupChanged != 0)
                     nEVM.RequestViewModel.RemoveAssignedRequest(request);
 
+                await RefreshRequest();
             }
             else
                 isFormValid.Clear();
         }
+        private async Task CheckTimeFields()
+        {
+            if (nEVM.isTimeValid)
+            {
+                if (!nEVM.RequestViewModel.Escalated.IsMsgTyped &&
+                 (nEVM.RequestViewModel.Escalated.ConversationMessage != null ||
+                 nEVM.RequestViewModel.Escalated.ConversationMessage?.Length > 0))
+                {
+                    await SubmitMessage();
+                    isFormValid.Add(true);
+                    nEVM.RequestViewModel.Escalated.ConvMsgValid = Valid;
+                }
+                else if (nEVM.RequestViewModel.Escalated.IsMsgTyped)
+                {
+                    isFormValid.Add(true);
+                    nEVM.RequestViewModel.Escalated.ConvMsgValid = Valid;
+                }
+                else
+                {
+                    isFormValid.Add(false);
+                    nEVM.RequestViewModel.Escalated.SelectedTab = 2;
+                    nEVM.RequestViewModel.Escalated.ConvMsgValid = Invalid;
+                }
+                isFormValid.Add(true);
+            }
+            else
+            {
+                isFormValid.Add(false);
+                nEVM.WaitingTimeValid = Invalid;
+            }
+
+        }
         private async Task CheckGroupMember()
         {
-            if(nEVM.RequestViewModel.Escalated.AUsername != "" &&
+            if (nEVM.RequestViewModel.Escalated.AUsername != "" &&
                 nEVM.RequestViewModel.Escalated.AUsername != null)
             {
                 string id = await _userInfo.GetUserId(nEVM.RequestViewModel.Escalated.AUsername);
@@ -236,13 +267,12 @@ namespace DCGServiceDesk.Commands
             string message = nEVM.RequestViewModel.Escalated.ConversationMessage;
 
             request = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests;
-            string requestType = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().RequestType;           
+            string requestType = nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().RequestType;
             int historyId = RequestService.GetHistoryId(request);
-            await _requestQueue.AddNewMessage(historyId, message, 
+            await _requestQueue.AddNewMessage(historyId, message,
                 nEVM.RequestViewModel.GetUsername());
-            nEVM.RequestViewModel.Escalated.FrocedMessageRemove();
+            nEVM.RequestViewModel.Escalated.ConversationMessage = "";
             nEVM.RequestViewModel.Escalated.IsMsgTyped = true;
-            await RefreshRequest();
         }
         private async Task RefreshRequest()
         {
@@ -255,35 +285,37 @@ namespace DCGServiceDesk.Commands
                     TaskRequest updatedT = await _requestQueue.GetTask(t.TaskId);
                     await UpdateTModel(updatedT);
                     RefreshTypingSection(updatedT.History.Status.ToList());
+                    SetWaitingToVis(updatedT);
                     break;
                 case "IncidentProxy":
                     Incident im = (Incident)request;
                     Incident updatedIM = await _requestQueue.GetIncident(im.IncidentId);
                     await UpdateIMModel(updatedIM);
                     RefreshTypingSection(updatedIM.History.Status.ToList());
+                    SetWaitingToVis(updatedIM);
                     break;
                 case "ServiceRequestProxy":
                     ServiceRequest c = (ServiceRequest)request;
                     ServiceRequest updatedChange = await _requestQueue.GetChange(c.RequestId);
                     await UpdateCModel(updatedChange);
                     RefreshTypingSection(updatedChange.History.Status.ToList());
+                    SetWaitingToVis(updatedChange);
                     break;
             }
         }
+        private void SetWaitingToVis(object request)
+        {
+            if (RequestService.GetStateName(request) == "Waiting")
+                nEVM.RequestViewModel.Escalated.WaitingToVis = true;
+            else
+                nEVM.RequestViewModel.Escalated.WaitingToVis = false;
+        }
         private void RefreshTypingSection(List<Status> statuses)
         {
-            if(nEVM.RequestViewModel.Escalated != null)
+            if (nEVM.RequestViewModel.Escalated != null)
             {
-                Notification notification = new Notification();
-
-                //nEVM.RequestViewModel.Escalated.Notifications =
-                //    notification.NotificationBuilder(statuses
-                //    .Where(n => n.NotNotification == false)
-                //    .OrderBy(d => d.CreateDate)
-                //    .ToList());
-
-                nEVM.RequestViewModel.Escalated.Statuses =
-                    statuses.OrderByDescending(d => d.CreateDate).ToList();
+                nEVM.RequestViewModel.Escalated.Statuses = statuses;
+                nEVM.RequestViewModel.Escalated.SetStatuses();
             }
         }
         private async Task UpdateIMModel(Incident im)
@@ -331,13 +363,13 @@ namespace DCGServiceDesk.Commands
             }
             else
             {
-                nEVM.CloserDue = null; 
+                nEVM.CloserDue = null;
             }
 
         }
         private async Task UpdateCModel(ServiceRequest c)
         {
-
+            nEVM.RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests = c;
             nEVM.CurrentState = nEVM.States
                 .Where(n => n.StateId == c.History.ActiveStatus.State.StateId)
                 .FirstOrDefault();
@@ -362,7 +394,7 @@ namespace DCGServiceDesk.Commands
             nEVM.RUsername = await _userInfo.GetUserNameById(recipient);
             nEVM.Recipient = null;
 
-            if(nEVM.RequestViewModel.Escalated != null)
+            if (nEVM.RequestViewModel.Escalated != null)
             {
                 nEVM.RequestViewModel.Escalated.AUsername = c.Assignee;
                 nEVM.RequestViewModel.Escalated.Assignee = null;
@@ -416,7 +448,7 @@ namespace DCGServiceDesk.Commands
                 nEVM.RequestViewModel.Escalated.AUsername = t.Assignee;
                 nEVM.RequestViewModel.Escalated.Assignee = null;
 
-                nEVM.RequestViewModel.Escalated.ChoosenGroup = 
+                nEVM.RequestViewModel.Escalated.ChoosenGroup =
                     nEVM.RequestViewModel.Escalated.AssigmentGroups
                     .Where(i => i.GroupId == t.GroupId)
                     .FirstOrDefault();
@@ -611,14 +643,10 @@ namespace DCGServiceDesk.Commands
                 im.GroupId = nEVM.RequestViewModel.Escalated.ChoosenGroup.GroupId;
                 im.Group = nEVM.RequestViewModel.Escalated.ChoosenGroup;
                 coreNoti = "Request status was set to " + nEVM.CurrentState.StateName + "\n";
-                if(statusName == "Waiting")
-                {
-                    if(nEVM.isTimeValid)
-                    {
-                        if (!nEVM.RequestViewModel.Escalated.IsMsgTyped)
-                            await SubmitMessage();
-                    }
-                }
+                string contactId = await _employeeProfile.GetUIdByIdAsync(original.RequestedPerson);
+                string recipientId = await _employeeProfile.GetUIdByIdAsync(original.ContactPerson);
+                usernames.Add(await _userInfo.GetUserNameById(recipientId));
+                usernames.Add(await _userInfo.GetUserNameById(contactId));
             }
             else if (!isEscalated && statusName == "Open")
                 coreNoti = "New request has been registered and escalted to ";
@@ -663,14 +691,10 @@ namespace DCGServiceDesk.Commands
                 t.GroupId = nEVM.RequestViewModel.Escalated.ChoosenGroup.GroupId;
                 t.Group = nEVM.RequestViewModel.Escalated.ChoosenGroup;
                 coreNoti = "Request status was set to " + nEVM.CurrentState.StateName + "\n";
-                if (statusName == "Waiting")
-                {
-                    if (nEVM.isTimeValid)
-                    {
-                        if (!nEVM.RequestViewModel.Escalated.IsMsgTyped)
-                            await SubmitMessage();
-                    }
-                }
+                string contactId = await _employeeProfile.GetUIdByIdAsync(original.RequestedPerson);
+                string recipientId = await _employeeProfile.GetUIdByIdAsync(original.ContactPerson);
+                usernames.Add(await _userInfo.GetUserNameById(recipientId));
+                usernames.Add(await _userInfo.GetUserNameById(contactId));
             }
             else if (!isEscalated && statusName == "Open")
                 coreNoti = "New request has been registered and escalted to ";
@@ -707,7 +731,7 @@ namespace DCGServiceDesk.Commands
             c.Priority = nEVM.CurrentPriority;
             c.Topic = nEVM.Topic;
             c.Description = nEVM.Description;
-            
+
             if (isEscalated)
             {
                 c.History.ActiveStatus.StateId = nEVM.CurrentState.StateId;
@@ -715,22 +739,16 @@ namespace DCGServiceDesk.Commands
                 c.GroupId = nEVM.RequestViewModel.Escalated.ChoosenGroup.GroupId;
                 c.Group = nEVM.RequestViewModel.Escalated.ChoosenGroup;
                 coreNoti = "Request status was set to " + nEVM.CurrentState.StateName + "\n";
-                if (statusName == "Waiting")
-                {
-                    if (nEVM.isTimeValid)
-                    {
-                        if (!nEVM.RequestViewModel.Escalated.IsMsgTyped)
-                            await SubmitMessage();
-                    }
-                }
+                string contactId = await _employeeProfile.GetUIdByIdAsync(original.RequestedPerson);
+                string recipientId = await _employeeProfile.GetUIdByIdAsync(original.ContactPerson);
+                usernames.Add(await _userInfo.GetUserNameById(recipientId));
+                usernames.Add(await _userInfo.GetUserNameById(contactId));
             }
-            else if(!isEscalated && statusName == "Open")
+            else if (!isEscalated && statusName == "Open")
                 coreNoti = "New request has been registered and escalted to ";
 
-            if(!(!isEscalated && statusName == "Open"))
+            if (!(!isEscalated && statusName == "Open"))
             {
-                usernames.Add(nEVM.RUsername);
-                usernames.Add(nEVM.CUsername);
                 var changes = RequestService.FindChanges(original, c, usernames);
                 Notification notification = new Notification();
                 c.History.ActiveStatus.Notification = coreNoti + notification.NotificationBuilder(changes);
@@ -748,11 +766,11 @@ namespace DCGServiceDesk.Commands
         private State SetState(string statusName)
         {
             if (statusName == "Closed")
-               return nEVM.States.Where(n => n.StateName == "Closed").FirstOrDefault();
-            else if(statusName == "Open")
-               return nEVM.States.Where(n => n.StateName == "Open").FirstOrDefault();
+                return nEVM.States.Where(n => n.StateName == "Closed").FirstOrDefault();
+            else if (statusName == "Open")
+                return nEVM.States.Where(n => n.StateName == "Open").FirstOrDefault();
             else
-               return nEVM.States.Where(n => n.StateName == "Waiting").FirstOrDefault();
+                return nEVM.States.Where(n => n.StateName == "Waiting").FirstOrDefault();
         }
         private void CheckStatusIfEscalated()
         {

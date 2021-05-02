@@ -124,11 +124,9 @@ namespace DCGServiceDesk.Commands
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
                         rVM.InitializeEscalatedModel();
-                        //rVM.Escalated.Notifications = notification
-                        //    .NotificationBuilder(rVM.Escalated.Statuses.Where(n=>n.NotNotification == false)
-                        //    .OrderBy(d => d.CreateDate)
-                        //    .ToList());
                         _hVM.Tabs.Add(rVM);
+                        if (RequestService.GetStateName(updatedTask) == "Waiting")
+                            rVM.Escalated.WaitingToVis = true;
                     }
 
                     break;
@@ -153,11 +151,9 @@ namespace DCGServiceDesk.Commands
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
                         rVM.InitializeEscalatedModel();
-                        //rVM.Escalated.Notifications = notification
-                        //    .NotificationBuilder(rVM.Escalated.Statuses.Where(n => n.NotNotification == false)
-                        //    .OrderBy(d => d.CreateDate)
-                        //    .ToList());
                         _hVM.Tabs.Add(rVM);
+                        if (RequestService.GetStateName(updatedIncident) == "Waiting")
+                            rVM.Escalated.WaitingToVis = true;
                     }
                     break;
                 case "C":
@@ -181,11 +177,9 @@ namespace DCGServiceDesk.Commands
                         await rVM.InitializeNEVMModel();
                         await rVM.InitializeEVMModel();
                         rVM.InitializeEscalatedModel();
-                        //rVM.Escalated.Notifications = notification
-                        //    .NotificationBuilder(rVM.Escalated.Statuses.Where(n => n.NotNotification == false)
-                        //    .OrderBy(d => d.CreateDate)
-                        //    .ToList());
                         _hVM.Tabs.Add(rVM);
+                        if (RequestService.GetStateName(updatedChange) == "Waiting")
+                            rVM.Escalated.WaitingToVis = true;
                     }
                     break;
             }

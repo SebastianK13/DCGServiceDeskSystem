@@ -62,7 +62,7 @@ namespace DCGServiceDesk.Commands
                     break;
                 case "CloseAssigneeInfo":
                     CloseAssigneeOpened();
-                    _nEVM.RequestViewModel.Escalated.FindAssigneeEventArea = true;
+                    _nEVM.RequestViewModel.Escalated.FindAssigneeEventArea = false;
                     break;
                 case "FindAssignee":
                     id = await _userInfo.GetUserId(_nEVM.RequestViewModel.Escalated.AUsername);

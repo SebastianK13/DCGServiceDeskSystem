@@ -83,6 +83,7 @@
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
                             </Grid.RowDefinitions>
                             <Grid.Resources>
                                 <Style TargetType="Label">
@@ -101,6 +102,9 @@
                             <Label Grid.Row="3">Contact:</Label>
                             <Label Grid.Row="4">Recipient:</Label>
                             <Label Grid.Row="6">SLA target date:</Label>
+                            <Label Visibility="{Binding WaitingToVis, 
+                                Converter={StaticResource BooleanToVisibilityConverter}}"
+                                   Grid.Row="7">Opens at:</Label>
                         </Grid>
                         <StackPanel HorizontalAlignment="Left" Grid.Column="1"
                                 Margin="0,112,0,0" 
@@ -135,6 +139,7 @@
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
                                 <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding RequestViewModel.WorkspaceInfo[0].CommunicationInfo.RequestId}"/>
@@ -157,13 +162,13 @@
                             <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
                                 <TextBox Background="White" Width="200" Height="22" VerticalAlignment="Stretch" 
                                          BorderBrush="{Binding NotEscalated.WaitingTimeValid}"
-                                         VerticalContentAlignment="Center" Text="{Binding NotEscalated.WaitingTime}"
+                                         VerticalContentAlignment="Center" Text="{Binding NotEscalated.WaitingTime, UpdateSourceTrigger=PropertyChanged}"
                                          Visibility="{Binding NotEscalated.WaitingTimeVisibility, 
                                     Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             </StackPanel>
                             <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
                                 <TextBox BorderBrush="{Binding NotEscalated.ContactValid}" Height="22" Width="178" VerticalAlignment="Stretch" 
-                                     VerticalContentAlignment="Center" Text="{Binding NotEscalated.CUsername}"/>
+                                     VerticalContentAlignment="Center" Text="{Binding NotEscalated.CUsername, UpdateSourceTrigger=PropertyChanged}"/>
                                 <Button BorderThickness="0,.8,.8,.8" BorderBrush="Gray" Command="{Binding NotEscalated.FindUserCommand}"
                                     CommandParameter="FindContact"
                                     Background="WhiteSmoke" VerticalAlignment="Center" Height="22" Width="22">
@@ -172,7 +177,7 @@
                             </StackPanel>
                             <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
                                 <TextBox BorderBrush="{Binding NotEscalated.RecipientValid}" Height="22" Width="178" VerticalAlignment="Stretch" 
-                                     VerticalContentAlignment="Center" Text="{Binding NotEscalated.RUsername}"/>
+                                     VerticalContentAlignment="Center" Text="{Binding NotEscalated.RUsername, UpdateSourceTrigger=PropertyChanged}"/>
                                 <Button BorderThickness="0,.8,.8,.8" BorderBrush="Gray" Command="{Binding NotEscalated.FindUserCommand}"
                                     CommandParameter="FindRecipient"
                                     Background="WhiteSmoke" VerticalAlignment="Center" Height="22" Width="22">
@@ -182,6 +187,11 @@
                             <StackPanel Grid.Row="6" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
                                 <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" 
                                      VerticalContentAlignment="Center" Text="{Binding SLA}"/>
+                            </StackPanel>
+                            <StackPanel Visibility="{Binding WaitingToVis, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                        Grid.Row="7" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                                <TextBox Background="#DCDCDC" IsReadOnly="True" Width="200" Height="22" VerticalAlignment="Stretch" 
+                                     VerticalContentAlignment="Center" Text="{Binding WaitingTo}"/>
                             </StackPanel>
                         </Grid>
                         <Grid Grid.Column="2">
@@ -260,7 +270,7 @@
                             </StackPanel>
                             <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
                                 <TextBox BorderBrush="{Binding AssigneeValid}" Height="22" Width="156" VerticalAlignment="Stretch" 
-                                     VerticalContentAlignment="Center" Text="{Binding AUsername}"/>
+                                     VerticalContentAlignment="Center" Text="{Binding AUsername, UpdateSourceTrigger=PropertyChanged}"/>
                                 <Button BorderThickness="0,.8,.8,.8" BorderBrush="Gray" Command="{Binding NotEscalated.FindUserCommand}"
                                     CommandParameter="ShowMembers"
                                     Background="WhiteSmoke" VerticalAlignment="Center" Height="22" Width="22">
@@ -562,7 +572,7 @@
                                     <StackPanel Margin="10,20,10,0">
                                         <TextBox ScrollViewer.VerticalScrollBarVisibility="Visible"
                                                  AcceptsReturn="True" TextWrapping="Wrap" BorderBrush="{Binding ConvMsgValid}" 
-                                                 Height="100" Text="{Binding ConversationMessage}"/>
+                                                 Height="100" Text="{Binding ConversationMessage, UpdateSourceTrigger=PropertyChanged}"/>
                                         <Button BorderThickness="1.5" Height="30" Width="120" Margin="0,20,0,0" 
                                                 HorizontalAlignment="Right" Content="Submit"
                                                 Command="{Binding NotEscalated.CloseOrEscalateCommand}" CommandParameter="SubmitMessage">

@@ -433,6 +433,10 @@ namespace DCGServiceDesk.EF.Services
 
         public async Task InsertNewMessage(int historyId, string message, string username)
         {
+            try
+            {
+
+
             Status activeStatus = await _dbContext.StatusHistory
                 .Where(i => i.StatusId == historyId)
                 .Select(a=>a.ActiveStatus)
@@ -449,6 +453,11 @@ namespace DCGServiceDesk.EF.Services
 
             _dbContext.Statuses.Add(status);
             await _dbContext.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+
+            }
         }
     }
 }
