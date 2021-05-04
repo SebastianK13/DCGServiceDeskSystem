@@ -45,7 +45,22 @@ namespace DCGServiceDesk.Services
                     return new DateTime();
 
             }
+        }
+        public static DateTime GetWaitingTime(object request)
+        {
+            string requestType = request.GetType().Name;
+            switch (requestType)
+            {
+                case "TaskRequestProxy":
+                    return ((TaskRequest)request).History.ActiveStatus.OpensAt;
+                case "IncidentProxy":
+                    return ((Incident)request).History.ActiveStatus.OpensAt;
+                case "ServiceRequestProxy":
+                    return ((ServiceRequest)request).History.ActiveStatus.OpensAt;
+                default:
+                    return new DateTime();
 
+            }
         }
         public static string GetAssignee(object request)
         {
@@ -278,7 +293,8 @@ namespace DCGServiceDesk.Services
                             Current = current.Group.GroupName,
                             PropertyName = "Assigment group"
                         });
-                    if (original.Assignee != current.Assignee)
+                    if (original.Assignee != current.Assignee && 
+                        (original.Assignee != null && current.Assignee != null))
                         Changes.Add(new Change
                         {
                             Original = original.Assignee,
@@ -338,7 +354,8 @@ namespace DCGServiceDesk.Services
                             Current = currentIM.Group.GroupName,
                             PropertyName = "Assigment group"
                         });
-                    if (originalIM.Assignee != currentIM.Assignee)
+                    if (originalIM.Assignee != currentIM.Assignee && 
+                        (originalIM.Assignee != null && currentIM.Assignee != null))
                         Changes.Add(new Change
                         {
                             Original = originalIM.Assignee,
@@ -398,7 +415,8 @@ namespace DCGServiceDesk.Services
                             Current = currentC.Group.GroupName,
                             PropertyName = "Assigment group"
                         });
-                    if (originalC.Assignee != currentC.Assignee)
+                    if (originalC.Assignee != currentC.Assignee &&
+                        (originalC.Assignee!=null && currentC.Assignee!=null))
                         Changes.Add(new Change
                         {
                             Original = originalC.Assignee,
@@ -460,11 +478,8 @@ namespace DCGServiceDesk.Services
     public class Notification
     {
         public DateTime CreateDate { get; set; }
-        public string Message { get; set; }
+        public string Noti { get; set; }
         public string CreatedBy { get; set; }
-        public string AssignedTo { get; set; }
-        public string GroupName { get; set; }
-
 
         public string NotificationBuilder(List<Change> changes)
         {

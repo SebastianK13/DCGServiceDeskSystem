@@ -234,17 +234,11 @@ namespace DCGServiceDesk.Commands
                 nEVM.RequestViewModel.Escalated.AssigneeValid =
                     await GenerateAssigneeColor(id,
                     await CheckIsMember(nEVM.RequestViewModel.Escalated.AUsername));
-                if (_user != null)
-                {
-                    nEVM.RequestViewModel.Escalated.Assignee = new AccountInfo(_user, superiorUsername);
-                    nEVM.RequestViewModel.Escalated.FindAssigneeEventArea = true;
-                }
-                else
-                {
-                    nEVM.RequestViewModel.Escalated.Assignee = null;
+                if (_user == null)
                     isFormValid.Add(false);
-                }
             }
+            else
+                nEVM.RequestViewModel.Escalated.AssigneeValid = Valid;
 
         }
         private async Task<SolidColorBrush> GenerateAssigneeColor(string id, bool exist)
@@ -647,6 +641,11 @@ namespace DCGServiceDesk.Commands
                 string recipientId = await _employeeProfile.GetUIdByIdAsync(original.ContactPerson);
                 usernames.Add(await _userInfo.GetUserNameById(recipientId));
                 usernames.Add(await _userInfo.GetUserNameById(contactId));
+                if (statusName == "Waiting")
+                {
+                    im.History.ActiveStatus.OpensAt = DateTime.Today.ToUniversalTime().AddHours((double)nEVM.WaitingTime);
+                    im.History.ActiveStatus.DueTime.AddHours((double)nEVM.WaitingTime);
+                }
             }
             else if (!isEscalated && statusName == "Open")
                 coreNoti = "New request has been registered and escalted to ";
@@ -695,6 +694,12 @@ namespace DCGServiceDesk.Commands
                 string recipientId = await _employeeProfile.GetUIdByIdAsync(original.ContactPerson);
                 usernames.Add(await _userInfo.GetUserNameById(recipientId));
                 usernames.Add(await _userInfo.GetUserNameById(contactId));
+                if (statusName == "Waiting")
+                {
+                    t.History.ActiveStatus.OpensAt = DateTime.Today.ToUniversalTime().AddHours((double)nEVM.WaitingTime);
+                    t.History.ActiveStatus.DueTime.AddHours((double)nEVM.WaitingTime); 
+                }
+
             }
             else if (!isEscalated && statusName == "Open")
                 coreNoti = "New request has been registered and escalted to ";
@@ -743,6 +748,12 @@ namespace DCGServiceDesk.Commands
                 string recipientId = await _employeeProfile.GetUIdByIdAsync(original.ContactPerson);
                 usernames.Add(await _userInfo.GetUserNameById(recipientId));
                 usernames.Add(await _userInfo.GetUserNameById(contactId));
+                if (statusName == "Waiting")
+                {
+                    c.History.ActiveStatus.OpensAt = DateTime.Now.ToUniversalTime().AddHours((double)nEVM.WaitingTime);
+                    if(c.History.ActiveStatus.DueTime > DateTime.Now.ToUniversalTime())
+                        c.History.ActiveStatus.DueTime.AddHours((double)nEVM.WaitingTime);
+                }
             }
             else if (!isEscalated && statusName == "Open")
                 coreNoti = "New request has been registered and escalted to ";

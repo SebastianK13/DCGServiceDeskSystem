@@ -277,8 +277,27 @@ namespace DCGServiceDesk.ViewModels
                 .Where(m => m.Message != null)
                 .ToList();
 
-        }
+            WaitingTo = RequestService.GetWaitingTime(
+                RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests);
 
+            CreateNotiList(Statuses
+                .Where(m => m.NotNotification == false)
+                .ToList());
+        }
+        private void CreateNotiList(List<Status> statuses)
+        {
+            var notifications = new List<Notification>();
+            foreach (var s in statuses)
+            {
+                notifications.Add(new Notification
+                {
+                    Noti = s.Notification,
+                    CreateDate = s.CreateDate,
+                    CreatedBy = s.CreatedBy
+                });
+            }
+            Notifications = notifications;
+        }
     }
     public class NotEscalatedViewModel : ViewModelBase
     {

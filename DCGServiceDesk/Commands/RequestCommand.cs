@@ -47,6 +47,9 @@ namespace DCGServiceDesk.Commands
 
                 switch (choosen)
                 {
+                    case "RequestSearching":
+                        _hVM.SetSearchingTab();
+                        break;
                     case "RequestQueue":
                         var requests = await _requestQueue.GetRequests();
                         _hVM.SetRequestsQueue(

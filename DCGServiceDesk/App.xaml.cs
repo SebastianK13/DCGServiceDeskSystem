@@ -55,12 +55,12 @@ namespace DCGServiceDesk
                 services.AddSingleton<IAuthorization, Authorization>();
                 services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
                 services.AddSingleton<ILoggedUser, LoggedUser>();
-                services.AddSingleton<IRequestService, RequestsDataService>();
+                services.AddScoped<IRequestService, RequestsDataService>();
                 services.AddSingleton<IRequestQueue, RequestQueue>();
                 services.AddSingleton<IUserInfo, UserInfo>();
                 services.AddSingleton<IEmployeeProfile, EmployeeProfile>();
                 services.AddSingleton<IEmployeeService, EmployeeDataService>();
-
+                //services.AddDbContext<AppServiceDeskDbContext>(options => options.UseSqlServer("Data:DCTEServiceDesk:ConnectionString"));
                 services.AddSingleton<CreateViewModel<LoginViewModel>>(service =>
                 {
                     LoginInterfaceContainer interfaceContainer = new LoginInterfaceContainer()

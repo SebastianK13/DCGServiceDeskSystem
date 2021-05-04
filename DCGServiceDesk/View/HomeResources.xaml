@@ -17,6 +17,10 @@
         <vw:QueueView />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type vm:RequestSearchViewModel}">
+        <vw:RequestSearchingView />
+    </DataTemplate>
+
     <con:DataConverter x:Key="dataConv"/>
 
     <DataTemplate x:Key="WorkspacesTemplate" >

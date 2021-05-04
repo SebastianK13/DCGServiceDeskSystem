@@ -116,47 +116,55 @@
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
                             </Grid.RowDefinitions>
                             <Button BorderThickness="0" Grid.Row="0" HorizontalContentAlignment="Left" Background="White"
+                                    Command="{Binding RequestCommand}" CommandParameter="RequestSearching">
+                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal" >
+                                    <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
+                                    <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Request Searching" />
+                                </StackPanel>
+                            </Button>
+                            <Button BorderThickness="0" Grid.Row="1" HorizontalContentAlignment="Left" Background="White"
                                     Command="{Binding RequestCommand}" CommandParameter="RequestQueue">
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal" >
                                     <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
                                     <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Request Queue" />
                                 </StackPanel>
                             </Button>
-                            <Button BorderThickness="0" Grid.Row="1" HorizontalContentAlignment="Left" Background="White"
+                            <Button BorderThickness="0" Grid.Row="2" HorizontalContentAlignment="Left" Background="White"
                                     Command="{Binding RequestCommand}" CommandParameter="IncidentQueue">
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                     <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
                                     <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Incident Managment" />
                                 </StackPanel>
                             </Button>
-                            <Button BorderThickness="0" Grid.Row="2" HorizontalContentAlignment="Left" Background="White"
+                            <Button BorderThickness="0" Grid.Row="3" HorizontalContentAlignment="Left" Background="White"
                                     Command="{Binding RequestCommand}" CommandParameter="ChangesQueue">
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                     <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
                                     <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Change Managment" />
                                 </StackPanel>
                             </Button>
-                            <Button BorderThickness="0" Grid.Row="3" HorizontalContentAlignment="Left" Background="White"
+                            <Button BorderThickness="0" Grid.Row="4" HorizontalContentAlignment="Left" Background="White"
                                     Command="{Binding RequestCommand}" CommandParameter="TasksQueue">
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                     <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
                                     <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Task Managment" />
                                 </StackPanel>
                             </Button>
-                            <Button BorderThickness="0" Grid.Row="4" HorizontalContentAlignment="Left" Background="White"
+                            <Button BorderThickness="0" Grid.Row="5" HorizontalContentAlignment="Left" Background="White"
                                     Command="{Binding RequestCommand}" CommandParameter="CurrentAssignRequests">
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                     <Image HorizontalAlignment="left"  Source="../Images/folderImg.png" Height="25" Width="auto" />
                                     <TextBlock HorizontalAlignment="Center" Width="auto" Height="20" VerticalAlignment="Center" Text="Requests Assign" />
                                 </StackPanel>
                             </Button>
-                            <TreeView Grid.Row="5" BorderThickness="0">
+                            <TreeView Grid.Row="6" BorderThickness="0">
                                 <TreeView.Resources>
                                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
                                          Color="Blue"/>

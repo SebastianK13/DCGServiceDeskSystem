@@ -39,6 +39,9 @@ namespace DCGServiceDesk.Data.Services
         Task<bool> IsGroupMember(string username, int id);
         Task<List<string>> GetMembers(int groupId);
         Task InsertNewMessage(int historyId, string message, string username);
+        Task<List<Incident>> GetIncidents();
+        Task<List<ServiceRequest>> GetChanges();
+        Task<List<TaskRequest>> GetTasks();
     }
     public class AdditionalUpdateInfo
     {

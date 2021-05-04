@@ -16,6 +16,7 @@ namespace DCGServiceDesk.EF.Services
         private string _username;
         private readonly IDatabaseContextFactory _databaseContextFactory;
         private AppServiceDeskDbContext _dbContext;
+        private Status NewStatus = new Status();
 
         public RequestsDataService(IDatabaseContextFactory databaseContextFactory)
         {
@@ -316,44 +317,80 @@ namespace DCGServiceDesk.EF.Services
         public async Task<List<CloserDue>> GetClosureCodes() =>
             await _dbContext.CloserDues.ToListAsync();
 
+        private bool CheckWaitingEnd(Status current, Status newStatus)
+        {
+            if(newStatus.State.StateName == "Waiting" && 
+                current.State.StateName == "Open")
+            {
+                var today = DateTime.Now.ToUniversalTime();
+                if(today < current.OpensAt)
+                {
+                    var diference = current.OpensAt - today;
+                    newStatus.DueTime -= diference;
+                    NewStatus = newStatus;
+
+                    return true;
+                }
+            }
+            return false;
+        }
         public async Task UpdateC(ServiceRequest request, Data.Services.AdditionalUpdateInfo additional)
         {
-            var curr = await _dbContext.Applications.Where(i => i.RequestId == request.RequestId).FirstOrDefaultAsync();
-            Status newStatus = await CreateStatus(DateTime.Now, request.History.ActiveStatus.DueTime, additional);
-            newStatus.CreatedBy = additional.Username;
-            newStatus.HistoryId = request.HistoryId;
-            newStatus.GroupId = request.Group.GroupId;
-            await UpdateHistory(request.History.ChangeId, newStatus.StatusId);
-            request.Assignee = null;
-            request.GroupId = request.Group.GroupId;
-            _dbContext.Entry(curr).CurrentValues.SetValues(request);
+            try
+            {
+                var curr = await _dbContext.Applications
+                    .Where(i => i.RequestId == request.RequestId)
+                    .Select(s=>s.History.ActiveStatus)
+                    .FirstOrDefaultAsync();
+                Status newStatus = await CreateStatus(DateTime.Now, request.History.ActiveStatus.DueTime, additional);
+                if (CheckWaitingEnd(curr, request.History.ActiveStatus))
+                    request.History.ActiveStatus = NewStatus;
+                newStatus.CreatedBy = additional.Username;
+                newStatus.HistoryId = request.HistoryId;
+                newStatus.GroupId = request.Group.GroupId;
+                await UpdateHistory(request.History.ChangeId, newStatus.StatusId);
+                _dbContext = _databaseContextFactory.CreateServiceDeskDbContext();
 
-            await _dbContext.SaveChangesAsync();
+                _dbContext.Update(request);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+
+            }
         }
         public async Task UpdateT(TaskRequest task, Data.Services.AdditionalUpdateInfo additional)
         {
+            var curr = await _dbContext.Applications
+                .Where(i => i.RequestId == task.TaskId)
+                .Select(s => s.History.ActiveStatus)
+                .FirstOrDefaultAsync();
             Status newStatus = await CreateStatus(DateTime.Now, task.History.ActiveStatus.DueTime, additional);
+            if (CheckWaitingEnd(curr, task.History.ActiveStatus))
+                task.History.ActiveStatus = NewStatus;
             newStatus.CreatedBy = additional.Username;
             newStatus.HistoryId = task.HistoryId;
             newStatus.GroupId = task.Group.GroupId;
             await UpdateHistory(task.History.ChangeId, newStatus.StatusId);
-            task.Assignee = null;
-            task.GroupId = task.Group.GroupId;
-            _dbContext.Entry(task).State = EntityState.Modified;
 
+            _dbContext.Update(task);
             await _dbContext.SaveChangesAsync();
         }
         public async Task UpdateIM(Incident incident, Data.Services.AdditionalUpdateInfo additional)
         {
+            var curr = await _dbContext.Applications
+                .Where(i => i.RequestId == incident.IncidentId)
+                .Select(s => s.History.ActiveStatus)
+                .FirstOrDefaultAsync();
             Status newStatus = await CreateStatus(DateTime.Now, incident.History.ActiveStatus.DueTime, additional);
+            if (CheckWaitingEnd(curr, incident.History.ActiveStatus))
+                incident.History.ActiveStatus = NewStatus;
             newStatus.CreatedBy = additional.Username;
             newStatus.HistoryId = incident.HistoryId;
             newStatus.GroupId = incident.Group.GroupId;
             await UpdateHistory(incident.History.ChangeId, newStatus.StatusId);
-            incident.Assignee = null;
-            incident.GroupId = incident.Group.GroupId;
-            _dbContext.Entry(incident).State = EntityState.Modified;
 
+            _dbContext.Update(incident);
             await _dbContext.SaveChangesAsync();
         }
         private async Task UpdateHistory(int historyId, int statusId)
@@ -459,5 +496,13 @@ namespace DCGServiceDesk.EF.Services
 
             }
         }
+        public async Task<List<Incident>> GetIncidents() =>
+            await _dbContext.Incidents.ToListAsync();
+        public async Task<List<ServiceRequest>> GetChanges() =>
+            await _dbContext.Applications.ToListAsync();
+
+        public async Task<List<TaskRequest>> GetTasks() =>
+            await _dbContext.Tasks.ToListAsync();
+
     }
 }

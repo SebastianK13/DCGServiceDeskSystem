@@ -208,6 +208,7 @@ namespace DCGServiceDesk.Data.Models
         public int? GroupId { get; set; }
         public bool NotNotification { get; set; }
         public string? Notification { get; set; }
+        public DateTime OpensAt { get; set; }
         public virtual State? State { get; set; }
         public virtual AssigmentGroup? Group { get; set; }
     }

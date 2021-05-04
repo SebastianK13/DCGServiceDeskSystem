@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:DCGServiceDesk.View"
+                    xmlns:v="clr-namespace:DCGServiceDesk.View"
+                    xmlns:vm="clr-namespace:DCGServiceDesk.ViewModels">
+
+
+    <DataTemplate DataType="{x:Type vm:QueueViewModel}">
+        <v:QueueView/>
+    </DataTemplate>
+    
+</ResourceDictionary>

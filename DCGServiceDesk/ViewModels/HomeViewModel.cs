@@ -98,6 +98,9 @@ namespace DCGServiceDesk.ViewModels
         public void SetRequestsQueue(RequestInfo requestInfo) =>
             Tabs.Add(new QueueViewModel(requestInfo, _interfaceContainer, this));
 
+        public void SetSearchingTab() =>
+            Tabs.Add(new RequestSearchViewModel(_interfaceContainer, this));
+
         public void CloseTab(ITab tab) =>
             Tabs.Remove(tab);
 

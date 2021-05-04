@@ -41,5 +41,8 @@ namespace DCGServiceDesk.Session.DataGetter
         Task<bool> IsGroupMember(string username, int id);
         Task<List<string>> GetMembers(int groupId);
         Task AddNewMessage(int historyId, string message, string username);
+        Task<List<Incident>> GetIncidentsIncludeClosed();
+        Task<List<ServiceRequest>> GetChangesIncludeClosed();
+        Task<List<TaskRequest>> GetTasksIncludeClosed();
     }
 }

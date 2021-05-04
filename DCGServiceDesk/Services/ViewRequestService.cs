@@ -119,6 +119,66 @@ namespace DCGServiceDesk.Services
             };
             return requestInfo;
         }
+
+        public async Task<RequestInfo> SetAllIncidentsQueue()
+        {
+            var incidents = await _requestQueue.GetIncidentsIncludeClosed();
+            List<int> contact = incidents.Select(i => i.ContactPerson).ToList();
+            List<int> requested = incidents.Select(i => i.RequestedPerson).ToList();
+            List<string> contactIdI = await _employeeProfile.GetUserId(contact);
+            List<string> requestedIdI = await _employeeProfile.GetUserId(requested);
+            var tInfo = await _userInfo.GetUserName(contactIdI, requestedIdI);
+            RequestService.AddRequestIds(tInfo, incidents.Select(i => i.IncidentId).ToList(), "IM");
+            RequestInfo requestInfo = new RequestInfo
+            {
+                Requests = RequestService.ConvertTotListObject(incidents),
+                Infos = tInfo,
+                RequestTypes = new List<string> { "Incidents" },
+                QueueName = "Incidents",
+                QueueType = "IM"
+            };
+            return requestInfo;
+        }
+
+        public async Task<RequestInfo> SetAllChangesQueue()
+        {
+            var changes = await _requestQueue.GetChangesIncludeClosed();
+            List<int> contactC = changes.Select(i => i.ContactPerson).ToList();
+            List<int> requestedC = changes.Select(i => i.RequestedPerson).ToList();
+            List<string> contactIdC = await _employeeProfile.GetUserId(contactC);
+            List<string> requestedIdC = await _employeeProfile.GetUserId(requestedC);
+            var cInfo = await _userInfo.GetUserName(contactIdC, requestedIdC);
+            RequestService.AddRequestIds(cInfo, changes.Select(i => i.RequestId).ToList(), "C");
+            RequestInfo requestInfo = new RequestInfo
+            {
+                Requests = RequestService.ConvertTotListObject(changes),
+                Infos = cInfo,
+                RequestTypes = new List<string> { "Changes" },
+                QueueName = "Changes",
+                QueueType = "C"
+            };
+            return requestInfo;
+        }
+
+        public async Task<RequestInfo> SetAllTasksQueue()
+        {
+            var tasks = await _requestQueue.GetTasksIncludeClosed();
+            List<int> contactT = tasks.Select(i => i.ContactPerson).ToList();
+            List<int> requestedT = tasks.Select(i => i.RequestedPerson).ToList();
+            List<string> contactIdT = await _employeeProfile.GetUserId(contactT);
+            List<string> requestedIdT = await _employeeProfile.GetUserId(requestedT);
+            var info = await _userInfo.GetUserName(contactIdT, requestedIdT);
+            RequestService.AddRequestIds(info, tasks.Select(i => i.TaskId).ToList(), "T");
+            RequestInfo requestInfo = new RequestInfo
+            {
+                Requests = RequestService.ConvertTotListObject(tasks),
+                Infos = info,
+                RequestTypes = new List<string> { "Tasks" },
+                QueueName = "Tasks",
+                QueueType = "T"
+            };
+            return requestInfo;
+        }
     }
     public class DbInterfaceContainer
     {

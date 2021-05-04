@@ -108,6 +108,12 @@ namespace DCGServiceDesk.Session.DataGetter
 
         public async Task AddNewMessage(int historyId, string message, string username) =>
             await _requestService.InsertNewMessage(historyId, message, username);
+        public async Task<List<Incident>> GetIncidentsIncludeClosed() =>
+            await _requestService.GetIncidents();
+        public async Task<List<ServiceRequest>> GetChangesIncludeClosed() =>
+            await _requestService.GetChanges();
+        public async Task<List<TaskRequest>> GetTasksIncludeClosed() =>
+            await _requestService.GetTasks();
 
     }
 }

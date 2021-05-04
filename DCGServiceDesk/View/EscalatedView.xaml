@@ -541,12 +541,12 @@
                         <TabItem Header="Notifications">
                             <DockPanel MaxHeight="422" >
                                 <ScrollViewer>
-                                    <ItemsControl Padding="10" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Statuses}" BorderThickness="0">
+                                    <ItemsControl Padding="10" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Notifications}" BorderThickness="0">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
                                                     <TextBlock Text="{Binding CreateDate}"/>
-                                                    <TextBlock Text="{Binding Notification}" Margin="0,0,0,5"/>
+                                                    <TextBlock Text="{Binding Noti}" Margin="0,0,0,5"/>
                                                 </StackPanel>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
