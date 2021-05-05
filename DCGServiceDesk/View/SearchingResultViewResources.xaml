@@ -1,0 +1,64 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:DCGServiceDesk.View"
+                    xmlns:v="clr-namespace:DCGServiceDesk.View"
+                    xmlns:vm="clr-namespace:DCGServiceDesk.ViewModels"
+                    xmlns:con="clr-namespace:DCGServiceDesk.Converters">
+
+
+    <con:DataConverter x:Key="dataConve"/>
+
+    <DataTemplate x:Key="TopicCellTemplateStyle">
+        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3.2,-2,-8,-2">
+            <StackPanel Margin="6,2,6,2">
+                <TextBlock Text="{Binding ServiceRequests.Topic}" Width="{Binding ActualWidth, ElementName=topicColumn}"/>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ServiceCellTemplateStyle">
+        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3.2,-2,-8,-2">
+            <StackPanel Margin="6,2,6,2">
+                <TextBlock Text="{Binding ServiceRequests.Category.ServiceName}" Width="{Binding ActualWidth, ElementName=serviceColumn}"/>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="CreateDateCellTemplateStyle">
+        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3.2,-2,-8,-2">
+            <StackPanel Margin="6,2,6,2">
+                <TextBlock TextAlignment="Center" Text="{Binding StartDate}" Width="{Binding ActualWidth, ElementName=cDateColumn}"/>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="RequestedPersonCellTemplateStyle">
+        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3.2,-2,-8,-2">
+            <StackPanel Margin="6,2,6,2">
+                <TextBlock Margin="-6,0,0,0" TextAlignment="Center" Text="{Binding CommunicationInfo.RequestedPerson}" Width="{Binding ActualWidth, ElementName=requestedColumn}"/>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ContactPersonCellTemplateStyle">
+        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3.2,-2,-8,-2">
+            <StackPanel Margin="6,2,6,2">
+                <TextBlock Margin="-6,0,0,0" TextAlignment="Center" Text="{Binding CommunicationInfo.ContactPerson}" Width="{Binding ActualWidth, ElementName=contactColumn}"/>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="DueDateCellTemplateStyle">
+        <Border BorderBrush="Gray" BorderThickness=".2,0,0,0" Margin="-3.2,-2,-8,-2">
+            <StackPanel Margin="6,2,6,2">
+                <TextBlock Margin="-6,0,0,0" TextAlignment="Center" Text="{Binding DeadlineDate}" Width="{Binding ActualWidth, ElementName=dueDateColumn}"/>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="IDCellTemplateStyle">
+        <StackPanel Margin="6,2,6,2">
+            <TextBlock Margin="-6,0,0,0" TextAlignment="Center" Text="{Binding CommunicationInfo.RequestId}" Width="{Binding ActualWidth, ElementName=IdColumn}"/>
+        </StackPanel>
+    </DataTemplate>
+</ResourceDictionary>

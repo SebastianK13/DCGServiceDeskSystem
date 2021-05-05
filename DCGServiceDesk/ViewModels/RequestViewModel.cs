@@ -95,6 +95,7 @@ namespace DCGServiceDesk.ViewModels
         private List<Status> _messages;
         private DateTime _waitingTo;
         private bool _waitingToVis;
+        private bool _btnsVis;
 
         public NotEscalatedViewModel NotEscalated { get; set; }
         public RequestViewModel RequestViewModel { get; set; }
@@ -254,6 +255,15 @@ namespace DCGServiceDesk.ViewModels
                 OnPropertyChanged("WaitingToVis");
             }
         }
+        public bool ButtonsVisibility
+        {
+            get { return _btnsVis; }
+            set
+            {
+                _btnsVis = value;
+                OnPropertyChanged("ButtonsVisibility");
+            }
+        }
 
         public void SetInitialColors()
         {
@@ -283,6 +293,15 @@ namespace DCGServiceDesk.ViewModels
             CreateNotiList(Statuses
                 .Where(m => m.NotNotification == false)
                 .ToList());
+
+            string statusName = RequestService
+                .GetStateName(RequestViewModel.WorkspaceInfo
+                .FirstOrDefault().ServiceRequests);
+
+            if (statusName == "Closed")
+                ButtonsVisibility = false;
+            else
+                ButtonsVisibility = true;
         }
         private void CreateNotiList(List<Status> statuses)
         {

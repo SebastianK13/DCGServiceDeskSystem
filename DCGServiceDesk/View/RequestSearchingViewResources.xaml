@@ -6,7 +6,7 @@
 
 
     <DataTemplate DataType="{x:Type vm:QueueViewModel}">
-        <v:QueueView/>
+        <v:SearchingResultView/>
     </DataTemplate>
     
 </ResourceDictionary>

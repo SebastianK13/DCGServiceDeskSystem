@@ -11,8 +11,8 @@ namespace DCGServiceDesk.Services
         Task<RequestInfo> SetIncidentQueue();
         Task<RequestInfo> SetChangesQueue();
         Task<RequestInfo> SetTasksQueue();
-        Task<RequestInfo> SetAllIncidentsQueue();
-        Task<RequestInfo> SetAllChangesQueue();
-        Task<RequestInfo> SetAllTasksQueue();
+        Task<RequestInfo> SetAllIncidentsQueue(int id = 0, bool isSingle = false);
+        Task<RequestInfo> SetAllChangesQueue(int id = 0, bool isSingle = false);
+        Task<RequestInfo> SetAllTasksQueue(int id = 0, bool isSingle = false);
     }
 }

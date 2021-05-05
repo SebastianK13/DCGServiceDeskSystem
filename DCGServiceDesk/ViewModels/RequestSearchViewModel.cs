@@ -19,6 +19,7 @@ namespace DCGServiceDesk.ViewModels
             : base(interfaceContainer, homeViewModel)
         {
             FindRequestCommand = new FindRequestCommand(interfaceContainer, homeViewModel, this);
+            Label = "Request Searching";
         }
         public ICommand FindRequestCommand { get; }
         public QueueViewModel FoundedRequests 
