@@ -1,5 +1,6 @@
 ﻿using DCGServiceDesk.Commands;
 using DCGServiceDesk.Controls.Tab.Model;
+using DCGServiceDesk.Data.Models;
 using DCGServiceDesk.Services;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,17 @@ namespace DCGServiceDesk.ViewModels
         private string _searchingPhrase;
         private Brush _searchTextBoxColor;
         private QueueViewModel _foundedRequests;
+        private bool _searchingResultVis;
 
         public RequestSearchViewModel(DbInterfaceContainer interfaceContainer, HomeViewModel homeViewModel) 
             : base(interfaceContainer, homeViewModel)
         {
             FindRequestCommand = new FindRequestCommand(interfaceContainer, homeViewModel, this);
             Label = "Request Searching";
+            RequestInfo requestInfo = new RequestInfo();
+            requestInfo.Requests = new List<object>();
+            requestInfo.Requests.Add(new Incident());
+            FoundedRequests = new QueueViewModel(requestInfo, interfaceContainer, homeViewModel);
         }
         public ICommand FindRequestCommand { get; }
         public QueueViewModel FoundedRequests 
@@ -58,5 +64,15 @@ namespace DCGServiceDesk.ViewModels
                 }
             }
         }
+        public bool SearchingResultVisibility 
+        {
+            get { return _searchingResultVis; }
+            set
+            {
+                _searchingResultVis = value;
+                OnPropertyChanged("SearchingResultVisibility");
+            }
+        }
+
     }
 }

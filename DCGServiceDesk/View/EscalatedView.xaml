@@ -20,6 +20,7 @@
     </UserControl.Resources>
 
     <Grid Height="auto">
+        <TabControl/>
         <ScrollViewer Panel.ZIndex="3" Grid.Row="1" Background="#D6D6CE" Visibility="{Binding MembersVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Panel.ZIndex="3" Background="Black" Opacity="0.8">
                 <vw:GroupMembersView MinWidth="300"/>

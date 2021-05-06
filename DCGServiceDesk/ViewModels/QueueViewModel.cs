@@ -55,16 +55,28 @@ namespace DCGServiceDesk.ViewModels
         }
         private void SingleTypeQueue(RequestInfo requestInfo)
         {
+            CommunicationInfo c = null;
+            string start = "";
+            string end = "";
+            bool vis = false;
             List<TabContainer> wi = new List<TabContainer>();
             for (int i = 0; i < requestInfo.Requests.Count; i++)
             {
+                if (requestInfo.Infos.Count > 0)
+                {
+                    c = requestInfo?.Infos[i];
+                    start = "start";
+                    end = "end";
+                    vis = true;
+                }
+
                 wi.Add(new TabContainer
                 {
-                    CommunicationInfo = requestInfo.Infos[i],
-                    RequestVisibility = true,
+                    CommunicationInfo = c,
+                    RequestVisibility = vis,
                     ServiceRequests = ConvertType(requestInfo.RequestTypes[0], requestInfo.Requests[i]),
-                    StartDate = ConvertAndGetDate(requestInfo.RequestTypes[0], requestInfo.Requests[i], "start"),
-                    DeadlineDate = ConvertAndGetDate(requestInfo.RequestTypes[0], requestInfo.Requests[i], "end")
+                    StartDate = ConvertAndGetDate(requestInfo.RequestTypes[0], requestInfo.Requests[i], start),
+                    DeadlineDate = ConvertAndGetDate(requestInfo.RequestTypes[0], requestInfo.Requests[i], end)
                 });
             }
 
@@ -74,17 +86,34 @@ namespace DCGServiceDesk.ViewModels
         }
         private void MixedTypeQueue(RequestInfo requestInfo)
         {
+
             List<TabContainer> wi = new List<TabContainer>();
-            for (int i = 0; i < requestInfo.Requests.Count; i++)
+            if (requestInfo.Infos?.Count > 0)
+            {
+                for (int i = 0; i < requestInfo.Requests.Count; i++)
+                {
+                    wi.Add(new TabContainer
+                    {
+                        CommunicationInfo = requestInfo.Infos[i],
+                        RequestVisibility = true,
+                        ServiceRequests = ConvertType(requestInfo.RequestTypes[i], requestInfo.Requests[i]),
+                        RequestType = requestInfo.RequestTypes[i],
+                        StartDate = ConvertAndGetDate(requestInfo.RequestTypes[i], requestInfo.Requests[i], "start"),
+                        DeadlineDate = ConvertAndGetDate(requestInfo.RequestTypes[i], requestInfo.Requests[i], "end")
+                    });
+
+                }
+            }
+            else
             {
                 wi.Add(new TabContainer
                 {
-                    CommunicationInfo = requestInfo.Infos[i],
-                    RequestVisibility = true,
-                    ServiceRequests = ConvertType(requestInfo.RequestTypes[i], requestInfo.Requests[i]),
-                    RequestType = requestInfo.RequestTypes[i],
-                    StartDate = ConvertAndGetDate(requestInfo.RequestTypes[i], requestInfo.Requests[i], "start"),
-                    DeadlineDate = ConvertAndGetDate(requestInfo.RequestTypes[i], requestInfo.Requests[i], "end")
+                    CommunicationInfo = null,
+                    RequestVisibility = false,
+                    ServiceRequests = ConvertType("", requestInfo.Requests[0]),
+                    RequestType = null,
+                    StartDate = ConvertAndGetDate(null, requestInfo.Requests[0], ""),
+                    DeadlineDate = ConvertAndGetDate(null, requestInfo.Requests[0], "")
                 });
             }
             WorkspaceInfo = wi;

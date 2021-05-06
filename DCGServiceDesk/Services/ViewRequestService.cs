@@ -58,6 +58,8 @@ namespace DCGServiceDesk.Services
                 QueueName = queueName,
                 QueueType = queueType
             };
+            if (requestInfo.Requests.Count() == 0)
+                requestInfo.Requests.Add(new Incident());
             return requestInfo;
         }
 
@@ -78,6 +80,8 @@ namespace DCGServiceDesk.Services
                 QueueName = "Incidents",
                 QueueType = "IM"
             };
+            if (requestInfo.Requests.Count() == 0)
+                requestInfo.Requests.Add(new Incident());
             return requestInfo;
         }
 
@@ -98,6 +102,8 @@ namespace DCGServiceDesk.Services
                 QueueName = "Changes",
                 QueueType = "C"
             };
+            if (requestInfo.Requests.Count() == 0)
+                requestInfo.Requests.Add(new ServiceRequest());
             return requestInfo;
         }
 
@@ -118,6 +124,8 @@ namespace DCGServiceDesk.Services
                 QueueName = "Tasks",
                 QueueType = "T"
             };
+            if (requestInfo.Requests.Count() == 0)
+                requestInfo.Requests.Add(new TaskRequest());
             return requestInfo;
         }
 

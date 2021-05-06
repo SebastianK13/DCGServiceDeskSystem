@@ -24,10 +24,12 @@
     <con:DataConverter x:Key="dataConv"/>
 
     <DataTemplate x:Key="WorkspacesTemplate" >
-        <TabControl IsSynchronizedWithCurrentItem="True" SelectionChanged="TabControl_SelectionChanged"
+        <TabControl SelectionChanged="TabControl_SelectionChanged"
               ItemsSource="{Binding}" 
               SelectedIndex="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type vw:Home}},
-              Path=DataContext.(vm:HomeViewModel.CurrentTabIndex), Mode=TwoWay}"      
+              Path=DataContext.(vm:HomeViewModel.CurrentTabIndex), Mode=TwoWay}"     
+              Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type vw:Home}},
+              Path=DataContext.(vm:HomeViewModel.Vis)}"
               x:Name="TabControl" Template="{DynamicResource TabControlControlTemplate}"
               Margin="0">
             <TabControl.Resources>

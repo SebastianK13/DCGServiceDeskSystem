@@ -62,22 +62,31 @@ namespace DCGServiceDesk.Commands
                         var im = await _viewRequestService
                             .SetAllIncidentsQueue(Convert.ToInt32(id), true);
                         if(!CheckIsNull(im))
+                        {
                             _rSVM.FoundedRequests = new QueueViewModel(im,
-                                 _dbInterfaceContainer, _hVM);
+                                _dbInterfaceContainer, _hVM);
+                            _rSVM.SearchingResultVisibility = true;
+                        }
                         break;
                     case "C":
                         var c = await _viewRequestService
                             .SetAllChangesQueue(Convert.ToInt32(id), true);
-                        if(!CheckIsNull(c))
+                        if (!CheckIsNull(c))
+                        {
                             _rSVM.FoundedRequests = new QueueViewModel(c,
                                 _dbInterfaceContainer, _hVM);
+                            _rSVM.SearchingResultVisibility = true;
+                        }
                         break;
                     case "T":
                         var t = await _viewRequestService
                             .SetAllTasksQueue(Convert.ToInt32(id), true);
-                        if(!CheckIsNull(t))
-                        _rSVM.FoundedRequests = new QueueViewModel(t,
-                              _dbInterfaceContainer, _hVM);
+                        if (!CheckIsNull(t))
+                        {
+                            _rSVM.FoundedRequests = new QueueViewModel(t,
+                                _dbInterfaceContainer, _hVM);
+                            _rSVM.SearchingResultVisibility = true;
+                        }
                         break;
                 }
             }
@@ -97,14 +106,17 @@ namespace DCGServiceDesk.Commands
                 case "IM":
                     _rSVM.FoundedRequests = new QueueViewModel(
                         await _viewRequestService.SetAllIncidentsQueue(), _dbInterfaceContainer, _hVM);
+                    _rSVM.SearchingResultVisibility = true;
                     break;
                 case "C":
                     _rSVM.FoundedRequests = new QueueViewModel(
                         await _viewRequestService.SetAllChangesQueue(), _dbInterfaceContainer, _hVM);
+                    _rSVM.SearchingResultVisibility = true;
                     break;
                 case "T":
                     _rSVM.FoundedRequests = new QueueViewModel(
                         await _viewRequestService.SetAllTasksQueue(), _dbInterfaceContainer, _hVM);
+                    _rSVM.SearchingResultVisibility = true;
                     break;
             }
         }

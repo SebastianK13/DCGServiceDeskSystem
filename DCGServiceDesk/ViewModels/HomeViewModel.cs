@@ -20,6 +20,7 @@ namespace DCGServiceDesk.ViewModels
         public ILoggedUser loggedUser;
         private int _currentTab;
         private bool locked = false;
+        private bool _vis;
 
         public ICommand RequestCommand { get; }
         public ICommand UpdateGroupsCommand { get; }
@@ -38,11 +39,23 @@ namespace DCGServiceDesk.ViewModels
                     PreviousTabIndex = -1;
 
                 _currentTab = value;
+                Vis = false;
+                Vis = true;
+
                 locked = false;
                 OnPropertyChanged("CurrentTabIndex");
             }
         }
         public int PreviousTabIndex { get; set; }
+        public bool Vis
+        {
+            get { return _vis; }
+            set
+            {
+                _vis = value;
+                OnPropertyChanged("Vis");
+            }
+        }
         public ICollection<AssigmentGroup> Groups { get; set; }
 
         public HomeViewModel(ILoggedUser loggedUser, DbInterfaceContainer interfaceContainer)

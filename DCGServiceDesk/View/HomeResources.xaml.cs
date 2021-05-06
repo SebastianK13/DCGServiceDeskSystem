@@ -31,6 +31,8 @@ namespace DCGServiceDesk.View
                 var rootVisual = Application.Current.MainWindow;
                 object item = tabControl.SelectedItem;
                 var tabItems = tabControl.ItemsSource;
+                int index = tabControl.SelectedIndex;
+                TabItem ef1 = (TabItem)tabControl.ItemContainerGenerator. ContainerFromIndex(index);
                 TabItem tabItem = (TabItem)tabControl.ItemContainerGenerator.ContainerFromItem(item);
 
                 if (tabItem != lastTabItem && tabItem != null)
@@ -40,6 +42,8 @@ namespace DCGServiceDesk.View
                     lastTabItem?.Focus();
                 }
             }
+
+
         }
 
         private double CountScrollOffset(IEnumerable tabItems, object choosenItem)
@@ -66,6 +70,16 @@ namespace DCGServiceDesk.View
             lastWidth = offset;
 
             return offset;
+        }
+
+        private void TabControl_Unselected(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void FrameworkElement_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+
         }
     }
 }

@@ -11,6 +11,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="RequestSearchingViewResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -52,7 +53,7 @@
                     </Button>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="3" Background="Gray">
+            <StackPanel Grid.Row="3" Visibility="{Binding SearchingResultVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ContentPresenter Content="{Binding FoundedRequests}"/>
             </StackPanel>
         </Grid>
