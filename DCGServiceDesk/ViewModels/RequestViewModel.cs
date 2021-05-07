@@ -63,7 +63,7 @@ namespace DCGServiceDesk.ViewModels
         public void InitializeEscalatedModel()
         {
             Escalated.SetInitialColors();
-            Escalated.SetStatuses();
+            Escalated.SetStatuses();            
         }
 
     }
@@ -297,6 +297,8 @@ namespace DCGServiceDesk.ViewModels
             string statusName = RequestService
                 .GetStateName(RequestViewModel.WorkspaceInfo
                 .FirstOrDefault().ServiceRequests);
+
+
 
             if (statusName == "Closed")
                 ButtonsVisibility = false;
@@ -756,6 +758,7 @@ namespace DCGServiceDesk.ViewModels
             AssignBtnVisibile = true;
             SetPriority();
             TaskInfoVisibility = CheckIsTaskRequest();
+            CloserDue = RequestService.GetCloserDue(RequestViewModel.WorkspaceInfo.FirstOrDefault().ServiceRequests);
         }
         public async Task CheckIfRequestAssigned()
         {

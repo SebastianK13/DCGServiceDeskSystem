@@ -128,7 +128,7 @@ namespace DCGServiceDesk.ViewModels
                 {
                     foreach (var t in r.WorkspaceInfo)
                     {
-                        string currentType = t.ServiceRequests.GetType().Name;
+                        string currentType = t.ServiceRequests?.GetType().Name;
 
                         if (currentType == requestType)
                         {

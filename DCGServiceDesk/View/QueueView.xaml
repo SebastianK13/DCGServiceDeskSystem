@@ -18,7 +18,7 @@
     </UserControl.Resources>
 
 
-    <Grid Height="auto" >
+    <Grid Height="auto" Background="WhiteSmoke">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20"/>
                 <RowDefinition Height="*"/>

@@ -7,6 +7,7 @@
         xmlns:mw="clr-namespace:DCGServiceDesk.ViewModels"
         mc:Ignorable="d"
         Title="Dark Cluster Group Service Desk System" Height="450" Width="800" 
+        Icon="./Images/mainIcon.png"
         BorderBrush="#D5D2CD" >
 
 
@@ -22,7 +23,7 @@
                 </Style>
             </Grid.Style>
         </Grid>
-        <Grid Grid.Row="1" Margin="0,0,0,0">
+        <Grid Grid.Row="1" Width="Auto" HorizontalAlignment="Stretch">
             <ContentControl Content="{Binding ActiveViewModel}"/>
         </Grid>
     </Grid>

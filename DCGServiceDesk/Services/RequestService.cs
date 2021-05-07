@@ -30,6 +30,22 @@ namespace DCGServiceDesk.Services
 
             }
         }
+        public static CloserDue GetCloserDue(object request)
+        {
+            string requestType = request.GetType().Name;
+            switch (requestType)
+            {
+                case "TaskRequestProxy":
+                    return ((TaskRequest)request).History.CloserDue;
+                case "IncidentProxy":
+                    return ((Incident)request).History.CloserDue;
+                case "ServiceRequestProxy":
+                    return ((ServiceRequest)request).History.CloserDue;
+                default:
+                    return null;
+
+            }
+        }
         public static DateTime GetSLADate(object request)
         {
             string requestType = request.GetType().Name;

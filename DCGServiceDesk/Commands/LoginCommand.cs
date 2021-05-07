@@ -41,12 +41,14 @@ namespace DCGServiceDesk.Commands
             {
                 PasswordBox pswBox = parameter as PasswordBox;
                 var result = await _authorization.Login(_loginViewModel.Username, pswBox.Password);
-                if(result != null)
+                if (result != null)
                 {
+                    _loginViewModel.LoginErrorVisibility = false;
                     await _authorization.SetTimeZone(_employeeProfile);
                     UpdateViewModelCommand.Execute(ViewName.MainView);
                 }
-
+                else
+                    _loginViewModel.LoginErrorVisibility = true;
             }
             catch (Exception e)
             {

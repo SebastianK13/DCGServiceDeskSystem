@@ -32,13 +32,16 @@ namespace DCGServiceDesk.EF.Services
         }
 
         public async Task<List<ServiceRequest>> GetAll() =>
-            await _dbContext.Applications.Where(a => a.Group == null).ToListAsync();
+            await _dbContext.Applications.Where(a => a.Group == null && 
+            a.History.ActiveStatus.State.StateName != "Closed").ToListAsync();
 
         public async Task<List<Incident>> GetAllIncidents() =>
-            await _dbContext.Incidents.Where(i => i.Group == null).ToListAsync();
+            await _dbContext.Incidents.Where(i => i.Group == null &&
+            i.History.ActiveStatus.State.StateName != "Closed").ToListAsync();
 
         public async Task<List<TaskRequest>> GetAllTasks() =>
-            await _dbContext.Tasks.Where(t => t.Group == null).ToListAsync();
+            await _dbContext.Tasks.Where(t => t.Group == null &&
+            t.History.ActiveStatus.State.StateName != "Closed").ToListAsync();
 
         public async Task<List<object>> GetAllRequests()
         {
@@ -162,15 +165,18 @@ namespace DCGServiceDesk.EF.Services
             List<int> requestIds = new List<int>();
             List<object> requests = new List<object>();
             var changes = await _dbContext.Applications
-                .Where(i => i.GroupId == groupId)
+                .Where(i => i.GroupId == groupId && 
+                i.History.ActiveStatus.State.StateName != "Closed")
                 .ToListAsync();
 
             var incidents = await _dbContext.Incidents
-                .Where(i => i.GroupId == groupId)
+                .Where(i => i.GroupId == groupId && 
+                i.History.ActiveStatus.State.StateName != "Closed")
                 .ToListAsync();
 
             var tasks = await _dbContext.Tasks
-                .Where(i => i.GroupId == groupId)
+                .Where(i => i.GroupId == groupId && 
+                i.History.ActiveStatus.State.StateName != "Closed")
                 .ToListAsync();
 
             requests = requests.Concat(changes).Concat(incidents).Concat(tasks).ToList();

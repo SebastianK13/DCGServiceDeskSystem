@@ -13,7 +13,11 @@
     <None Remove="Images\escalationIcon.bmp" />
     <None Remove="Images\folderImg.png" />
     <None Remove="Images\groupIcon.png" />
+    <None Remove="Images\largeLogo.png" />
     <None Remove="Images\loupeGray.png" />
+    <None Remove="Images\mainBackground.bmp" />
+    <None Remove="Images\mainIcon.png" />
+    <None Remove="Images\mainLogo.bmp" />
     <None Remove="Images\membersList.png" />
     <None Remove="Images\openSysNavIcon.png" />
     <None Remove="Images\redCross.png" />
@@ -65,7 +69,10 @@
     <Resource Include="Images\escalationIcon.bmp" />
     <Resource Include="Images\folderImg.png" />
     <Resource Include="Images\groupIcon.png" />
+    <Resource Include="Images\largeLogo.png" />
     <Resource Include="Images\loupeGray.png" />
+    <Resource Include="Images\mainIcon.png" />
+    <Resource Include="Images\mainLogo.bmp" />
     <Resource Include="Images\membersList.png" />
     <Resource Include="Images\openSysNavIcon.png" />
     <Resource Include="Images\redCross.png" />

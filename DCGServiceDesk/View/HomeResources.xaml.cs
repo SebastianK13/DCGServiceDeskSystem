@@ -25,22 +25,39 @@ namespace DCGServiceDesk.View
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            tabControl = sender as TabControl;
-            if (tabControl != null)
+            try
             {
-                var rootVisual = Application.Current.MainWindow;
-                object item = tabControl.SelectedItem;
-                var tabItems = tabControl.ItemsSource;
-                int index = tabControl.SelectedIndex;
-                TabItem ef1 = (TabItem)tabControl.ItemContainerGenerator. ContainerFromIndex(index);
-                TabItem tabItem = (TabItem)tabControl.ItemContainerGenerator.ContainerFromItem(item);
-
-                if (tabItem != lastTabItem && tabItem != null)
+                tabControl = sender as TabControl;
+                if (tabControl != null)
                 {
-                    scrollViewer.ScrollToHorizontalOffset(CountScrollOffset(tabItems, item));
-                    lastTabItem = tabItem;
-                    lastTabItem?.Focus();
+                    var rootVisual = Application.Current.MainWindow;
+                    object item = tabControl.SelectedItem;
+                    var tabItems = tabControl.ItemsSource;
+                    int index = tabControl.SelectedIndex;
+
+                    if(index == -1 && item == null && lastTabItem.Content.ToString() != "{DisconnectedItem}")
+                    {
+                        if (lastTabItem != null)
+                        {
+                            scrollViewer.ScrollToHorizontalOffset(CountScrollOffset(tabItems, lastTabItem.Content));
+                            lastTabItem?.Focus();
+                        }
+                    }
+                    if(item != null)
+                    {
+                        TabItem tabItem = (TabItem)tabControl.ItemContainerGenerator.ContainerFromItem(item);
+                        if (tabItem != lastTabItem && tabItem != null)
+                        {
+                            scrollViewer.ScrollToHorizontalOffset(CountScrollOffset(tabItems, item));
+                            lastTabItem = tabItem;
+                            lastTabItem?.Focus();
+                        }
+                    }
                 }
+            }
+            catch(Exception ex)
+            {
+
             }
 
 

@@ -22,11 +22,13 @@ namespace DCGServiceDesk.View
     /// </summary>
     public partial class Home : UserControl
     {
+        private AboutWindow about;
         public Home()
         {
             try
             {
                 InitializeComponent();
+                var fontList = Fonts.SystemFontFamilies;
             }
             catch (Exception ex)
             {
@@ -58,5 +60,24 @@ namespace DCGServiceDesk.View
             if (selectedItem == null) return;
             selectedItem.IsSelected = false;
         }
+
+        private void MenuItem_About_Click(object sender, RoutedEventArgs e)
+        {
+            if(about == null)
+            {
+                about = new AboutWindow(this);
+                about.Show();
+                Window aboutWin = Window.GetWindow(about);
+                aboutWin.Closing += about_Closing;
+            }
+        }
+
+        private void MenuItem_Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Window window = Window.GetWindow(this);
+            window.Close();
+        }
+        void about_Closing(object sender, global::System.ComponentModel.CancelEventArgs e) =>
+            about = null;                       
     }
 }

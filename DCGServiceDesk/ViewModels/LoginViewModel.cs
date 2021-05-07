@@ -14,6 +14,7 @@ namespace DCGServiceDesk.ViewModels
     public class LoginViewModel : ViewModelBase
     {
         private string _username = "Noname";
+        private bool _errorVis;
         private readonly IViewForwarding _forwarding;
         private readonly IServiceDeskViewModelFactory _viewModelFactory;
         private readonly IAuthorization _authorization;
@@ -27,6 +28,15 @@ namespace DCGServiceDesk.ViewModels
             {
                 _username = value;
                 OnPropertyChanged(nameof(Username));
+            }
+        }
+        public bool LoginErrorVisibility
+        {
+            get { return _errorVis; }
+            set
+            {
+                _errorVis = value;
+                OnPropertyChanged("LoginErrorVisibility");
             }
         }
 

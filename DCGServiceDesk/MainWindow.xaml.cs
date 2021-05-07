@@ -30,5 +30,7 @@ namespace DCGServiceDesk
 
             DataContext = dataContext;
         }
+        public void SetNoResizeMode() =>
+            this.ResizeMode = ResizeMode.NoResize;
     }
 }

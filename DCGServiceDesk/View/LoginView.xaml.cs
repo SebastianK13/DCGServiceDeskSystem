@@ -18,6 +18,7 @@ namespace DCGServiceDesk.View
     /// </summary>
     public partial class LoginView : UserControl
     {
+        private readonly MainWindow mainWindow;
         public LoginView()
         {
             InitializeComponent();

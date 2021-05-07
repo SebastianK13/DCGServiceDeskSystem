@@ -299,10 +299,13 @@ namespace DCGServiceDesk.Commands
         }
         private void SetWaitingToVis(object request)
         {
-            if (RequestService.GetStateName(request) == "Waiting")
-                nEVM.RequestViewModel.Escalated.WaitingToVis = true;
-            else
-                nEVM.RequestViewModel.Escalated.WaitingToVis = false;
+            if(nEVM.RequestViewModel.Escalated != null)
+            {
+                if (RequestService.GetStateName(request) == "Waiting")
+                    nEVM.RequestViewModel.Escalated.WaitingToVis = true;
+                else
+                    nEVM.RequestViewModel.Escalated.WaitingToVis = false;
+            }
         }
         private void RefreshTypingSection(List<Status> statuses)
         {
