@@ -26,6 +26,9 @@
     <None Remove="Images\take2Icon.bmp" />
     <None Remove="Images\takeIcon.bmp" />
     <None Remove="Images\takIcon.png" />
+    <None Remove="Images\underline.png" />
+    <None Remove="Images\underlineBlue.png" />
+    <None Remove="Resources\Fonts\axaxax\axaxax bd.ttf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -81,6 +84,11 @@
     <Resource Include="Images\take2Icon.bmp" />
     <Resource Include="Images\takeIcon.bmp" />
     <Resource Include="Images\takIcon.png" />
+    <Resource Include="Images\underline.png" />
+    <Resource Include="Images\underlineBlue.png" />
+    <Resource Include="Resources\Fonts\axaxax\axaxax bd.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

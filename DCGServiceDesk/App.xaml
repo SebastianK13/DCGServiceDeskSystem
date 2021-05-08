@@ -10,6 +10,7 @@
             <ResourceDictionary.MergedDictionaries>
 
             </ResourceDictionary.MergedDictionaries>
+            <FontFamily x:Key="MainFont">pack://application:,,,/Resources/Fonts/axaxax/#Axaxax Rg</FontFamily>
             <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
                 <views:LoginView />
             </DataTemplate>

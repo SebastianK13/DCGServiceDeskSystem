@@ -78,12 +78,13 @@
                                 <Grid Panel.ZIndex="2" VerticalAlignment="Center">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
-                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="80"/>
                                     </Grid.RowDefinitions>
                                     <Image Margin="0,0,0,15" Grid.Row="0" Source="/Images/largeLogo.png" MaxHeight="200" VerticalAlignment="Top"/>
 
                                     <StackPanel Grid.Row="1" HorizontalAlignment="Center">
-                                        <TextBlock FontFamily="Lucida Console" Foreground="#0094FF" FontSize="25" Text="D.C.G. Service Desk System" HorizontalAlignment="Center"/>
+                                        <TextBlock FontFamily="{StaticResource MainFont}" Foreground="#0094FF" FontSize="25" Text="D.C.G. Service Desk System" HorizontalAlignment="Center"/>
+                                        <Image MaxWidth="370" Source="/Images/underlineBlue.png"/>
                                     </StackPanel>
                                 </Grid>
                             </Grid>

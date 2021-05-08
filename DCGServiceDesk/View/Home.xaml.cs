@@ -28,7 +28,6 @@ namespace DCGServiceDesk.View
             try
             {
                 InitializeComponent();
-                var fontList = Fonts.SystemFontFamilies;
             }
             catch (Exception ex)
             {
